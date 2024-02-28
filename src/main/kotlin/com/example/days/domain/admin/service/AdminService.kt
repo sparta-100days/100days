@@ -9,6 +9,8 @@ import com.example.days.domain.admin.model.Admin
 import org.springframework.security.core.userdetails.User
 
 interface AdminService {
+    // 어드민 회원가입 이것도 임시적으로 만듦
+    fun adminSignup(req: SignUpAdminRequest): AdminResponse
 
     // 유저 전체 조회, 유저 부분 추가 전이므로 어드민 response로 대체
     fun getAllUser(): List<AdminResponse>

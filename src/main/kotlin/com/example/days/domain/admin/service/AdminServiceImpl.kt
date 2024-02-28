@@ -16,6 +16,15 @@ class AdminServiceImpl(
     private val adminRepository: AdminRepository,
     private val categoryRepository: CategoryRepository
 ) : AdminService {
+    override fun adminSignup(req: SignUpAdminRequest): AdminResponse {
+        return adminRepository.save(
+            Admin(
+                nickname = req.nickname,
+                email = req.email,
+                password = req.password
+            )
+        ).let { AdminResponse.from(it) }
+    }
 
     override fun getAllUser(): List<AdminResponse> {
         TODO("Not yet implemented")
