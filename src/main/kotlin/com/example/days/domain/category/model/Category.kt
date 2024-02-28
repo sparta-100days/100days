@@ -1,4 +1,4 @@
-package com.example.days.domain.admin.model
+package com.example.days.domain.category.model
 
 import jakarta.persistence.*
 
