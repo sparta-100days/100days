@@ -3,14 +3,29 @@ package com.example.days.global.infra.swagger
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
-import io.swagger.v3.oas.models.security.SecurityRequirement
-import io.swagger.v3.oas.models.security.SecurityScheme
+//import io.swagger.v3.oas.models.security.SecurityRequirement
+//import io.swagger.v3.oas.models.security.SecurityScheme
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
 class SwaggerConfig {
 
+    @Configuration
+    class SwaggerConfig {
+
+        @Bean
+        fun openAPI(): OpenAPI = OpenAPI()
+            .components(Components())
+            .info(
+                Info()
+                    .title("Course API")
+                    .description("Course API schema")
+                    .version("1.0.0")
+            )
+    }
+    // 시큐리티 미적용이라 임시로 주석처리 ~@~
+/*
     @Bean
     fun openAPI(): OpenAPI {
         return OpenAPI()
@@ -35,4 +50,6 @@ class SwaggerConfig {
                     .version("1.0.0")
             )
     }
+    *
+ */
 }
