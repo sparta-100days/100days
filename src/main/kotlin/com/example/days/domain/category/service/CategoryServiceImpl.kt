@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class CategoryServiceImpl(
     private val categoryRepository: CategoryRepository
-): CategoryService {
+) : CategoryService {
     override fun getCategoryList(): List<CategoryResponse> {
         return categoryRepository.findAll().map { from(it) }
     }
@@ -36,7 +36,6 @@ class CategoryServiceImpl(
             categoryRepository.findByIdOrNull(categoryId) ?: throw ModelNotFoundException("category", categoryId)
         category.info = req.info
         return CategoryResponse.from(category)
-
     }
 
     @Transactional
