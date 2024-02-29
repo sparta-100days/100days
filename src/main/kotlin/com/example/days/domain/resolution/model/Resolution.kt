@@ -2,7 +2,7 @@ package com.example.days.domain.resolution.model
 
 import com.example.days.domain.resolution.dto.request.ResolutionRequest
 import com.example.days.domain.resolution.dto.response.ResolutionResponse
-import com.example.days.domain.user.model.Users
+import com.example.days.domain.user.model.User
 import com.example.days.global.entity.BaseEntity
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
@@ -21,7 +21,7 @@ class Resolution(
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "author")
-    val author: Users,
+    val author: User,
 
     @Column(name = "complete_status")
     val completeStatus: Boolean = false,
@@ -48,12 +48,12 @@ class Resolution(
     val deadline: LocalDateTime = createdAt.plusDays(100)
 
     companion object {
-        fun of(request: ResolutionRequest, user: Users) =
+        fun of(request: ResolutionRequest, user: User) =
             Resolution(
                 title = request.title,
                 description = request.description,
                 category = request.category,
-                author = user.name
+                author = user
             )
     }
 
