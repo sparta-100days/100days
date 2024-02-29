@@ -25,7 +25,8 @@ class AdminController(
     fun adminBanByAdmin(
         @PathVariable adminId: Long
     ): ResponseEntity<Unit>{
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(adminService.adminBanByAdmin(adminId))
+        adminService.adminBanByAdmin(adminId)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
 }

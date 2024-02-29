@@ -32,7 +32,8 @@ class CategoryController(
     }
 
     @DeleteMapping("/{categoryId}")
-    fun deleteCategory(categoryId: Long): ResponseEntity<Unit> {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(categoryService.deleteCategory(categoryId))
+    fun deleteCategory(categoryId: Long): ResponseEntity<Unit>{
+        categoryService.deleteCategory(categoryId)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
