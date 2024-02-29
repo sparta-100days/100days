@@ -17,13 +17,13 @@ class ResolutionController (
 
     // ^오^: 기본적인 CRUD 만 추가했습니다.
 
-    @PostMapping
-    fun createResolution(
-        @Valid @RequestBody resolutionRequest: ResolutionRequest
-    ):ResponseEntity<ResolutionResponse>{
-        val createResolution = resolutionService.createResolution(resolutionRequest)
-        return ResponseEntity.status(HttpStatus.CREATED).body(createResolution)
-    }
+//    @PostMapping
+//    fun createResolution(
+//        @Valid @RequestBody resolutionRequest: ResolutionRequest
+//    ):ResponseEntity<ResolutionResponse>{
+//        val createResolution = resolutionService.createResolution(resolutionRequest)
+//        return ResponseEntity.status(HttpStatus.CREATED).body(createResolution)
+//    }
 
     @GetMapping("/{resolutionId}")
     fun getResolutionById(
@@ -54,8 +54,5 @@ class ResolutionController (
         resolutionService.deleteResolution(resolutionId)
         return ResponseEntity.noContent().build()
     }
-
-    @PostMapping("/{resolutionId}")
-    fun
 
 }
