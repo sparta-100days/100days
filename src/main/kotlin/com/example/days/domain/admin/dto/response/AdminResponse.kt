@@ -6,7 +6,6 @@ data class AdminResponse(
     val id: Long
 ) {
     companion object {
-
         fun from(admin: Admin): AdminResponse {
             return AdminResponse(
                 id = admin.id!!
