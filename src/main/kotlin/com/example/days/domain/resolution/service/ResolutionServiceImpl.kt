@@ -5,15 +5,17 @@ import com.example.days.domain.resolution.dto.response.ResolutionResponse
 import com.example.days.domain.resolution.model.Resolution
 import com.example.days.domain.resolution.repository.ResolutionRepository
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.stereotype.Service
 
+@Service
 class ResolutionServiceImpl(
     private val resolutionRepository: ResolutionRepository
 ): ResolutionService {
-    override fun createResolution(request: ResolutionRequest): ResolutionResponse {
-        // TODO : 사용자 식별 가능한 로직 추가 예졍
-        val resolution = resolutionRepository.save(Resolution.of(request, user))
-        return resolution.from()
-    }
+//    override fun createResolution(request: ResolutionRequest): ResolutionResponse {
+//        // TODO : 사용자 식별 가능한 로직 추가 예졍
+//        val resolution = resolutionRepository.save(Resolution.of(request, user))
+//        return resolution.from()
+//    }
 
     override fun getResolutionById(resolutionId: Long): ResolutionResponse {
         val resolution = getByIdOrNull(resolutionId)
