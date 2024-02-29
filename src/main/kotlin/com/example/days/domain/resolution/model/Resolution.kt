@@ -2,7 +2,6 @@ package com.example.days.domain.resolution.model
 
 import com.example.days.domain.resolution.dto.request.ResolutionRequest
 import com.example.days.domain.resolution.dto.response.ResolutionResponse
-import com.example.days.domain.user.model.Users
 import com.example.days.global.entity.BaseEntity
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
