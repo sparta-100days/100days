@@ -12,8 +12,8 @@ data class SignUpAdminRequest(
 
     @field: NotBlank
     @field: Pattern(
-        regexp = "^[a-zA-Z0-9]{6,15}@sparta\\.com\$",
-        message = "이메일의 형식에 맞게 본인 회사 이메일(sparta.com)로 입력해주세요"
+        regexp = "^[a-zA-Z0-9]{6,15}@100days\\.com\$",
+        message = "이메일의 형식에 맞게 본인 회사 이메일(100days.com)로 입력해주세요"
     )
     @JsonProperty("email")
     private val _email: String,
