@@ -22,9 +22,11 @@ class User(
     @Column(name = "isdelete")
     val isDelete: Boolean,
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     val status: UserStatus,
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role")
     val role: UserRole,
 ) {
