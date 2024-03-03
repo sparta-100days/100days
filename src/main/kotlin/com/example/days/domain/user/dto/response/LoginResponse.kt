@@ -1,17 +1,10 @@
 package com.example.days.domain.user.dto.response
 
 import com.example.days.domain.user.model.User
+import com.example.days.global.infra.security.jwt.JwtPlugin
 
 data class LoginResponse(
+    val accessToken: String,
     val nickName: String,
     val message: String
-){
-    companion object {
-        fun from(user: User): LoginResponse {
-            return LoginResponse(
-                nickName = user.nickName,
-                message = "로그인이 완료되었습니다."
-            )
-        }
-    }
-}
+)

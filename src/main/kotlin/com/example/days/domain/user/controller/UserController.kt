@@ -23,6 +23,11 @@ class UserController (
         return ResponseEntity.status(HttpStatus.OK).body(userService.login(request))
     }
 
+    @PostMapping("/adminlogin")
+    fun adminLogin(@RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.login(request))
+    }
+
     @PostMapping("/signup")
     fun signUp(@RequestBody request: SignUpRequest): ResponseEntity<SignUpResponse> {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.signUp(request))

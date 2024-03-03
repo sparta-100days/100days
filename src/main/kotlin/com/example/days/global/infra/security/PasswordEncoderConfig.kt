@@ -1,4 +1,4 @@
-package com.example.days.global.infra.security.jwt
+package com.example.days.global.infra.security
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
