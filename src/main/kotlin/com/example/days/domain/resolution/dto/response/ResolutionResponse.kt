@@ -22,14 +22,6 @@ data class ResolutionResponse(
     val updatedAt: LocalDateTime
 ) {
 
-    fun of(request: ResolutionRequest, user: User) =
-        Resolution(
-            title = request.title,
-            description = request.description,
-            category = request.category,
-            author = user
-        )
-
     companion object {
         fun from(resolution: Resolution) = ResolutionResponse(
             id = resolution.id,

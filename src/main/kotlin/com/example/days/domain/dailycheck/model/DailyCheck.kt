@@ -11,22 +11,22 @@ import org.hibernate.annotations.OnDeleteAction
 @Table(name = "dailycheck")
 class DailyCheck (
     @Column(name = "memo")
-    val memo: String,
+    var memo: String,
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "resolution_id")
-    val resolutionId: Resolution
+    var resolutionId: Resolution
 ): BaseEntity(){
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "memo_id")
     val id: Long? = null
 
-    fun updateDailyCheck(request: DailyCheckRequest, resolution: Resolution) =
-        DailyCheck(
-            memo = request.memo,
-            resolutionId = resolution
-        )
+    fun updateDailyCheck(updatedMemo: String, resolution: Resolution) {
+        memo = updatedMemo
+        resolutionId = resolution
+    }
+
 
 }

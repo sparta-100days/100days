@@ -15,9 +15,9 @@ class DailyCheckServiceImpl(
     private val resolutionRepository: ResolutionRepository
 ):DailyCheckService {
     @Transactional
-    override fun createDailyCheck(resolutionId: Long, Request: DailyCheckRequest): DailyCheckResponse {
+    override fun createDailyCheck(resolutionId: Long, request: DailyCheckRequest): DailyCheckResponse {
         return resolutionRepository.findByIdOrNull(resolutionId)
-            ?.let{ dailyCheckRepository.save(DailyCheckRequest.of(Request, it)) }
+            ?.let{ dailyCheckRepository.save(DailyCheckRequest.of(request, it)) }
             ?.let { DailyCheckResponse.from(it) }
             ?: TODO("예외처리")
     }
@@ -28,18 +28,15 @@ class DailyCheckServiceImpl(
     }
 
     @Transactional
-    override fun updateDailyCheck(resolutionId: Long, dailyCheckId: Long, dailyCheckRequest: DailyCheckRequest)
+    override fun updateDailyCheck(resolutionId: Long, dailyCheckId: Long, request: DailyCheckRequest)
     : DailyCheckResponse {
-        // ^오^: 밖으로 뺜다면 이쪽으로 빠질 예정
-        return dailyCheckRepository.findByIdOrNull(dailyCheckId)
-            ?.let {
-                // ^오^: 아래 updatedResolution 이 코드를 밖으로 뺄 지 let 안에 둘지 고민입니다.
-                val updatedResolution = resolutionRepository.findByIdOrNull(resolutionId) ?: TODO("예외처리")
-                it.updateDailyCheck(dailyCheckRequest, updatedResolution) }
-            ?.let { DailyCheckResponse.from(it) }
-            ?: TODO("예외처리")
+        val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: TODO()
+        val dailyCheck = dailyCheckRepository.findByIdOrNull(dailyCheckId) ?: TODO()
+        dailyCheck.updateDailyCheck(request.memo, resolution)
+        return DailyCheckResponse.from(dailyCheck)
     }
 
+    @Transactional
     override fun deleteDailyCheck(dailyCheckId: Long) {
         dailyCheckRepository.deleteById(dailyCheckId)
     }
