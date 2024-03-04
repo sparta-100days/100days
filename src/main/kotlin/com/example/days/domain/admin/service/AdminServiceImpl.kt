@@ -11,13 +11,15 @@ import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.common.exception.ModelNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AdminServiceImpl(
     private val adminRepository: AdminRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val passwordEncoder: PasswordEncoder
 ) : AdminService {
     override fun adminSignup(req: SignUpAdminRequest): AdminResponse {
         return adminRepository.save(
@@ -25,7 +27,7 @@ class AdminServiceImpl(
                 nickname = req.nickname,
                 isDelete = false,
                 email = req.email,
-                password = req.password
+                password = passwordEncoder.encode(req.password)
             )
         ).let { AdminResponse.from(it) }
     }
