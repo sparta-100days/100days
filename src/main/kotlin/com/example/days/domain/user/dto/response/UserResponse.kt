@@ -12,7 +12,7 @@ data class UserResponse (
     val createdAt: LocalDate,
     val updatedAt: LocalDate,
     val isDelete: Boolean,
-    val status: String,
+    val status: UserStatus,
 ){
     companion object {
         fun from(user: User): UserResponse {
@@ -21,10 +21,10 @@ data class UserResponse (
                 email = user.email,
                 nickName = user.nickName,
                 birth = user.birth,
-                isDelete = false,
+                isDelete = user.isDelete,
                 createdAt = LocalDate.now(),
                 updatedAt = LocalDate.now(),
-                status = UserStatus.ACTIVE.toString()
+                status = user.status
             )
         }
     }
