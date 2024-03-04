@@ -27,12 +27,12 @@ class CategoryController(
     }
 
     @PutMapping("/{categoryId}")
-    fun updateCategory(categoryId: Long, req: CategoryUpdateRequest): ResponseEntity<CategoryResponse> {
+    fun updateCategory(@PathVariable categoryId: Long, req: CategoryUpdateRequest): ResponseEntity<CategoryResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(categoryService.updateCategory(categoryId, req))
     }
 
     @DeleteMapping("/{categoryId}")
-    fun deleteCategory(categoryId: Long): ResponseEntity<Unit>{
+    fun deleteCategory(@PathVariable categoryId: Long): ResponseEntity<Unit> {
         categoryService.deleteCategory(categoryId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
