@@ -3,7 +3,6 @@ package com.example.days.domain.user.dto.request
 import java.time.LocalDate
 
 data class UserRequest(
-    val id: Long,
     val email: String,
     val nickName: String,
     val birth: LocalDate,

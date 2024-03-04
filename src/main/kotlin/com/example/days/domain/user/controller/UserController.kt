@@ -5,6 +5,7 @@ import com.example.days.domain.user.dto.request.SignUpRequest
 import com.example.days.domain.user.dto.response.LoginResponse
 import com.example.days.domain.user.dto.response.SignUpResponse
 import com.example.days.domain.user.service.UserService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -19,17 +20,12 @@ class UserController (
 ){
 
     @PostMapping("/login")
-    fun login(@RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.login(request))
-    }
-
-    @PostMapping("/adminlogin")
-    fun adminLogin(@RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
+    fun userLogin(@RequestBody @Valid request: LoginRequest): ResponseEntity<LoginResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(userService.login(request))
     }
 
     @PostMapping("/signup")
-    fun signUp(@RequestBody request: SignUpRequest): ResponseEntity<SignUpResponse> {
+    fun signUp(@RequestBody @Valid request: SignUpRequest): ResponseEntity<SignUpResponse> {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.signUp(request))
     }
 
