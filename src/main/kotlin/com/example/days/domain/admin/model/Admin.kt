@@ -18,14 +18,14 @@ class Admin(
     val password: String,
 
     @Column(name = "status")
-    var isDeleted: Boolean = false,
+    var isDelete: Boolean = false,
 
     ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
     fun adminBanByAdmin() {
-        isDeleted = true
+        isDelete = true
     }
     //ㅇㅅㅇ baseEntity를 사용하려 했으나 이는 논리적 삭제는 따로 상태 name에 추가해주었고 updatedAt이 아닌 deletedAt을 해야하므로 안함.
     @CreatedDate
