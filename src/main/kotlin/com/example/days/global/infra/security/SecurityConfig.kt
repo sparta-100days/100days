@@ -27,6 +27,7 @@ class SecurityConfig(
 
                 it.requestMatchers(AntPathRequestMatcher("/api/users")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/signup")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/admin/signup")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/login")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitAll()

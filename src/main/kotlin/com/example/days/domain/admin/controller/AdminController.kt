@@ -15,7 +15,7 @@ class AdminController(
     private val adminService: AdminService
 ) {
 
-    @PostMapping
+    @PostMapping("/signup")
     fun adminSignup(
         @Valid @RequestBody req: SignUpAdminRequest
     ): ResponseEntity<AdminResponse>{

@@ -2,13 +2,12 @@ package com.example.days.domain.admin.service
 
 import com.example.days.domain.admin.dto.request.SignUpAdminRequest
 import com.example.days.domain.admin.dto.response.AdminResponse
-import com.example.days.domain.admin.exception.ModelNotFoundException
 import com.example.days.domain.admin.model.Admin
 import com.example.days.domain.admin.repository.AdminRepository
 import com.example.days.domain.user.dto.response.UserResponse
-import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserStatus
 import com.example.days.domain.user.repository.UserRepository
+import com.example.days.global.common.exception.ModelNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
