@@ -24,7 +24,7 @@ class User(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    val status: UserStatus,
+    var status: UserStatus,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
