@@ -41,7 +41,7 @@ class Resolution(
 ): BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "aim_id")
+    @Column(name = "resolution_id")
     val id: Long? = null
 
     @Column(name = "deadline")
