@@ -4,30 +4,35 @@ import jakarta.persistence.*
 import java.time.LocalDate
 
 @Entity
-@Table(name = "USERS")
+@Table(name = "users")
 class User(
 
-    @Column(name = "EMAIL")
+    @Column(name = "email")
     val email: String,
 
-    @Column(name = "NICKNAME")
+    @Column(name = "nickname")
     val nickName: String,
 
-    @Column(name = "PASSWORD")
+    @Column(name = "password")
     val password: String,
 
-    @Column(name = "BIRTH")
+    @Column(name = "birth")
     val birth: LocalDate,
 
-    @Column(name = "ISDELETE")
+    @Column(name = "isdelete")
     val isDelete: Boolean,
 
-    @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     val status: UserStatus,
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    val role: UserRole,
 ) {
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 

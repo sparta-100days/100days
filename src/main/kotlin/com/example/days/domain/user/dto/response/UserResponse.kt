@@ -1,11 +1,14 @@
-package com.example.days.domain.user.dto.request
+package com.example.days.domain.user.dto.response
 
 import java.time.LocalDate
 
-data class UserRequest(
+data class UserResponse(
+    val id: Long,
     val email: String,
     val nickName: String,
     val birth: LocalDate,
+    val createdAt: LocalDate,
+    val updatedAt: LocalDate,
     val isDelete: Boolean,
     val status: String,
     val role: String
