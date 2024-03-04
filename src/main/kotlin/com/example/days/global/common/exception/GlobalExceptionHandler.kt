@@ -38,4 +38,18 @@ class GlobalExceptionHandler {
             .status(HttpStatus.BAD_REQUEST)
             .body(ErrorResponse(ex.message))
     }
+
+    @ExceptionHandler(EmailExistException::class)
+    fun handleEmailExistException(e: EmailExistException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(e.message))
+    }
+
+    @ExceptionHandler(NicknameExistException::class)
+    fun handleNicknameExistException(e: NicknameExistException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(e.message))
+    }
 }
