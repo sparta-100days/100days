@@ -1,6 +1,7 @@
 package com.example.days.domain.admin.service
 
 import com.example.days.domain.admin.dto.request.SignUpAdminRequest
+import com.example.days.domain.admin.dto.request.UserBanRequest
 import com.example.days.domain.admin.dto.response.AdminResponse
 import com.example.days.domain.user.dto.response.UserResponse
 
@@ -12,7 +13,7 @@ interface AdminService {
     fun getAllUser(): List<UserResponse>
 
     // 유저 밴 기능, 유저 부분 추가 전이므로 어드민 response로 대체
-    fun userBanByAdmin(userId: Long)
+    fun userBanByAdmin(userId: Long, req: UserBanRequest): String
 
     // 어드민 밴 기능, 유저 부분 추가 전이므로 어드민 response로 대체
     fun adminBanByAdmin(adminId: Long)

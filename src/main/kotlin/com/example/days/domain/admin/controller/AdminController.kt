@@ -1,6 +1,7 @@
 package com.example.days.domain.admin.controller
 
 import com.example.days.domain.admin.dto.request.SignUpAdminRequest
+import com.example.days.domain.admin.dto.request.UserBanRequest
 import com.example.days.domain.admin.dto.response.AdminResponse
 import com.example.days.domain.admin.service.AdminService
 import com.example.days.domain.user.dto.response.UserResponse
@@ -30,9 +31,10 @@ class AdminController(
 
     @PutMapping("/users/{userId}")
     fun userBanByAdmin(
-        @PathVariable userId: Long
-    ): ResponseEntity<Unit> {
-        return ResponseEntity.status(HttpStatus.OK).body(adminService.userBanByAdmin(userId))
+        @PathVariable userId: Long,
+        @RequestBody req: UserBanRequest
+    ): ResponseEntity<String> {
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.userBanByAdmin(userId, req))
     }
 
     @DeleteMapping("/{adminId}")

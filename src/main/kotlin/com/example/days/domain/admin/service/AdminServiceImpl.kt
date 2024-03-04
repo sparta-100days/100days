@@ -1,6 +1,7 @@
 package com.example.days.domain.admin.service
 
 import com.example.days.domain.admin.dto.request.SignUpAdminRequest
+import com.example.days.domain.admin.dto.request.UserBanRequest
 import com.example.days.domain.admin.dto.response.AdminResponse
 import com.example.days.domain.admin.model.Admin
 import com.example.days.domain.admin.repository.AdminRepository
@@ -9,6 +10,7 @@ import com.example.days.domain.user.model.UserStatus
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.common.exception.ModelNotFoundException
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -35,11 +37,15 @@ class AdminServiceImpl(
     //이건 밴처리만
     //또 탈퇴처리하는건 후에 하자
     @Transactional
-    override fun userBanByAdmin(userId: Long) {
+    override fun userBanByAdmin(userId: Long, req: UserBanRequest): String {
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User",userId)
-        user.status = UserStatus.BAN
-        userRepository.save(user)
-
+        if (req.status != UserStatus.BAN) {
+            throw HttpMessageNotReadableException("BAN만 가능합니다. BAN을 입력해주세요")
+        } else {
+            user.status = req.status
+            userRepository.save(user)
+        }
+        return "밴처리 되었습니다!!"
     }
 
     @Transactional
