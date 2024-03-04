@@ -6,6 +6,9 @@ import com.example.days.domain.admin.dto.response.AdminResponse
 import com.example.days.domain.admin.service.AdminService
 import com.example.days.domain.user.dto.response.UserResponse
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -25,8 +28,10 @@ class AdminController(
 
     //ㅇㅅㅇ userResponse 부분으로 바꿔야함
     @GetMapping("/users")
-    fun getUsersByAdmin(): ResponseEntity<List<UserResponse>>{
-        return ResponseEntity.status(HttpStatus.OK).body(adminService.getAllUser())
+    fun getUsersByAdmin(
+        @PageableDefault(size = 10, sort = ["id"]) pageable: Pageable
+    ): ResponseEntity<Page<UserResponse>>{
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.getAllUser(pageable))
     }
 
     @PutMapping("/users/{userId}")

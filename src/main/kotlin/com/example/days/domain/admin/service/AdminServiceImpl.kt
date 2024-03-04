@@ -10,6 +10,8 @@ import com.example.days.domain.user.dto.response.UserResponse
 import com.example.days.domain.user.model.UserStatus
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.common.exception.ModelNotFoundException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -39,8 +41,8 @@ class AdminServiceImpl(
         ).let { AdminResponse.from(it) }
     }
 
-    override fun getAllUser(): List<UserResponse> {
-        return userRepository.findAll().map { UserResponse.from(it) }
+    override fun getAllUser(pageable: Pageable): Page<UserResponse> {
+        return adminRepository.findByPageableUser(pageable).map { UserResponse.from(it) }
     }
 
     //이건 밴처리만
