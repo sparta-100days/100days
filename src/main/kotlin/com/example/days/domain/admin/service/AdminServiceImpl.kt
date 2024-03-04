@@ -4,6 +4,7 @@ import com.example.days.domain.admin.dto.request.SignUpAdminRequest
 import com.example.days.domain.admin.dto.request.UserBanRequest
 import com.example.days.domain.admin.dto.response.AdminResponse
 import com.example.days.domain.admin.model.Admin
+import com.example.days.domain.admin.model.checkingEmailAndNicknameExists
 import com.example.days.domain.admin.repository.AdminRepository
 import com.example.days.domain.user.dto.response.UserResponse
 import com.example.days.domain.user.model.UserStatus
@@ -22,6 +23,12 @@ class AdminServiceImpl(
     private val passwordEncoder: PasswordEncoder
 ) : AdminService {
     override fun adminSignup(req: SignUpAdminRequest): AdminResponse {
+        checkingEmailAndNicknameExists(
+            req.email,
+            req.nickname,
+            adminRepository
+        )
+
         return adminRepository.save(
             Admin(
                 nickname = req.nickname,
