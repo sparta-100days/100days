@@ -26,3 +26,8 @@ logging:
       bind: trace
    springframework: # ??!
     security: debug # ??!
+auth:
+  jwt:
+    issuer: team.100days.com
+    secret: PO4c8z41Hia5gJG3oeuFJMRYBB4Ws4aZ
+    accessTokenExpirationHour: 168
