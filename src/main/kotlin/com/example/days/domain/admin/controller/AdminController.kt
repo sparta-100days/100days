@@ -37,6 +37,14 @@ class AdminController(
         return ResponseEntity.status(HttpStatus.OK).body(adminService.userBanByAdmin(userId, req))
     }
 
+    @DeleteMapping("/users/{userId}")
+    fun userDeleteByAdmin(
+        @PathVariable userId: Long,
+    ): ResponseEntity<Unit>{
+        adminService.userDeleteByAdmin(userId)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+    }
+
     @DeleteMapping("/{adminId}")
     fun adminBanByAdmin(
         @PathVariable adminId: Long

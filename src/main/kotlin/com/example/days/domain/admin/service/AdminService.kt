@@ -15,6 +15,8 @@ interface AdminService {
     // 유저 밴 기능, 유저 부분 추가 전이므로 어드민 response로 대체
     fun userBanByAdmin(userId: Long, req: UserBanRequest): String
 
+    fun userDeleteByAdmin(userId: Long)
+
     // 어드민 밴 기능, 유저 부분 추가 전이므로 어드민 response로 대체
     fun adminBanByAdmin(adminId: Long)
 

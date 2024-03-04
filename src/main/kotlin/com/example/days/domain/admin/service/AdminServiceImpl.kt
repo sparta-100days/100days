@@ -49,6 +49,12 @@ class AdminServiceImpl(
     }
 
     @Transactional
+    override fun userDeleteByAdmin(userId: Long) {
+        val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User",userId)
+        TODO()
+    }
+
+    @Transactional
     override fun adminBanByAdmin(adminId: Long) {
         val admin = adminRepository.findByIdOrNull(adminId) ?: throw ModelNotFoundException("Admin",adminId)
         admin.adminBanByAdmin()
