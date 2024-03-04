@@ -47,28 +47,6 @@ class Resolution(
     @Column(name = "deadline")
     val deadline: LocalDateTime = createdAt.plusDays(100)
 
-    companion object {
-        fun of(request: ResolutionRequest, user: User) =
-            Resolution(
-                title = request.title,
-                description = request.description,
-                category = request.category,
-                author = user
-            )
-    }
-
-    fun from() = ResolutionResponse(
-        id = id,
-        title = title,
-        description = description,
-        completeStatus = completeStatus,
-        dailyStatus = dailyStatus,
-        category = category,
-        likeCount = likeCount,
-        createdAt = createdAt,
-        updatedAt = updatedAt
-    )
-
     fun updateResolution(request: ResolutionRequest){
         title = request.title
         description = request.description

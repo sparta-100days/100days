@@ -19,18 +19,18 @@ class ResolutionServiceImpl(
 
     override fun getResolutionById(resolutionId: Long): ResolutionResponse {
         val resolution = getByIdOrNull(resolutionId)
-        return resolution.from()
+        return ResolutionResponse.from(resolution)
     }
 
     override fun getResolutionList(): List<ResolutionResponse> {
-        return resolutionRepository.findAll().map{it.from()}
+        return resolutionRepository.findAll().map{ResolutionResponse.from(it)}
     }
 
     override fun updateResolution(resolutionId: Long, request: ResolutionRequest): ResolutionResponse {
         // TODO : 목표 작성자만 수정 가능하도록 제한
         val updatedResolution = getByIdOrNull(resolutionId)
         updatedResolution.updateResolution(request)
-        return updatedResolution.from()
+        return ResolutionResponse.from(updatedResolution)
     }
 
     override fun deleteResolution(resolutionId: Long) {

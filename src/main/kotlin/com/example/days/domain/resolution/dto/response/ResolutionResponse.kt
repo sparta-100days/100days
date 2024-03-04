@@ -1,5 +1,8 @@
 package com.example.days.domain.resolution.dto.response
 
+import com.example.days.domain.resolution.dto.request.ResolutionRequest
+import com.example.days.domain.resolution.model.Resolution
+import com.example.days.domain.user.model.User
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDateTime
 
@@ -17,4 +20,27 @@ data class ResolutionResponse(
     val createdAt: LocalDateTime,
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     val updatedAt: LocalDateTime
-)
+) {
+
+    fun of(request: ResolutionRequest, user: User) =
+        Resolution(
+            title = request.title,
+            description = request.description,
+            category = request.category,
+            author = user
+        )
+
+    companion object {
+        fun from(resolution: Resolution) = ResolutionResponse(
+            id = resolution.id,
+            title = resolution.title,
+            description = resolution.description,
+            completeStatus = resolution.completeStatus,
+            dailyStatus = resolution.dailyStatus,
+            category = resolution.category,
+            likeCount = resolution.likeCount,
+            createdAt = resolution.createdAt,
+            updatedAt = resolution.updatedAt
+        )
+    }
+}
