@@ -22,7 +22,7 @@ class AdminController(
     @PostMapping("/signup")
     fun adminSignup(
         @Valid @RequestBody req: SignUpAdminRequest
-    ): ResponseEntity<AdminResponse>{
+    ): ResponseEntity<AdminResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(adminService.adminSignup(req))
     }
 
@@ -30,7 +30,7 @@ class AdminController(
     @GetMapping("/users")
     fun getUsersByAdmin(
         @PageableDefault(size = 10, sort = ["id"]) pageable: Pageable
-    ): ResponseEntity<Page<UserResponse>>{
+    ): ResponseEntity<Page<UserResponse>> {
         return ResponseEntity.status(HttpStatus.OK).body(adminService.getAllUser(pageable))
     }
 
@@ -42,10 +42,11 @@ class AdminController(
         return ResponseEntity.status(HttpStatus.OK).body(adminService.userBanByAdmin(userId, req))
     }
 
+    //ㅇㅅㅇ 유저 삭제하는 부분 아직 로직은 미완성
     @DeleteMapping("/users/{userId}")
     fun userDeleteByAdmin(
         @PathVariable userId: Long,
-    ): ResponseEntity<Unit>{
+    ): ResponseEntity<Unit> {
         adminService.userDeleteByAdmin(userId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
@@ -53,7 +54,7 @@ class AdminController(
     @DeleteMapping("/{adminId}")
     fun adminBanByAdmin(
         @PathVariable adminId: Long
-    ): ResponseEntity<Unit>{
+    ): ResponseEntity<Unit> {
         adminService.adminBanByAdmin(adminId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }

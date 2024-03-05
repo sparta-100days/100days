@@ -49,7 +49,7 @@ class AdminServiceImpl(
     //또 탈퇴처리하는건 후에 하자
     @Transactional
     override fun userBanByAdmin(userId: Long, req: UserBanRequest): String {
-        val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User",userId)
+        val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
         if (req.status != UserStatus.BAN) {
             throw HttpMessageNotReadableException("BAN만 가능합니다. BAN을 입력해주세요")
         } else {
@@ -61,16 +61,14 @@ class AdminServiceImpl(
 
     @Transactional
     override fun userDeleteByAdmin(userId: Long) {
-        val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User",userId)
+        val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
         TODO()
     }
 
     @Transactional
     override fun adminBanByAdmin(adminId: Long) {
-        val admin = adminRepository.findByIdOrNull(adminId) ?: throw ModelNotFoundException("Admin",adminId)
+        val admin = adminRepository.findByIdOrNull(adminId) ?: throw ModelNotFoundException("Admin", adminId)
         admin.adminBanByAdmin()
         adminRepository.save(admin)
     }
-
-
 }

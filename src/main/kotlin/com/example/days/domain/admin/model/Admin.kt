@@ -11,17 +11,13 @@ import java.time.LocalDateTime
 @Table(name = "admin")
 class Admin(
 
-    @Column(name = "nickname")
-    val nickname: String,
+    @Column(name = "nickname") val nickname: String,
 
-    @Column(name = "email")
-    val email: String,
+    @Column(name = "email") val email: String,
 
-    @Column(name = "password")
-    val password: String,
+    @Column(name = "password") val password: String,
 
-    @Column(name = "status")
-    var isDelete: Boolean = false,
+    @Column(name = "status") var isDelete: Boolean = false,
 
     ) {
     @Id
