@@ -3,18 +3,17 @@ package com.example.days.domain.messages.service
 import com.example.days.domain.messages.dto.request.CreateMessageRequest
 import com.example.days.domain.messages.dto.response.MessageResponse
 import com.example.days.domain.messages.repository.MessagesRepository
-import com.example.days.domain.user.model.User
 import org.springframework.stereotype.Service
 
 @Service
 class MessagesServiceImpl(
     private val messagesRepository: MessagesRepository
-): MessagesService {
+) : MessagesService {
     override fun createMessages(req: CreateMessageRequest): MessageResponse {
         TODO("Not yet implemented")
     }
 
-    override fun sendMessages(senderId: Long):MessageResponse {
+    override fun sendMessages(senderId: Long): MessageResponse {
         TODO("Not yet implemented")
     }
 
@@ -22,7 +21,7 @@ class MessagesServiceImpl(
         TODO("Not yet implemented")
     }
 
-    override fun receiverMessages(receiverId: Long):MessageResponse {
+    override fun receiverMessages(receiverId: Long): MessageResponse {
         TODO("Not yet implemented")
     }
 
