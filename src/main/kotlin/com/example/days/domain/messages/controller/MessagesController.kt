@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/messages")
+@RequestMapping("api/messages")
 class MessagesController(
     private val messagesService: MessagesService
 ) {

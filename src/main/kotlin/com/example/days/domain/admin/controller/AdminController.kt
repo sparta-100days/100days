@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/admins")
+@RequestMapping("api/admins")
 class AdminController(
     private val adminService: AdminService
 ) {
@@ -23,7 +23,7 @@ class AdminController(
     fun adminSignup(
         @Valid @RequestBody req: SignUpAdminRequest
     ): ResponseEntity<AdminResponse> {
-        return ResponseEntity.status(HttpStatus.OK).body(adminService.adminSignup(req))
+        return ResponseEntity.status(HttpStatus.CREATED).body(adminService.adminSignup(req))
     }
 
     //ㅇㅅㅇ userResponse 부분으로 바꿔야함
