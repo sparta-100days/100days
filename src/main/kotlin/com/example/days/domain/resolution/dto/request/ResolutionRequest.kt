@@ -1,5 +1,6 @@
 package com.example.days.domain.resolution.dto.request
 
+import com.example.days.domain.resolution.model.Resolution
 import jakarta.validation.constraints.NotBlank
 
 data class ResolutionRequest(
@@ -12,4 +13,13 @@ data class ResolutionRequest(
     @field:NotBlank(message = "카테고리를 선택해주세요.")
     val category: String
 
-)
+){
+    companion object{
+        fun of(request: ResolutionRequest) = Resolution(
+            title = request.title,
+            description = request.description,
+            category = request.category
+        )
+    }
+}
+
