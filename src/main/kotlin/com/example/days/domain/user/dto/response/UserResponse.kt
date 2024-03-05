@@ -3,14 +3,15 @@ package com.example.days.domain.user.dto.response
 import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserStatus
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 data class UserResponse (
     val id: Long,
     val email: String,
     val nickName: String,
     val birth: LocalDate,
-    val createdAt: LocalDate,
-    val updatedAt: LocalDate,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
     val isDelete: Boolean,
     val status: UserStatus,
 ){
@@ -23,8 +24,8 @@ data class UserResponse (
                 nickName = user.nickName,
                 birth = user.birth,
                 isDelete = user.isDelete,
-                createdAt = user.createdAt.toLocalDate(),
-                updatedAt = user.createdAt.toLocalDate(),
+                createdAt = user.createdAt,
+                updatedAt = user.createdAt,
                 status = user.status
             )
         }
