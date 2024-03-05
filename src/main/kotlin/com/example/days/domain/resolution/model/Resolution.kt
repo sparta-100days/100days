@@ -37,7 +37,7 @@ class Resolution(
     var category: String,
 
     @Column(name = "like_count")
-    val likeCount: Long = 0
+    var likeCount: Long = 0
 ): BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,6 +51,10 @@ class Resolution(
         title = updatedTitle
         description = updatedDescription
         category = updatedCategory
+    }
+
+    fun updateLikeCount(b: Boolean){
+        if(b) likeCount += 1 else likeCount -=1
     }
 }
 

@@ -48,7 +48,7 @@ dependencies {
 	kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
-//	runtimeOnly("com.h2database:h2")
+	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 }
