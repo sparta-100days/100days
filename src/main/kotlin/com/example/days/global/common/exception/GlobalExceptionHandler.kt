@@ -1,10 +1,12 @@
-package com.example.days.domain.admin.exception
+package com.example.days.global.common.exception
 
-import com.example.days.domain.admin.exception.dto.BaseResponse
-import com.example.days.domain.admin.exception.dto.ErrorResponse
-import com.example.days.domain.admin.exception.status.ResultCode
+
+import com.example.days.global.common.exception.dto.BaseResponse
+import com.example.days.global.common.exception.dto.ErrorResponse
+import com.example.days.global.common.exception.status.ResultCode
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -25,8 +27,30 @@ class GlobalExceptionHandler {
         }
         return ResponseEntity(BaseResponse(ResultCode.ERROR.name, errors, ResultCode.ERROR.msg), HttpStatus.BAD_REQUEST)
     }
+
     @ExceptionHandler(ModelNotFoundException::class)
     fun handlerModelNotFoundException(e: ModelNotFoundException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse(e.message))
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    protected fun httpMessageNotReadableException(ex: HttpMessageNotReadableException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(ex.message))
+    }
+
+    @ExceptionHandler(EmailExistException::class)
+    fun handleEmailExistException(e: EmailExistException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(e.message))
+    }
+
+    @ExceptionHandler(NicknameExistException::class)
+    fun handleNicknameExistException(e: NicknameExistException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(e.message))
     }
 }

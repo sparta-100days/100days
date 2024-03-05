@@ -1,10 +1,10 @@
 package com.example.days.domain.post.service
 
-import com.example.days.domain.admin.exception.ModelNotFoundException
 import com.example.days.domain.post.dto.request.PostRequest
 import com.example.days.domain.post.dto.response.PostResponse
 import com.example.days.domain.post.model.Post
 import com.example.days.domain.post.repository.PostRepository
+import com.example.days.global.common.exception.ModelNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service

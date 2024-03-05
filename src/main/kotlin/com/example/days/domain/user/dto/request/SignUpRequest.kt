@@ -40,9 +40,9 @@ data class SignUpRequest(
 
     val birth: LocalDate,
 
-    @Schema(example = "회원상태")
-    val status: UserStatus,
-
-    @Schema(example = "회원등급")
-    val role: UserRole
+//    @Schema(example = "회원상태")
+//    val status: UserStatus,
+//
+//    @Schema(example = "회원등급")
+//    val role: UserRole
 )

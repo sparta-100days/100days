@@ -1,11 +1,11 @@
 package com.example.days.domain.comment.service
 
-import com.example.days.domain.admin.exception.ModelNotFoundException
 import com.example.days.domain.comment.dto.request.CommentRequest
 import com.example.days.domain.comment.dto.response.CommentResponse
 import com.example.days.domain.comment.model.Comment
 import com.example.days.domain.comment.repository.CommentRepository
 import com.example.days.domain.post.repository.PostRepository
+import com.example.days.global.common.exception.ModelNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service

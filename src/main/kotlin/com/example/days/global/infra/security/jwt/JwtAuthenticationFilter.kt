@@ -38,7 +38,7 @@ class JwtAuthenticationFilter(
                         status = setOf(status),
                         role = setOf(role)
                     )
-                    val authentication = JitAuthenticationToken(
+                    val authentication = JwtAuthenticationToken(
                         principal = principal,
                         details = WebAuthenticationDetailsSource().buildDetails(request)
                     )
