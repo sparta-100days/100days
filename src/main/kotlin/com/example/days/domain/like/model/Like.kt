@@ -7,7 +7,7 @@ import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 
 @Entity
-@Table(name = "like")
+@Table(name = "likes")
 class Like(
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)

@@ -7,7 +7,7 @@ import org.hibernate.annotations.SQLRestriction
 
 @Entity
 @Table(name = "post")
-@SQLRestriction("is_deleted <> false")
+//@SQLRestriction("is_deleted <> false")
 class Post (
     @Column(name = "title", nullable = false)
     var title: String,
