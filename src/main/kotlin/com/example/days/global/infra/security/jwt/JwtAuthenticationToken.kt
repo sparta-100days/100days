@@ -4,7 +4,7 @@ import com.example.days.global.infra.security.UserPrincipal
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.web.authentication.WebAuthenticationDetails
 
-class JitAuthenticationToken(
+class JwtAuthenticationToken(
     private val principal: UserPrincipal,
     details: WebAuthenticationDetails
 ) : AbstractAuthenticationToken(principal.authorities) {
