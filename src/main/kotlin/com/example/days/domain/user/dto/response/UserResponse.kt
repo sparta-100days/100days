@@ -14,6 +14,7 @@ data class UserResponse (
     val isDelete: Boolean,
     val status: UserStatus,
 ){
+    //ㅇㅅㅇ createdAt과 updatedAt은 수정해야할지도?
     companion object {
         fun from(user: User): UserResponse {
             return UserResponse(
@@ -22,8 +23,8 @@ data class UserResponse (
                 nickName = user.nickName,
                 birth = user.birth,
                 isDelete = user.isDelete,
-                createdAt = LocalDate.now(),
-                updatedAt = LocalDate.now(),
+                createdAt = user.createdAt.toLocalDate(),
+                updatedAt = user.createdAt.toLocalDate(),
                 status = user.status
             )
         }
