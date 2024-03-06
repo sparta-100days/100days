@@ -37,7 +37,6 @@ class UserServiceImpl(
         )
     }
 
-    @Transactional
     override fun signUp(request: SignUpRequest): SignUpResponse {
         if (userRepository.existsByEmail(regexFunc.regexUserEmail(request.email)))
             throw IllegalArgumentException("이미 동일한 이메일이 존재합니다.")
