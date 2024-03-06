@@ -58,6 +58,4 @@ class UserServiceImpl(
             userRepository.save(it)
         }.let { SignUpResponse.from(it) }
     }
-
-
 }

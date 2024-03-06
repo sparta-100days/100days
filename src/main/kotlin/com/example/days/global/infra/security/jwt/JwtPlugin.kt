@@ -37,7 +37,7 @@ class JwtPlugin(
 
     fun generateToken(id: Long, status: UserStatus, role: UserRole, expirationPeriod: Duration): String {
         val claims: Claims = Jwts.claims()
-            .add(mapOf("status" to status, "role" to role))
+            .add(mapOf("id" to id, "status" to status, "role" to role))
             .build()
 
         val key = Keys.hmacShaKeyFor(secret.toByteArray(StandardCharsets.UTF_8))
@@ -45,7 +45,7 @@ class JwtPlugin(
 
         return Jwts.builder()
             .setHeaderParam(Header.TYPE, Header.JWT_TYPE) // ~@~ Header: "typ"
-            .subject(id.toString())
+            .subject(role.name)
             .issuer(issuer)
             .issuedAt(Date.from(now))
             .expiration(Date.from(now.plus(expirationPeriod)))

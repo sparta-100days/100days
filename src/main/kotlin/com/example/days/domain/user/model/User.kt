@@ -1,5 +1,6 @@
 package com.example.days.domain.user.model
 
+import com.example.days.global.entity.BaseEntity
 import jakarta.persistence.*
 import java.time.LocalDate
 
@@ -29,7 +30,8 @@ class User(
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     val role: UserRole,
-) {
+
+): BaseEntity()  {
 
     @Id
     @Column(name = "id")
