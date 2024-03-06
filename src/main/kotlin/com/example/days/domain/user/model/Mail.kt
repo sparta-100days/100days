@@ -1,6 +1,5 @@
 package com.example.days.domain.user.model
 
-import com.example.days.domain.user.dto.response.EmailResponse
 import com.example.days.global.entity.BaseEntity
 import jakarta.persistence.*
 
