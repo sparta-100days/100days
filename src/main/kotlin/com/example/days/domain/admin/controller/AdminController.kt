@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("api/admins")
+@RequestMapping("/api/admins")
 class AdminController(
     private val adminService: AdminService
 ) {
