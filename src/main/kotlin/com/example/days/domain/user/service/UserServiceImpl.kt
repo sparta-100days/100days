@@ -3,7 +3,6 @@ package com.example.days.domain.user.service
 import com.example.days.domain.user.dto.request.EmailRequest
 import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
-import com.example.days.domain.user.dto.response.ChangePasswordResponse
 import com.example.days.domain.user.dto.response.EmailResponse
 import com.example.days.domain.user.dto.response.LoginResponse
 import com.example.days.domain.user.dto.response.SignUpResponse
@@ -70,7 +69,7 @@ class UserServiceImpl(
     }
 
     @Transactional
-    override fun changeUserPassword(request: EmailRequest): ChangePasswordResponse {
+    override fun changeUserPassword(request: EmailRequest) {
         val mail = mailUtility.passwordChangeEMail(request.email)
         val user = userRepository.findUserByEmail(request.email)
 
@@ -78,8 +77,11 @@ class UserServiceImpl(
             user.email = request.email
             user.password = mail
             userRepository.save(user)
+        } else {
+            throw IllegalArgumentException("해당 이메일을 사용하는 회원이 없습니다.")
         }
-
-        return ChangePasswordResponse(message = "임시 비밀번호가 발급되었습니다.")
     }
+
+
+
 }

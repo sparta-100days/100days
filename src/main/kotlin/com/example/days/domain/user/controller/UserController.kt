@@ -23,7 +23,7 @@ class UserController (
         return ResponseEntity.status(HttpStatus.OK).body(userService.searchUserEmail(nickname))
     }
 
-    @PostMapping("/searchPass")
+    @PatchMapping("/searchPass")
     fun changeUserPassword(@RequestBody request: EmailRequest): ResponseEntity<Unit> {
         userService.changeUserPassword(request)
         return ResponseEntity.status(HttpStatus.OK).build()
