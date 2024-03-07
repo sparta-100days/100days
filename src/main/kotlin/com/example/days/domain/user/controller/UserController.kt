@@ -1,5 +1,6 @@
 package com.example.days.domain.user.controller
 
+import com.example.days.domain.user.dto.request.EmailRequest
 import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
 import com.example.days.domain.user.dto.response.EmailResponse
@@ -20,6 +21,12 @@ class UserController (
     @GetMapping("/searchEmail")
     fun searchUserEmail(@RequestParam(value = "nickname") nickname: String): ResponseEntity<List<EmailResponse>> {
         return ResponseEntity.status(HttpStatus.OK).body(userService.searchUserEmail(nickname))
+    }
+
+    @PostMapping("/searchPass")
+    fun changeUserPassword(@RequestBody request: EmailRequest): ResponseEntity<Unit> {
+        userService.changeUserPassword(request)
+        return ResponseEntity.status(HttpStatus.OK).build()
     }
 
     @PostMapping("/login")

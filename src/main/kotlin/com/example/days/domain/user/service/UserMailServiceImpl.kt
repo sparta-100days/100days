@@ -24,7 +24,7 @@ class UserMailServiceImpl(
     }
 
     override fun verifyCode(code: String) {
-        val codeCheck = mailRepository.findByCode(code)
+        val codeCheck = mailRepository.findByCode(code) ?: throw IllegalArgumentException("인증번호가 일치하지 않습니다.")
         val userCheck = mailRepository.findByEmail(codeCheck.email)
 
         mailRepository.save(userCheck)

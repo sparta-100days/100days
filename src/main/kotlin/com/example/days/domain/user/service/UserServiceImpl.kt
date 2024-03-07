@@ -1,7 +1,9 @@
 package com.example.days.domain.user.service
 
+import com.example.days.domain.user.dto.request.EmailRequest
 import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
+import com.example.days.domain.user.dto.response.ChangePasswordResponse
 import com.example.days.domain.user.dto.response.EmailResponse
 import com.example.days.domain.user.dto.response.LoginResponse
 import com.example.days.domain.user.dto.response.SignUpResponse
@@ -10,18 +12,21 @@ import com.example.days.domain.user.model.UserRole
 import com.example.days.domain.user.model.UserStatus
 import com.example.days.domain.user.repository.QueryDslUserRepository
 import com.example.days.domain.user.repository.UserRepository
+import com.example.days.global.infra.mail.MailUtility
 import com.example.days.global.infra.regex.RegexFunc
 import com.example.days.global.infra.security.jwt.JwtPlugin
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserServiceImpl(
     val userRepository: UserRepository,
     val queryDslUserRepository: QueryDslUserRepository,
+    val mailUtility: MailUtility,
     private val passwordEncoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin,
-    private val regexFunc: RegexFunc
+    private val regexFunc: RegexFunc,
 ) : UserService {
 
     override fun login(request: LoginRequest): LoginResponse {
@@ -60,8 +65,21 @@ class UserServiceImpl(
         }.let { SignUpResponse.from(it) }
     }
 
-    // 이메일 찾기
     override fun searchUserEmail(nickname: String): List<EmailResponse> {
-        return queryDslUserRepository.searchUserByEmail(nickname).map { EmailResponse.from(it) }
+        return queryDslUserRepository.searchUserByNickname(nickname).map { EmailResponse.from(it) }
+    }
+
+    @Transactional
+    override fun changeUserPassword(request: EmailRequest): ChangePasswordResponse {
+        val mail = mailUtility.passwordChangeEMail(request.email)
+        val user = userRepository.findUserByEmail(request.email)
+
+        if (user != null) {
+            user.email = request.email
+            user.password = mail
+            userRepository.save(user)
+        }
+
+        return ChangePasswordResponse(message = "임시 비밀번호가 발급되었습니다.")
     }
 }

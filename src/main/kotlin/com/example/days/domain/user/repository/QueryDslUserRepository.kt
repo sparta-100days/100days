@@ -10,10 +10,9 @@ class QueryDslUserRepository: QueryDslSupport() {
 
     private val user = QUser.user
 
-    fun searchUserByEmail(nickname: String): List<User> {
+    fun searchUserByNickname(nickname: String): List<User> {
         return queryFactory.selectFrom(user)
             .where(user.nickname.containsIgnoreCase(nickname))
             .fetch()
     }
-
 }

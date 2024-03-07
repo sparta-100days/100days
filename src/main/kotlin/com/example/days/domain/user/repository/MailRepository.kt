@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface MailRepository: JpaRepository<Mail, Long> {
     fun findByEmail(email: String): Mail
-    fun findByCode(code: String): Mail
+    fun findByCode(code: String): Mail?
 }
