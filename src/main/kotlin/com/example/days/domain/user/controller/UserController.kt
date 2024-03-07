@@ -18,8 +18,8 @@ class UserController (
 ){
 
     @GetMapping("/searchEmail")
-    fun searchUserEmail(@RequestParam(value = "email") email: String): ResponseEntity<List<EmailResponse>> {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.searchUserEmail(email))
+    fun searchUserEmail(@RequestParam(value = "nickname") nickname: String): ResponseEntity<List<EmailResponse>> {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.searchUserEmail(nickname))
     }
 
     @PostMapping("/login")

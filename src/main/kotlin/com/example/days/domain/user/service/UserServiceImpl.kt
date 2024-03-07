@@ -60,7 +60,8 @@ class UserServiceImpl(
         }.let { SignUpResponse.from(it) }
     }
 
-    override fun searchUserEmail(email: String): List<EmailResponse> {
-        return queryDslUserRepository.searchUserByEmail(email).map { EmailResponse.from(it) }
+    // 이메일 찾기
+    override fun searchUserEmail(nickname: String): List<EmailResponse> {
+        return queryDslUserRepository.searchUserByEmail(nickname).map { EmailResponse.from(it) }
     }
 }

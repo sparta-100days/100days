@@ -12,5 +12,5 @@ interface UserService {
 
     fun signUp(request: SignUpRequest): SignUpResponse
 
-    fun searchUserEmail(email: String): List<EmailResponse>
+    fun searchUserEmail(nickname: String): List<EmailResponse>
 }
