@@ -1,15 +1,20 @@
 package com.example.days.domain.admin.service
 
+import com.example.days.domain.admin.dto.request.LoginAdminRequest
 import com.example.days.domain.admin.dto.request.SignUpAdminRequest
 import com.example.days.domain.admin.dto.request.UserBanRequest
 import com.example.days.domain.admin.dto.response.AdminResponse
+import com.example.days.domain.admin.dto.response.LoginAdminResponse
 import com.example.days.domain.admin.model.Admin
 import com.example.days.domain.admin.model.checkingEmailAndNicknameExists
 import com.example.days.domain.admin.repository.AdminRepository
 import com.example.days.domain.user.dto.response.UserResponse
-import com.example.days.domain.user.model.UserStatus
+import com.example.days.domain.user.model.Status
+import com.example.days.domain.user.model.UserRole
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.common.exception.ModelNotFoundException
+import com.example.days.global.infra.regex.RegexFunc
+import com.example.days.global.infra.security.jwt.JwtPlugin
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -22,7 +27,9 @@ import org.springframework.transaction.annotation.Transactional
 class AdminServiceImpl(
     private val adminRepository: AdminRepository,
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val jwtPlugin: JwtPlugin,
+    private val regexFunc: RegexFunc
 ) : AdminService {
     override fun adminSignup(req: SignUpAdminRequest): AdminResponse {
         checkingEmailAndNicknameExists(
@@ -34,12 +41,29 @@ class AdminServiceImpl(
         return adminRepository.save(
             Admin(
                 nickname = req.nickname,
-                isDelete = false,
+                status = Status.ACTIVE,
                 email = req.email,
-                password = passwordEncoder.encode(req.password)
+                password = passwordEncoder.encode(req.password),
+                role = UserRole.ADMIN
             )
         ).let { AdminResponse.from(it) }
     }
+
+    override fun adminLogin(req: LoginAdminRequest): LoginAdminResponse {
+        val admin = adminRepository.findAdminByEmail(regexFunc.regexUserEmail(req.email))
+            ?.takeIf { passwordEncoder.matches(regexFunc.regexPassword(req.password), it.password) }
+            ?: throw IllegalArgumentException("이메일 또는 패스워드가 일치하지 않습니다.")
+        if(admin.status == Status.BAN) throw IllegalArgumentException("해당 유저는 활동정지 상태입니다.")
+
+        return LoginAdminResponse(
+            accessToken = jwtPlugin.generateAccessToken(
+                id = admin.id!!,
+                status = admin.status,
+                role = admin.role
+            ), nickname = admin.nickname, message = "로그인이 완료되었습니다."
+        )
+    }
+
 
     override fun getAllUser(pageable: Pageable): Page<UserResponse> {
         return adminRepository.findByPageableUser(pageable).map { UserResponse.from(it) }
@@ -50,7 +74,7 @@ class AdminServiceImpl(
     @Transactional
     override fun userBanByAdmin(userId: Long, req: UserBanRequest): String {
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
-        if (req.status != UserStatus.BAN) {
+        if (req.status != Status.BAN) {
             throw HttpMessageNotReadableException("BAN만 가능합니다. BAN을 입력해주세요")
         } else {
             user.status = req.status
@@ -62,7 +86,9 @@ class AdminServiceImpl(
     @Transactional
     override fun userDeleteByAdmin(userId: Long) {
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
-        TODO()
+        user.userDeleteByAdmin()
+        user.userIsDeletedByAdmin()
+        userRepository.save(user)
     }
 
     @Transactional

@@ -1,8 +1,10 @@
 package com.example.days.domain.admin.controller
 
+import com.example.days.domain.admin.dto.request.LoginAdminRequest
 import com.example.days.domain.admin.dto.request.SignUpAdminRequest
 import com.example.days.domain.admin.dto.request.UserBanRequest
 import com.example.days.domain.admin.dto.response.AdminResponse
+import com.example.days.domain.admin.dto.response.LoginAdminResponse
 import com.example.days.domain.admin.service.AdminService
 import com.example.days.domain.user.dto.response.UserResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -28,6 +30,12 @@ class AdminController(
         return ResponseEntity.status(HttpStatus.CREATED).body(adminService.adminSignup(req))
     }
 
+    @Operation(summary = "어드민 로그인")
+    @PostMapping("/login")
+    fun adminLogin(@RequestBody @Valid req: LoginAdminRequest): ResponseEntity<LoginAdminResponse> {
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.adminLogin(req))
+    }
+
     @Operation(summary = "유저 조회")
     @GetMapping("/users")
     fun getUsersByAdmin(
@@ -45,7 +53,7 @@ class AdminController(
         return ResponseEntity.status(HttpStatus.OK).body(adminService.userBanByAdmin(userId, req))
     }
 
-    //ㅇㅅㅇ 유저 삭제하는 부분 아직 로직은 미완성
+    //ㅇㅅㅇ 유저 삭제하는 부분 아직 스케줄러는 미완성
     @Operation(summary = "유저 삭제 처리")
     @DeleteMapping("/users/{userId}")
     fun userDeleteByAdmin(
