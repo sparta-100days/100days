@@ -9,13 +9,13 @@ import java.time.LocalDate
 class User(
 
     @Column(name = "email")
-    val email: String,
+    var email: String,
 
     @Column(name = "nickname")
     val nickname: String,
 
     @Column(name = "password")
-    val password: String,
+    var password: String,
 
     @Column(name = "birth")
     val birth: LocalDate,
@@ -30,6 +30,7 @@ class User(
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     val role: UserRole,
+
 ): BaseEntity() {
 
     @Id
