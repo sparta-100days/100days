@@ -53,4 +53,18 @@ class GlobalExceptionHandler {
             .status(HttpStatus.BAD_REQUEST)
             .body(ErrorResponse(e.message))
     }
+
+    @ExceptionHandler(NoSendMessagesException::class)
+    fun handleNoSendMessagesException(e: NoSendMessagesException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(e.message))
+    }
+
+    @ExceptionHandler(NoReceiverMessagesException::class)
+    fun handleNoReceiverMessagesException(e: NoReceiverMessagesException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(e.message))
+    }
 }
