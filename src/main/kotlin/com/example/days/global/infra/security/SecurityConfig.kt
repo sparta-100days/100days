@@ -27,8 +27,9 @@ class SecurityConfig(
             .authorizeHttpRequests {
 
                 it.requestMatchers(AntPathRequestMatcher("/api/users")).permitAll()
-                it.requestMatchers(AntPathRequestMatcher("/admins/**")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/api/admins/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/signup")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/api/messages/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/login")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/searchEmail")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/searchPass")).permitAll()

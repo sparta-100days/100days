@@ -1,7 +1,7 @@
 package com.example.days.domain.user.dto.response
 
-import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
+import com.example.days.domain.user.model.Status
 import java.time.LocalDate
 import java.time.LocalDateTime
 

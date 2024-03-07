@@ -25,7 +25,7 @@ class UserServiceImpl(
     val mailUtility: MailUtility,
     private val passwordEncoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin,
-    private val regexFunc: RegexFunc,
+    private val regexFunc: RegexFunc
 ) : UserService {
 
     override fun login(request: LoginRequest): LoginResponse {

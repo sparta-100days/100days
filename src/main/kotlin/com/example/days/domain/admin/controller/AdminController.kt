@@ -1,10 +1,13 @@
 package com.example.days.domain.admin.controller
 
+import com.example.days.domain.admin.dto.request.LoginAdminRequest
 import com.example.days.domain.admin.dto.request.SignUpAdminRequest
 import com.example.days.domain.admin.dto.request.UserBanRequest
 import com.example.days.domain.admin.dto.response.AdminResponse
+import com.example.days.domain.admin.dto.response.LoginAdminResponse
 import com.example.days.domain.admin.service.AdminService
 import com.example.days.domain.user.dto.response.UserResponse
+import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -14,19 +17,26 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/admins")
+@RequestMapping("/api/admins")
 class AdminController(
     private val adminService: AdminService
 ) {
 
+    @Operation(summary = "어드민 회원가입")
     @PostMapping("/signup")
     fun adminSignup(
         @Valid @RequestBody req: SignUpAdminRequest
     ): ResponseEntity<AdminResponse> {
-        return ResponseEntity.status(HttpStatus.OK).body(adminService.adminSignup(req))
+        return ResponseEntity.status(HttpStatus.CREATED).body(adminService.adminSignup(req))
     }
 
-    //ㅇㅅㅇ userResponse 부분으로 바꿔야함
+    @Operation(summary = "어드민 로그인")
+    @PostMapping("/login")
+    fun adminLogin(@RequestBody @Valid req: LoginAdminRequest): ResponseEntity<LoginAdminResponse> {
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.adminLogin(req))
+    }
+
+    @Operation(summary = "유저 조회")
     @GetMapping("/users")
     fun getUsersByAdmin(
         @PageableDefault(size = 10, sort = ["id"]) pageable: Pageable
@@ -34,6 +44,7 @@ class AdminController(
         return ResponseEntity.status(HttpStatus.OK).body(adminService.getAllUser(pageable))
     }
 
+    @Operation(summary = "유저 밴 처리")
     @PutMapping("/users/{userId}")
     fun userBanByAdmin(
         @PathVariable userId: Long,
@@ -42,7 +53,8 @@ class AdminController(
         return ResponseEntity.status(HttpStatus.OK).body(adminService.userBanByAdmin(userId, req))
     }
 
-    //ㅇㅅㅇ 유저 삭제하는 부분 아직 로직은 미완성
+    //ㅇㅅㅇ 유저 삭제하는 부분 아직 스케줄러는 미완성
+    @Operation(summary = "유저 삭제 처리")
     @DeleteMapping("/users/{userId}")
     fun userDeleteByAdmin(
         @PathVariable userId: Long,
@@ -51,6 +63,7 @@ class AdminController(
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
+    @Operation(summary = "어드민 밴 처리")
     @DeleteMapping("/{adminId}")
     fun adminBanByAdmin(
         @PathVariable adminId: Long

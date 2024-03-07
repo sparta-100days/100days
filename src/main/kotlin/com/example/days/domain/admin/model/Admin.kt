@@ -1,6 +1,8 @@
 package com.example.days.domain.admin.model
 
 import com.example.days.domain.admin.repository.AdminRepository
+import com.example.days.domain.user.model.Status
+import com.example.days.domain.user.model.UserRole
 import com.example.days.global.common.exception.EmailExistException
 import com.example.days.global.common.exception.NicknameExistException
 import jakarta.persistence.*
@@ -17,14 +19,19 @@ class Admin(
 
     @Column(name = "password") val password: String,
 
-    @Column(name = "status") var isDelete: Boolean = false,
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status") var status: Status,
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    val role: UserRole,
 
     ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
     fun adminBanByAdmin() {
-        isDelete = true
+        status = Status.BAN
     }
 
     //ㅇㅅㅇ baseEntity를 사용하려 했으나 이는 논리적 삭제는 따로 상태 name에 추가해주었고 updatedAt이 아닌 deletedAt을 해야하므로 안함.
