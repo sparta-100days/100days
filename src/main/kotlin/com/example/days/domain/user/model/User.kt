@@ -31,7 +31,7 @@ class User(
     @Column(name = "role")
     val role: UserRole,
 
-    ) : BaseEntity() {
+): BaseEntity() {
 
     @Id
     @Column(name = "id")
