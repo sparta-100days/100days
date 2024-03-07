@@ -4,9 +4,9 @@ import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
 import com.example.days.domain.user.dto.response.LoginResponse
 import com.example.days.domain.user.dto.response.SignUpResponse
+import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserRole
-import com.example.days.domain.user.model.UserStatus
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.infra.regex.RegexFunc
 import com.example.days.global.infra.security.jwt.JwtPlugin
@@ -52,7 +52,7 @@ class UserServiceImpl(
             password = pass,
             birth = request.birth,
             isDelete = false,
-            status = UserStatus.ACTIVE,
+            status = Status.ACTIVE,
             role = UserRole.USER
         ).let {
             userRepository.save(it)

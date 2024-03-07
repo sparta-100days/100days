@@ -21,11 +21,11 @@ class User(
     val birth: LocalDate,
 
     @Column(name = "isdelete")
-    val isDelete: Boolean,
+    var isDelete: Boolean,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    var status: UserStatus,
+    var status: Status,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
@@ -36,5 +36,14 @@ class User(
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
+
+    fun userDeleteByAdmin() {
+        status = Status.WITHDRAW
+    }
+
+    fun userIsDeletedByAdmin() {
+        isDelete = true
+    }
+
 
 }

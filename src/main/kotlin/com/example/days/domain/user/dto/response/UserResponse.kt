@@ -1,7 +1,7 @@
 package com.example.days.domain.user.dto.response
 
 import com.example.days.domain.user.model.User
-import com.example.days.domain.user.model.UserStatus
+import com.example.days.domain.user.model.Status
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -13,7 +13,7 @@ data class UserResponse (
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
     val isDelete: Boolean,
-    val status: UserStatus,
+    val status: Status,
 ){
     //ㅇㅅㅇ createdAt과 updatedAt은 수정해야할지도?
     companion object {
