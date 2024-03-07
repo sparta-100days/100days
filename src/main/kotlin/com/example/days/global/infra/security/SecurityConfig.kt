@@ -29,8 +29,13 @@ class SecurityConfig(
                 it.requestMatchers(AntPathRequestMatcher("/api/users")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/admins/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/signup")).permitAll()
-                it.requestMatchers(AntPathRequestMatcher("/admin/signup")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/login")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/api/users/searchEmail")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/api/users/searchPass")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/admin/signup")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/api/mail")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/api/mail/sendmail")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/api/mail/verifycode")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                 it.requestMatchers(PathRequest.toH2Console()).permitAll()
@@ -38,7 +43,7 @@ class SecurityConfig(
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .exceptionHandling {
-                it.authenticationEntryPoint(authenticationEntryPoint)
+//                it.authenticationEntryPoint(authenticationEntryPoint)
                 it.accessDeniedHandler(accessDeniedHandler)
             }
             .headers { it.frameOptions { it1 -> it1.disable() } }

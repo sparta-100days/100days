@@ -1,7 +1,5 @@
 package com.example.days.domain.user.dto.request
 
-import com.example.days.domain.user.model.UserRole
-import com.example.days.domain.user.model.UserStatus
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
@@ -22,7 +20,7 @@ data class SignUpRequest(
         example = "이름은 영문 또는 한글로 이루어진 2~50자 사이로 작성해 주세요."
     )
     @field:Pattern(regexp = "^([a-zA-Zㄱ-ㅎ가-힣]{2,50})$")
-    val nickName: String,
+    val nickname: String,
 
     @NotBlank
     @Schema(
@@ -38,11 +36,5 @@ data class SignUpRequest(
     )
     val newPassword: String,
 
-    val birth: LocalDate,
-
-//    @Schema(example = "회원상태")
-//    val status: UserStatus,
-//
-//    @Schema(example = "회원등급")
-//    val role: UserRole
+    val birth: LocalDate
 )
