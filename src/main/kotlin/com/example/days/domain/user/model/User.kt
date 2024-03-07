@@ -25,7 +25,7 @@ class User(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    var status: UserStatus,
+    var status: Status,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")

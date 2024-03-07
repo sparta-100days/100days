@@ -1,6 +1,6 @@
 package com.example.days.domain.user.model
 
-enum class UserStatus {
+enum class Status {
     WARNING,
     BAN,
     ACTIVE,

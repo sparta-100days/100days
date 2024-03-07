@@ -5,7 +5,7 @@ import com.example.days.domain.admin.dto.response.AdminResponse
 import com.example.days.domain.admin.model.Admin
 import com.example.days.domain.admin.repository.AdminRepository
 import com.example.days.domain.user.dto.response.UserResponse
-import com.example.days.domain.user.model.UserStatus
+import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.common.exception.ModelNotFoundException
 import org.springframework.data.repository.findByIdOrNull
@@ -37,7 +37,7 @@ class AdminServiceImpl(
     @Transactional
     override fun userBanByAdmin(userId: Long) {
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User",userId)
-        user.status = UserStatus.BAN
+        user.status = Status.BAN
         userRepository.save(user)
 
     }
