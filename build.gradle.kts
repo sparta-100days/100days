@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.9.22"
     kotlin("plugin.spring") version "1.9.22"
     kotlin("plugin.jpa") version "1.9.22"
+    kotlin("kapt") version "1.8.22"
 }
 
 group = "com.example"
@@ -18,6 +19,8 @@ java {
 repositories {
     mavenCentral()
 }
+
+val queryDslVersion = "5.0.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -39,8 +42,10 @@ dependencies {
 
     // mail
     implementation("org.springframework.boot:spring-boot-starter-mail")
-//    implementation("javax.mail:javax.mail-api:1.6.2")
-//    implementation("com.sun.mail:javax.mail:1.6.2")
+
+    //queryDSL
+    implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
+    kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
 
     // redis
     implementation ("org.springframework.boot:spring-boot-starter-data-redis")

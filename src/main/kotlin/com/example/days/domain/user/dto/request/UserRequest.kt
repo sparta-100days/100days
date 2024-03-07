@@ -4,7 +4,7 @@ import java.time.LocalDate
 
 data class UserRequest(
     val email: String,
-    val nickName: String,
+    val nickname: String,
     val birth: LocalDate,
     val isDelete: Boolean,
     val status: String,

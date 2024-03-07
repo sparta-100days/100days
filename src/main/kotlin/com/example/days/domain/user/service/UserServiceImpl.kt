@@ -2,21 +2,23 @@ package com.example.days.domain.user.service
 
 import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
+import com.example.days.domain.user.dto.response.EmailResponse
 import com.example.days.domain.user.dto.response.LoginResponse
 import com.example.days.domain.user.dto.response.SignUpResponse
 import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserRole
 import com.example.days.domain.user.model.UserStatus
+import com.example.days.domain.user.repository.QueryDslUserRepository
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.infra.regex.RegexFunc
 import com.example.days.global.infra.security.jwt.JwtPlugin
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserServiceImpl(
     val userRepository: UserRepository,
+    val queryDslUserRepository: QueryDslUserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin,
     private val regexFunc: RegexFunc
@@ -32,7 +34,7 @@ class UserServiceImpl(
                 id = user.id!!,
                 status = user.status,
                 role = user.role
-            ), nickName = user.nickName
+            ), nickname = user.nickname
              , message = "로그인이 완료되었습니다."
         )
     }
@@ -47,7 +49,7 @@ class UserServiceImpl(
 
         return User(
             email = regexFunc.regexUserEmail(request.email),
-            nickName = request.nickName,
+            nickname = request.nickname,
             password = pass,
             birth = request.birth,
             isDelete = false,
@@ -56,5 +58,9 @@ class UserServiceImpl(
         ).let {
             userRepository.save(it)
         }.let { SignUpResponse.from(it) }
+    }
+
+    override fun searchUserEmail(email: String): List<EmailResponse> {
+        return queryDslUserRepository.searchUserByEmail(email).map { EmailResponse.from(it) }
     }
 }
