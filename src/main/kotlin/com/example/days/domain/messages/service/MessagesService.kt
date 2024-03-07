@@ -1,22 +1,21 @@
 package com.example.days.domain.messages.service
 
 import com.example.days.domain.messages.dto.request.CreateMessageRequest
-import com.example.days.domain.messages.dto.response.MessageResponse
-import com.example.days.domain.user.model.User
-import com.example.days.global.infra.security.UserPrincipal
+import com.example.days.domain.messages.dto.response.MessageSendResponse
+import com.example.days.domain.messages.dto.response.MessagesReceiveResponse
 
 interface MessagesService {
-    fun createMessages(req: CreateMessageRequest, user: User): MessageResponse
+    fun createMessages(req: CreateMessageRequest, userId: Long): MessageSendResponse
 
-    fun sendMessages(id: Long, user: User): MessageResponse
+    fun sendMessages(id: Long, userId: Long): MessageSendResponse
 
-    fun sendMessagesAll(user: User): List<MessageResponse>
+    fun sendMessagesAll( userId: Long): List<MessageSendResponse>
 
-    fun receiverMessages(id: Long, user: User): MessageResponse
+    fun receiverMessages(receiverId: Long, userId: Long): MessagesReceiveResponse
 
-    fun receiverMessagesAll(user: User): List<MessageResponse>
+    fun receiverMessagesAll(userId: Long): List<MessagesReceiveResponse>
 
-    fun deleteSenderMessages(id: Long, user: User)
+    fun deleteSenderMessages(senderId: Long, userId: Long)
 
-    fun deleteReceiverMessages(id: Long, user: User)
+    fun deleteReceiverMessages(receiverId: Long, userId: Long)
 }

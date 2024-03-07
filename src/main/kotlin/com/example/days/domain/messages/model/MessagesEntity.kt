@@ -4,6 +4,7 @@ import com.example.days.domain.user.model.User
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
 
@@ -28,10 +29,10 @@ class MessagesEntity(
     val receiver: User,
 
     @Column(name = "deletedByReceiver", nullable = false)
-    var deletedByReceiver: Boolean,
+    var deletedByReceiver: Boolean = false,
 
     @Column(name = "deletedBySender", nullable = false)
-    var deletedBySender: Boolean,
+    var deletedBySender: Boolean = false,
 
 
     ) {
@@ -44,11 +45,11 @@ class MessagesEntity(
     var createdAt: LocalDateTime = LocalDateTime.now()
 
     fun deletedByReceiver() {
-        this.deletedByReceiver = true
+        deletedByReceiver = true
     }
 
     fun deletedBySender() {
-        this.deletedBySender = true
+        deletedBySender = true
     }
 
 }
