@@ -1,6 +1,7 @@
 package com.example.days.global.infra.security
 
 import com.example.days.global.infra.security.jwt.JwtAuthenticationFilter
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -26,6 +27,7 @@ class SecurityConfig(
             .authorizeHttpRequests {
 
                 it.requestMatchers(AntPathRequestMatcher("/api/users")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/admins/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/signup")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/login")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/searchEmail")).permitAll()
@@ -36,6 +38,7 @@ class SecurityConfig(
                 it.requestMatchers(AntPathRequestMatcher("/api/mail/verifycode")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
+                it.requestMatchers(PathRequest.toH2Console()).permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
@@ -43,6 +46,7 @@ class SecurityConfig(
 //                it.authenticationEntryPoint(authenticationEntryPoint)
                 it.accessDeniedHandler(accessDeniedHandler)
             }
+            .headers { it.frameOptions { it1 -> it1.disable() } }
             .build()
     }
 }
