@@ -32,7 +32,7 @@ class UserServiceImpl(
                 id = user.id!!,
                 status = user.status,
                 role = user.role
-            ), nickName = user.nickName
+            ), nickname = user.nickname
              , message = "로그인이 완료되었습니다."
         )
     }
@@ -48,7 +48,7 @@ class UserServiceImpl(
 
         return User(
             email = regexFunc.regexUserEmail(request.email),
-            nickName = request.nickName,
+            nickname = request.nickname,
             password = pass,
             birth = request.birth,
             isDelete = false,

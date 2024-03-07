@@ -12,7 +12,7 @@ class User(
     val email: String,
 
     @Column(name = "nickname")
-    val nickName: String,
+    val nickname: String,
 
     @Column(name = "password")
     val password: String,

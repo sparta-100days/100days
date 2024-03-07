@@ -22,7 +22,7 @@ data class SignUpRequest(
         example = "이름은 영문 또는 한글로 이루어진 2~50자 사이로 작성해 주세요."
     )
     @field:Pattern(regexp = "^([a-zA-Zㄱ-ㅎ가-힣]{2,50})$")
-    val nickName: String,
+    val nickname: String,
 
     @NotBlank
     @Schema(
