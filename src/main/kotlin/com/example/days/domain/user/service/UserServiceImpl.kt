@@ -9,7 +9,6 @@ import com.example.days.domain.user.dto.response.SignUpResponse
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserRole
-import com.example.days.domain.user.model.UserStatus
 import com.example.days.domain.user.repository.QueryDslUserRepository
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.infra.mail.MailUtility
@@ -34,7 +33,7 @@ class UserServiceImpl(
             ?.takeIf { passwordEncoder.matches(regexFunc.regexPassword(request.password), it.password) }
             ?: throw IllegalArgumentException("이메일 또는 패스워드가 일치하지 않습니다.")
 
-        if (user.status == UserStatus.BAN) throw IllegalArgumentException("해당 유저는 활동정지 상태입니다.")
+        if (user.status == Status.BAN) throw IllegalArgumentException("해당 유저는 활동정지 상태입니다.")
 
         return LoginResponse(
             accessToken = jwtPlugin.generateAccessToken(
