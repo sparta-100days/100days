@@ -1,7 +1,6 @@
 package com.example.days.domain.user.model
 
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
-import com.example.days.domain.user.dto.request.UserPasswordRequest
 import com.example.days.global.entity.BaseEntity
 import jakarta.persistence.*
 import java.time.LocalDate
