@@ -1,22 +1,20 @@
 package com.example.days.domain.user.controller
 
-import com.example.days.domain.user.dto.request.EmailRequest
-import com.example.days.domain.user.dto.request.LoginRequest
-import com.example.days.domain.user.dto.request.SignUpRequest
-import com.example.days.domain.user.dto.response.EmailResponse
-import com.example.days.domain.user.dto.response.LoginResponse
-import com.example.days.domain.user.dto.response.SignUpResponse
+import com.example.days.domain.user.dto.request.*
+import com.example.days.domain.user.dto.response.*
 import com.example.days.domain.user.service.UserService
+import com.example.days.global.infra.security.UserPrincipal
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/users")
-class UserController (
+class UserController(
     val userService: UserService
-){
+) {
 
     @GetMapping("/searchEmail")
     fun searchUserEmail(@RequestParam(value = "nickname") nickname: String): ResponseEntity<List<EmailResponse>> {
@@ -39,4 +37,11 @@ class UserController (
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.signUp(request))
     }
 
+    @PatchMapping("/modify/{id}")
+    fun modifyInfo(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @RequestBody request: ModifyInfoRequest
+    ): ResponseEntity<ModifyInfoResponse> {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.modifyInfo(userPrincipal, request))
+    }
 }

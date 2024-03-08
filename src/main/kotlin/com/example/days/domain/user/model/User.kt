@@ -1,5 +1,7 @@
 package com.example.days.domain.user.model
 
+import com.example.days.domain.user.dto.request.ModifyInfoRequest
+import com.example.days.domain.user.dto.request.UserPasswordRequest
 import com.example.days.global.entity.BaseEntity
 import jakarta.persistence.*
 import java.time.LocalDate
@@ -12,13 +14,13 @@ class User(
     var email: String,
 
     @Column(name = "nickname")
-    val nickname: String,
+    var nickname: String,
 
     @Column(name = "password")
     var password: String,
 
     @Column(name = "birth")
-    val birth: LocalDate,
+    var birth: LocalDate,
 
     @Column(name = "isdelete")
     var isDelete: Boolean,
@@ -38,6 +40,11 @@ class User(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
+    fun modifyInfo(request: ModifyInfoRequest) {
+        nickname = request.nickname
+        birth = request.birth
+    }
+
     fun userDeleteByAdmin() {
         status = Status.WITHDRAW
     }
@@ -45,6 +52,6 @@ class User(
     fun userIsDeletedByAdmin() {
         isDelete = true
     }
-
-
 }
+
+

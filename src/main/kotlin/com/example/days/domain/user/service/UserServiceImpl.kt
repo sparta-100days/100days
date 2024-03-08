@@ -2,9 +2,11 @@ package com.example.days.domain.user.service
 
 import com.example.days.domain.user.dto.request.EmailRequest
 import com.example.days.domain.user.dto.request.LoginRequest
+import com.example.days.domain.user.dto.request.ModifyInfoRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
 import com.example.days.domain.user.dto.response.EmailResponse
 import com.example.days.domain.user.dto.response.LoginResponse
+import com.example.days.domain.user.dto.response.ModifyInfoResponse
 import com.example.days.domain.user.dto.response.SignUpResponse
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
@@ -13,7 +15,9 @@ import com.example.days.domain.user.repository.QueryDslUserRepository
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.infra.mail.MailUtility
 import com.example.days.global.infra.regex.RegexFunc
+import com.example.days.global.infra.security.UserPrincipal
 import com.example.days.global.infra.security.jwt.JwtPlugin
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -40,14 +44,15 @@ class UserServiceImpl(
                 id = user.id!!,
                 status = user.status,
                 role = user.role
-            ), nickname = user.nickname
-             , message = "로그인이 완료되었습니다."
+            ), nickname = user.nickname, message = "로그인이 완료되었습니다."
         )
     }
 
     override fun signUp(request: SignUpRequest): SignUpResponse {
         if (userRepository.existsByEmail(regexFunc.regexUserEmail(request.email)))
             throw IllegalArgumentException("이미 동일한 이메일이 존재합니다.")
+        // 이메일을 인증번호 확인 창 클릭 > 중복검사 > 코드발급 > 인증 > 확인창 닫은 후 폼으로 주소 자동입력 으로 구현하고싶음
+        // 이메일 검사, 비밀번호 검사를 따로 fun 으로 구현하고 추가하는게 좋을지도 재활용하려면
 
         val pass =
             if (request.password == request.newPassword) passwordEncoder.encode(regexFunc.regexPassword(request.password))
@@ -85,5 +90,11 @@ class UserServiceImpl(
     }
 
 
-
+    @Transactional
+    override fun modifyInfo(userPrincipal: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse {
+        val user = userRepository.findByIdOrNull(userPrincipal.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
+        user.modifyInfo(request)
+        userRepository.save(user)
+        return ModifyInfoResponse(user.email, user.nickname, user.birth)
+    }
 }

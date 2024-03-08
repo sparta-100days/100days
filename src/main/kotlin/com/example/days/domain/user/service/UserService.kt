@@ -1,11 +1,8 @@
 package com.example.days.domain.user.service
 
-import com.example.days.domain.user.dto.request.EmailRequest
-import com.example.days.domain.user.dto.request.LoginRequest
-import com.example.days.domain.user.dto.request.SignUpRequest
-import com.example.days.domain.user.dto.response.EmailResponse
-import com.example.days.domain.user.dto.response.LoginResponse
-import com.example.days.domain.user.dto.response.SignUpResponse
+import com.example.days.domain.user.dto.request.*
+import com.example.days.domain.user.dto.response.*
+import com.example.days.global.infra.security.UserPrincipal
 
 interface UserService {
 
@@ -16,4 +13,6 @@ interface UserService {
     fun searchUserEmail(nickname: String): List<EmailResponse>
 
     fun changeUserPassword(request: EmailRequest)
+
+    fun modifyInfo(userPrincipal: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse
 }
