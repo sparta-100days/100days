@@ -2,7 +2,6 @@ package com.example.days.domain.admin.service
 
 import com.example.days.domain.admin.dto.request.LoginAdminRequest
 import com.example.days.domain.admin.dto.request.SignUpAdminRequest
-import com.example.days.domain.admin.dto.request.UserBanRequest
 import com.example.days.domain.admin.dto.response.AdminResponse
 import com.example.days.domain.admin.dto.response.LoginAdminResponse
 import com.example.days.domain.user.dto.response.UserResponse

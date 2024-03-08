@@ -2,7 +2,6 @@ package com.example.days.domain.admin.service
 
 import com.example.days.domain.admin.dto.request.LoginAdminRequest
 import com.example.days.domain.admin.dto.request.SignUpAdminRequest
-import com.example.days.domain.admin.dto.request.UserBanRequest
 import com.example.days.domain.admin.dto.response.AdminResponse
 import com.example.days.domain.admin.dto.response.LoginAdminResponse
 import com.example.days.domain.admin.model.Admin
@@ -18,7 +17,6 @@ import com.example.days.global.infra.security.jwt.JwtPlugin
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -71,8 +69,6 @@ class AdminServiceImpl(
         return adminRepository.findByPageableUser(pageable).map { UserResponse.from(it) }
     }
 
-    //이건 밴처리만
-    //또 탈퇴처리하는건 후에 하자
     @Transactional
     override fun userBanByAdmin(userId: Long): String {
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
@@ -95,4 +91,11 @@ class AdminServiceImpl(
         admin.adminBanByAdmin()
         adminRepository.save(admin)
     }
+    @Scheduled(cron = "0 0 12 * * ?")
+    fun userDeletedAuto(){
+        val nowTime = LocalDateTime.now()
+        val userDeleteAuto = nowTime.minusDays(7)
+        userRepository.deleteUserByDeleteAndCreatedAtLessThanEqual(true, userDeleteAuto)
+    }
+
 }
