@@ -17,6 +17,4 @@ interface UserRepository: JpaRepository<User, Long> {
     @Transactional
     @Query("DELETE FROM User u WHERE u.status = :status AND u.updatedAt <= :updatedAt")
     fun deleteUsersByStatusAndupdatedAtIsLessThanEqualBatch(status: Status, updatedAt: LocalDateTime): Int
-
-
 }
