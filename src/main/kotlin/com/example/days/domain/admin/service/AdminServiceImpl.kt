@@ -65,8 +65,16 @@ class AdminServiceImpl(
     }
 
 
-    override fun getAllUser(pageable: Pageable): Page<UserResponse> {
-        return adminRepository.findByPageableUser(pageable).map { UserResponse.from(it) }
+    override fun getAllUser(pageable: Pageable, status: String?): Page<UserResponse> {
+        val userStatus = when (status) {
+            "WARNING" -> Status.WARNING
+            "BAN" -> Status.BAN
+            "ACTIVE" -> Status.ACTIVE
+            "WITHDRAW" -> Status.WITHDRAW
+            null -> null
+            else -> throw IllegalArgumentException("The status is invalid");
+        }
+        return adminRepository.findByPageableUserAndStatus(pageable, userStatus).map { UserResponse.from(it) }
     }
 
     @Transactional
@@ -95,7 +103,7 @@ class AdminServiceImpl(
     fun userDeletedAuto(){
         val nowTime = LocalDateTime.now()
         val userDeleteAuto = nowTime.minusDays(7)
-        userRepository.deleteUserByDeleteAndCreatedAtLessThanEqual(true, userDeleteAuto)
+        userRepository.deleteUserByDeletedAndCreatedAtLessThanEqual(true, userDeleteAuto)
     }
 
 }

@@ -16,7 +16,7 @@ interface AdminService {
     fun adminLogin(req: LoginAdminRequest): LoginAdminResponse
 
     // 유저 전체 조회, 페이지네이션으로 처리
-    fun getAllUser(pageable: Pageable): Page<UserResponse>
+    fun getAllUser(pageable: Pageable, status: String?): Page<UserResponse>
 
     // 유저 밴 기능
     fun userBanByAdmin(userId: Long): String

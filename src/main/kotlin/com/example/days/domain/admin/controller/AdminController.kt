@@ -38,9 +38,10 @@ class AdminController(
     @Operation(summary = "유저 조회")
     @GetMapping("/users")
     fun getUsersByAdmin(
-        @PageableDefault(size = 10, sort = ["id"]) pageable: Pageable
+        @PageableDefault(size = 10, sort = ["id"]) pageable: Pageable,
+        @RequestParam(value = "status", required = false) status: String?
     ): ResponseEntity<Page<UserResponse>> {
-        return ResponseEntity.status(HttpStatus.OK).body(adminService.getAllUser(pageable))
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.getAllUser(pageable, status))
     }
 
     @Operation(summary = "유저 밴 처리")
