@@ -45,7 +45,7 @@ class JwtPlugin(
 
         return Jwts.builder()
             .setHeaderParam(Header.TYPE, Header.JWT_TYPE) // ~@~ Header: "typ"
-            .subject(role.name)
+            .subject(id.toString())
             .issuer(issuer)
             .issuedAt(Date.from(now))
             .expiration(Date.from(now.plus(expirationPeriod)))

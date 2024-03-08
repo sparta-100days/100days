@@ -21,9 +21,10 @@ class MessagesController(
 
     @Operation(summary = "쪽지 작성")
     @PostMapping
-    fun createMessages(@Valid @RequestBody req: CreateMessageRequest, @AuthenticationPrincipal userPrincipal: UserPrincipal): ResponseEntity<MessageSendResponse> {
-        val user = userPrincipal.id
-        return ResponseEntity.status(HttpStatus.CREATED).body(messagesService.createMessages(req, user))
+    fun createMessages(@Valid @RequestBody req: CreateMessageRequest, @AuthenticationPrincipal userPrincipal: UserPrincipal
+    ): ResponseEntity<MessageSendResponse> {
+        val userId = userPrincipal.id
+        return ResponseEntity.status(HttpStatus.CREATED).body(messagesService.createMessages(req, userId))
     }
 
     @Operation(summary = "보낸 쪽지 단건 조회")
