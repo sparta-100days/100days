@@ -20,7 +20,7 @@ interface AdminService {
     fun getAllUser(pageable: Pageable): Page<UserResponse>
 
     // 유저 밴 기능
-    fun userBanByAdmin(userId: Long, req: UserBanRequest): String
+    fun userBanByAdmin(userId: Long): String
 
     // 유저 삭제 기능
     fun userDeleteByAdmin(userId: Long)

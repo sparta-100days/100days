@@ -42,6 +42,10 @@ class User(
         status = Status.WITHDRAW
     }
 
+    fun userBanByAdmin() {
+        status = Status.BAN
+    }
+
     fun userIsDeletedByAdmin() {
         isDelete = true
     }

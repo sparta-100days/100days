@@ -19,9 +19,11 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class AdminServiceImpl(
@@ -72,14 +74,10 @@ class AdminServiceImpl(
     //이건 밴처리만
     //또 탈퇴처리하는건 후에 하자
     @Transactional
-    override fun userBanByAdmin(userId: Long, req: UserBanRequest): String {
+    override fun userBanByAdmin(userId: Long): String {
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
-        if (req.status != Status.BAN) {
-            throw HttpMessageNotReadableException("BAN만 가능합니다. BAN을 입력해주세요")
-        } else {
-            user.status = req.status
-            userRepository.save(user)
-        }
+        user.userBanByAdmin()
+        userRepository.save(user)
         return "밴처리 되었습니다!!"
     }
 

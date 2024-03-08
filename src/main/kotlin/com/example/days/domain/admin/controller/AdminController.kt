@@ -47,10 +47,9 @@ class AdminController(
     @Operation(summary = "유저 밴 처리")
     @PutMapping("/users/{userId}")
     fun userBanByAdmin(
-        @PathVariable userId: Long,
-        @RequestBody req: UserBanRequest
+        @PathVariable userId: Long
     ): ResponseEntity<String> {
-        return ResponseEntity.status(HttpStatus.OK).body(adminService.userBanByAdmin(userId, req))
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.userBanByAdmin(userId))
     }
 
     //ㅇㅅㅇ 유저 삭제하는 부분 아직 스케줄러는 미완성
