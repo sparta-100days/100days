@@ -55,8 +55,6 @@ class UserServiceImpl(
     override fun signUp(request: SignUpRequest): SignUpResponse {
         if (userRepository.existsByEmail(regexFunc.regexUserEmail(request.email)))
             throw IllegalArgumentException("이미 동일한 이메일이 존재합니다.")
-        // 이메일을 인증번호 확인 창 클릭 > 중복검사 > 코드발급 > 인증 > 확인창 닫은 후 폼으로 주소 자동입력 으로 구현하고싶음
-        // 이메일 검사, 비밀번호 검사를 따로 fun 으로 구현하고 추가하는게 좋을지도 재활용하려면
 
         val pass =
             if (request.password == request.newPassword) encoder.encode(regexFunc.regexPassword(request.password))
