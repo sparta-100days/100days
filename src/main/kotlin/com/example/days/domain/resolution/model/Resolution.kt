@@ -18,10 +18,10 @@ class Resolution(
     @Column(name = "description", nullable = false)
     var description: String,
 
-//    @ManyToOne
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    @JoinColumn(name = "author")
-//    val author: User,
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "author")
+    val author: User,
 
     @Column(name = "complete_status")
     val completeStatus: Boolean = false,
