@@ -14,5 +14,5 @@ interface UserService {
 
     fun changeUserPassword(request: EmailRequest)
 
-    fun modifyInfo(userPrincipal: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse
+    fun modifyInfo(userId: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse
 }

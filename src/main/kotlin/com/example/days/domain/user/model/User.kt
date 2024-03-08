@@ -39,11 +39,6 @@ class User(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    fun modifyInfo(request: ModifyInfoRequest) {
-        nickname = request.nickname
-        birth = request.birth
-    }
-
     fun userDeleteByAdmin() {
         status = Status.WITHDRAW
     }

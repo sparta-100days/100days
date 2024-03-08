@@ -27,14 +27,14 @@ class UserServiceImpl(
     val userRepository: UserRepository,
     val queryDslUserRepository: QueryDslUserRepository,
     val mailUtility: MailUtility,
-    private val passwordEncoder: PasswordEncoder,
+    private val encoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin,
     private val regexFunc: RegexFunc
 ) : UserService {
 
     override fun login(request: LoginRequest): LoginResponse {
         val user = userRepository.findUserByEmail(regexFunc.regexUserEmail(request.email))
-            ?.takeIf { passwordEncoder.matches(regexFunc.regexPassword(request.password), it.password) }
+            ?.takeIf { encoder.matches(regexFunc.regexPassword(request.password), it.password) }
             ?: throw IllegalArgumentException("이메일 또는 패스워드가 일치하지 않습니다.")
 
         if (user.status == Status.BAN) throw IllegalArgumentException("해당 유저는 활동정지 상태입니다.")
@@ -55,7 +55,7 @@ class UserServiceImpl(
         // 이메일 검사, 비밀번호 검사를 따로 fun 으로 구현하고 추가하는게 좋을지도 재활용하려면
 
         val pass =
-            if (request.password == request.newPassword) passwordEncoder.encode(regexFunc.regexPassword(request.password))
+            if (request.password == request.newPassword) encoder.encode(regexFunc.regexPassword(request.password))
             else throw IllegalArgumentException("비밀번호 확인이 일치하지 않습니다.")
 
         return User(
@@ -91,10 +91,19 @@ class UserServiceImpl(
 
 
     @Transactional
-    override fun modifyInfo(userPrincipal: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse {
-        val user = userRepository.findByIdOrNull(userPrincipal.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
-        user.modifyInfo(request)
-        userRepository.save(user)
+    override fun modifyInfo(userId: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse {
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
+
+        if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
+
+            user.nickname = request.nickname
+            user.birth = request.birth
+
+            userRepository.save(user)
+        } else {
+            throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")
+        }
+
         return ModifyInfoResponse(user.email, user.nickname, user.birth)
     }
 }

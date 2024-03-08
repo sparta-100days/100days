@@ -37,10 +37,10 @@ class UserController(
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.signUp(request))
     }
 
-    @PatchMapping("/modify/{id}")
+    @PutMapping()
     fun modifyInfo(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
-        @RequestBody request: ModifyInfoRequest
+        @RequestBody @Valid request: ModifyInfoRequest
     ): ResponseEntity<ModifyInfoResponse> {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.modifyInfo(userPrincipal, request))
     }
