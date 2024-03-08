@@ -1,9 +1,6 @@
 package com.example.days.domain.user.service
 
-import com.example.days.domain.user.dto.request.EmailRequest
-import com.example.days.domain.user.dto.request.LoginRequest
-import com.example.days.domain.user.dto.request.ModifyInfoRequest
-import com.example.days.domain.user.dto.request.SignUpRequest
+import com.example.days.domain.user.dto.request.*
 import com.example.days.domain.user.dto.response.EmailResponse
 import com.example.days.domain.user.dto.response.LoginResponse
 import com.example.days.domain.user.dto.response.ModifyInfoResponse
@@ -94,7 +91,6 @@ class UserServiceImpl(
         }
     }
 
-
     @Transactional
     override fun modifyInfo(userId: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse {
         val user = userRepository.findByIdOrNull(userId.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
@@ -110,5 +106,16 @@ class UserServiceImpl(
         }
 
         return ModifyInfoResponse(user.email, user.nickname, user.birth)
+    }
+
+    override fun withdraw(userId: UserPrincipal, request: UserPasswordRequest) {
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
+        if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
+            user.isDelete = true
+            user.status = Status.WITHDRAW
+            userRepository.save(user)
+        } else {
+            throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")
+        }
     }
 }

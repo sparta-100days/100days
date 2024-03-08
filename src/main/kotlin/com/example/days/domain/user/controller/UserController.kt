@@ -44,4 +44,13 @@ class UserController(
     ): ResponseEntity<ModifyInfoResponse> {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.modifyInfo(userPrincipal, request))
     }
+
+    @DeleteMapping()
+    fun withdraw(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @RequestBody @Valid request: UserPasswordRequest
+    ): ResponseEntity<Unit> {
+        userService.withdraw(userPrincipal, request)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+    }
 }
