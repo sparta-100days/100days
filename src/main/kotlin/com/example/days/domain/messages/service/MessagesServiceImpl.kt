@@ -35,7 +35,7 @@ class MessagesServiceImpl(
         return MessageSendResponse.from(messages)
     }
 
-
+    @Transactional
     override fun sendMessages(id: Long, userId: Long): MessageSendResponse {
         val sender = messagesRepository.findByIdOrNull(id) ?: throw ModelNotFoundException("Messages", id)
         if (sender.deletedBySender){
@@ -44,6 +44,8 @@ class MessagesServiceImpl(
         if(sender.sender.id != userId){
             throw NoSendMessagesException(id)
         }
+        sender.readStatus()
+        messagesRepository.save(sender)
         return MessageSendResponse.from(sender)
     }
 
@@ -53,7 +55,7 @@ class MessagesServiceImpl(
         return messagesRepository.findAllBySenderIdAndDeletedBySenderFalseOrderByIdDesc(userId).map { MessageSendResponse.from(it) }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     override fun receiverMessages(id: Long, userId: Long): MessagesReceiveResponse {
         val receiver = messagesRepository.findByIdOrNull(id) ?: throw ModelNotFoundException("Messages", id)
         if (receiver.deletedByReceiver){
@@ -62,6 +64,8 @@ class MessagesServiceImpl(
         if(receiver.receiver.id != userId){
             throw NoReceiverMessagesException(id)
         }
+        receiver.readStatus()
+        messagesRepository.save(receiver)
         return MessagesReceiveResponse.from(receiver)
     }
 
