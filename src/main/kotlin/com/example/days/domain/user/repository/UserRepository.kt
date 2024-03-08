@@ -1,10 +1,22 @@
 package com.example.days.domain.user.repository
 
+import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
+import jakarta.transaction.Transactional
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
+import org.springframework.data.jpa.repository.Query
+import java.time.LocalDateTime
 
 interface UserRepository: JpaRepository<User, Long> {
     fun existsByEmail(email: String): Boolean
     fun findUserByEmail(email: String): User?
     fun findByNickname(nickname: String): User?
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM User u WHERE u.status = :status AND u.updatedAt <= :updatedAt")
+    fun deleteUsersByStatusAndupdatedAtIsLessThanEqualBatch(status: Status, updatedAt: LocalDateTime): Int
+
+
 }

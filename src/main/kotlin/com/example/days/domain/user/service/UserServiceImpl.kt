@@ -15,9 +15,11 @@ import com.example.days.global.infra.regex.RegexFunc
 import com.example.days.global.infra.security.UserPrincipal
 import com.example.days.global.infra.security.jwt.JwtPlugin
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class UserServiceImpl(
@@ -118,4 +120,12 @@ class UserServiceImpl(
             throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")
         }
     }
+
+    @Scheduled(cron = "0 0 12 * * ?")
+    fun userDeletedAuto() {
+        val nowTime = LocalDateTime.now()
+        val userDeleteAuto = nowTime.minusDays(7)
+        userRepository.deleteUsersByStatusAndupdatedAtIsLessThanEqualBatch(Status.WITHDRAW, userDeleteAuto)
+    }
+
 }
