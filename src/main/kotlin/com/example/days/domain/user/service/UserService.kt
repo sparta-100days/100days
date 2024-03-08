@@ -17,4 +17,6 @@ interface UserService {
     fun modifyInfo(userId: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse
 
     fun withdraw(userId: UserPrincipal, request: UserPasswordRequest)
+
+    fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest)
 }

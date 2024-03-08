@@ -53,4 +53,12 @@ class UserController(
         userService.withdraw(userPrincipal, request)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
+
+    @PatchMapping("/passwordchange")
+    fun passwordChange(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @RequestBody @Valid request: UserPasswordRequest
+    ): ResponseEntity<Unit> {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.passwordChange(userPrincipal, request))
+    }
 }

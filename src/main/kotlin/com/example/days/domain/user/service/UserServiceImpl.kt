@@ -119,6 +119,17 @@ class UserServiceImpl(
         }
     }
 
+    override fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest) {
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
+
+        if (request.password == request.newPassword) {
+            user.password = encoder.encode(regexFunc.regexPassword(request.newPassword))
+            userRepository.save(user)
+        } else {
+            throw IllegalArgumentException("비밀번호 확인이 일치하지 않습니다.")
+        }
+    }
+
     @Scheduled(cron = "0 0 12 * * ?")
     fun userDeletedAuto() {
         val nowTime = LocalDateTime.now()
