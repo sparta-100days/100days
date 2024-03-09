@@ -31,7 +31,7 @@ class User(
     @Column(name = "role")
     val role: UserRole,
 
-    @Column(name = "count_report") var countReport: Long = 0,
+    @Column(name = "count_report") var countReport: Int = 0,
 
 ): BaseEntity() {
 
