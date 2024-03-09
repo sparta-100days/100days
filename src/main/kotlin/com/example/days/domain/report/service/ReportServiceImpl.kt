@@ -8,6 +8,8 @@ import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.common.exception.ModelNotFoundException
 import com.example.days.global.common.exception.NotSelfReportException
 import jakarta.transaction.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
@@ -40,7 +42,7 @@ class ReportServiceImpl(
         return UserReportResponse.from(report)
     }
 
-    override fun getReportUser(): List<UserReportResponse> {
-        return reportRepository.findAll().map { UserReportResponse.from(it) }
+    override fun getReportUser(pageable: Pageable, nickname: String): Page<UserReportResponse> {
+        return reportRepository.findByPageableAndNickname(pageable,nickname).map { UserReportResponse.from(it) }
     }
 }
