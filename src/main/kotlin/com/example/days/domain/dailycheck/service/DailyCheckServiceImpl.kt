@@ -4,6 +4,7 @@ import com.example.days.domain.dailycheck.dto.request.DailyCheckRequest
 import com.example.days.domain.dailycheck.dto.response.DailyCheckResponse
 import com.example.days.domain.dailycheck.repository.DailyCheckRepository
 import com.example.days.domain.resolution.repository.ResolutionRepository
+import com.example.days.global.infra.security.AuthenticationUtil.getAuthenticationUserId
 import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -16,6 +17,12 @@ class DailyCheckServiceImpl(
 ):DailyCheckService {
     @Transactional
     override fun createDailyCheck(resolutionId: Long, request: DailyCheckRequest): DailyCheckResponse {
+        val userId = getAuthenticationUserId()
+        val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: TODO("예외처리")
+
+        if(userId == resolution.author.id){
+            dailyCheckRepository.save(DailyCheckRequest.of(request, resolution))
+        }
         return resolutionRepository.findByIdOrNull(resolutionId)
             ?.let{ dailyCheckRepository.save(DailyCheckRequest.of(request, it)) }
             ?.let { DailyCheckResponse.from(it) }

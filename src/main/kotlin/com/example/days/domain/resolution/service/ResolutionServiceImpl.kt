@@ -16,10 +16,8 @@ class ResolutionServiceImpl(
     private val userRepository: UserRepository
 ): ResolutionService {
     @Transactional
-    override fun createResolution(request: ResolutionRequest): ResolutionResponse {
-        val user = getAuthenticationUserId()
-            .let { userRepository.findByIdOrNull(it) }
-            ?: TODO("예외처리")
+    override fun createResolution(request: ResolutionRequest, userId: Long): ResolutionResponse {
+        val user = userRepository.findByIdOrNull(userId) ?: TODO()
         val resolution = resolutionRepository.save(ResolutionRequest.of(request, user))
         return ResolutionResponse.from(resolution)
     }
@@ -34,10 +32,9 @@ class ResolutionServiceImpl(
     }
 
     @Transactional
-    override fun updateResolution(resolutionId: Long, request: ResolutionRequest): ResolutionResponse {
-        val user = getAuthenticationUserId()
+    override fun updateResolution(resolutionId: Long, userId: Long, request: ResolutionRequest): ResolutionResponse {
         val updatedResolution = getByIdOrNull(resolutionId)
-        if(updatedResolution.author.id == user){
+        if(updatedResolution.author.id == userId){
             updatedResolution.updateResolution(request.title, request.description, request.category)
             return ResolutionResponse.from(updatedResolution)
         }
@@ -46,10 +43,9 @@ class ResolutionServiceImpl(
     }
 
     @Transactional
-    override fun deleteResolution(resolutionId: Long) {
-        val user = getAuthenticationUserId()
+    override fun deleteResolution(resolutionId: Long, userId: Long) {
         val resolution = getByIdOrNull(resolutionId)
-        if (resolution.author.id == user){
+        if (resolution.author.id == userId){
             resolutionRepository.delete(resolution)
         }
         else TODO("예외처리")
