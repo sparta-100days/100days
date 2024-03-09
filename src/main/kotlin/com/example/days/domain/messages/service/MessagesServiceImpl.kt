@@ -29,6 +29,10 @@ class MessagesServiceImpl(
         val receiverNickname = userRepository.findByNickname(req.receiverNickname) ?: TODO()
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
 
+        if (receiverNickname.status == Status.BAN || receiverNickname.status == Status.WITHDRAW || user.status == Status.BAN || user.status == Status.WITHDRAW) {
+            throw NotMessagesException("이 닉네임은 이미 밴이나 탈퇴처리되어 있어 쪽지를 보낼 수도 받을 수도 없습니다!")
+        }
+
         val messages = messagesRepository.save(
             MessagesEntity(
                 title = req.title,
