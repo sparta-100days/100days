@@ -23,7 +23,6 @@ class AdminController(
 ) {
 
     @Operation(summary = "어드민 회원가입")
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/signup")
     fun adminSignup(
         @Valid @RequestBody req: SignUpAdminRequest
@@ -32,7 +31,6 @@ class AdminController(
     }
 
     @Operation(summary = "어드민 로그인")
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/login")
     fun adminLogin(@RequestBody @Valid req: LoginAdminRequest): ResponseEntity<LoginAdminResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(adminService.adminLogin(req))
