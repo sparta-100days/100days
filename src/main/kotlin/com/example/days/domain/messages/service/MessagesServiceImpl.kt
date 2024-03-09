@@ -9,10 +9,11 @@ import com.example.days.domain.messages.model.AdminMessagesEntity
 import com.example.days.domain.messages.model.MessagesEntity
 import com.example.days.domain.messages.repository.AdminMessagesRepository
 import com.example.days.domain.messages.repository.MessagesRepository
+import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.repository.UserRepository
-import com.example.days.global.common.exception.ModelNotFoundException
-import com.example.days.global.common.exception.NoReceiverMessagesException
-import com.example.days.global.common.exception.NoSendMessagesException
+import com.example.days.global.common.exception.*
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -57,8 +58,8 @@ class MessagesServiceImpl(
 
     // 수정할 필요 있음
     @Transactional(readOnly = true)
-    override fun sendMessagesAll(userId: Long): List<MessageSendResponse> {
-        return messagesRepository.findAllBySenderIdAndDeletedBySenderFalseOrderByIdDesc(userId).map { MessageSendResponse.from(it) }
+    override fun sendMessagesAll(pageable: Pageable, userId: Long): Page<MessageSendResponse> {
+        return messagesRepository.findAllBySenderIdAndDeletedBySenderFalseOrderByIdDesc(pageable, userId).map { MessageSendResponse.from(it) }
     }
 
     @Transactional
@@ -77,8 +78,8 @@ class MessagesServiceImpl(
 
     // 수정할 필요 있음
     @Transactional(readOnly = true)
-    override fun receiverMessagesAll(userId: Long): List<MessagesReceiveResponse> {
-        return messagesRepository.findAllByReceiverIdAndDeletedByReceiverFalseOrderByIdDesc(userId).map { MessagesReceiveResponse.from(it) }
+    override fun receiverMessagesAll(pageable: Pageable,userId: Long): Page<MessagesReceiveResponse> {
+        return messagesRepository.findAllByReceiverIdAndDeletedByReceiverFalseOrderByIdDesc(pageable, userId).map { MessagesReceiveResponse.from(it) }
     }
 
     @Transactional
@@ -132,14 +133,14 @@ class MessagesServiceImpl(
     }
 
     @Transactional
-    override fun readAllMessagesByAdmin(userId: Long): List<AdminMessagesSendResponse> {
+    override fun readAllMessagesByAdmin(pageable: Pageable, userId: Long): Page<AdminMessagesSendResponse> {
         // 이것도 받은 사람이 조회 하게 해야함
-        return adminMessagesRepository.findAllByReceiverIdAndDeletedByReceiverFalseOrderByIdDesc(userId)
+        return adminMessagesRepository.findAllByReceiverIdAndDeletedByReceiverFalseOrderByIdDesc(pageable, userId)
             .map { AdminMessagesSendResponse.from(it) }
     }
 
-    override fun readAllMessagesOnlyAdmin(userId: Long): List<AdminMessagesSendResponse> {
-        return adminMessagesRepository.findAll().map { AdminMessagesSendResponse.from(it) }
+    override fun readAllMessagesOnlyAdmin(pageable: Pageable, userId: Long): Page<AdminMessagesSendResponse> {
+        return adminMessagesRepository.findAll(pageable).map { AdminMessagesSendResponse.from(it) }
     }
 
     @Transactional

@@ -8,6 +8,9 @@ import com.example.days.domain.messages.service.MessagesService
 import com.example.days.global.infra.security.UserPrincipal
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -45,9 +48,12 @@ class MessagesController(
     @Operation(summary = "보낸 쪽지 전체 조회")
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/sender")
-    fun sendMessagesAll(@AuthenticationPrincipal userPrincipal: UserPrincipal): ResponseEntity<List<MessageSendResponse>> {
+    fun sendMessagesAll(
+        @PageableDefault(size = 10, sort = ["sentAt"]) pageable: Pageable,
+        @AuthenticationPrincipal userPrincipal: UserPrincipal
+    ): ResponseEntity<Page<MessageSendResponse>> {
         val userId = userPrincipal.id
-        return ResponseEntity.status(HttpStatus.OK).body(messagesService.sendMessagesAll(userId))
+        return ResponseEntity.status(HttpStatus.OK).body(messagesService.sendMessagesAll(pageable,userId))
     }
 
     @Operation(summary = "받은 쪽지 단건 조회")
@@ -64,9 +70,12 @@ class MessagesController(
     @Operation(summary = "받은 쪽지 전체 조회")
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/receiver")
-    fun receiverMessagesAll(@AuthenticationPrincipal userPrincipal: UserPrincipal): ResponseEntity<List<MessagesReceiveResponse>> {
+    fun receiverMessagesAll(
+        @PageableDefault(size = 10, sort = ["sentAt"]) pageable: Pageable,
+        @AuthenticationPrincipal userPrincipal: UserPrincipal
+    ): ResponseEntity<Page<MessagesReceiveResponse>> {
         val userId = userPrincipal.id
-        return ResponseEntity.status(HttpStatus.OK).body(messagesService.receiverMessagesAll(userId))
+        return ResponseEntity.status(HttpStatus.OK).body(messagesService.receiverMessagesAll(pageable,userId))
     }
 
     @Operation(summary = "보낸 쪽지 삭제")
@@ -118,17 +127,23 @@ class MessagesController(
     @Operation(summary = "By 어드민 쪽지 전체 조회")
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/admins/read/all")
-    fun readAllMessagesByAdmin(@AuthenticationPrincipal userPrincipal: UserPrincipal): ResponseEntity<List<AdminMessagesSendResponse>> {
+    fun readAllMessagesByAdmin(
+        @PageableDefault(size = 10, sort = ["sentAt"]) pageable: Pageable,
+        @AuthenticationPrincipal userPrincipal: UserPrincipal
+    ): ResponseEntity<Page<AdminMessagesSendResponse>> {
         val userId = userPrincipal.id
-        return ResponseEntity.status(HttpStatus.OK).body(messagesService.readAllMessagesByAdmin(userId))
+        return ResponseEntity.status(HttpStatus.OK).body(messagesService.readAllMessagesByAdmin(pageable, userId))
     }
 
     @Operation(summary = "어드민 쪽지 전체 조회 Only 어드민만")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admins/all")
-    fun readAllMessagesOnlyAdmin(@AuthenticationPrincipal userPrincipal: UserPrincipal): ResponseEntity<List<AdminMessagesSendResponse>> {
+    fun readAllMessagesOnlyAdmin(
+        @PageableDefault(size = 10, sort = ["sentAt"]) pageable: Pageable,
+        @AuthenticationPrincipal userPrincipal: UserPrincipal
+    ): ResponseEntity<Page<AdminMessagesSendResponse>> {
         val userId = userPrincipal.id
-        return ResponseEntity.status(HttpStatus.OK).body(messagesService.readAllMessagesByAdmin(userId))
+        return ResponseEntity.status(HttpStatus.OK).body(messagesService.readAllMessagesByAdmin(pageable, userId))
     }
 
     @Operation(summary = "TO 유저 By 어드민 쪽지 삭제")
