@@ -15,3 +15,7 @@ data class NoSendMessagesException(val id: Long) : RuntimeException(
 data class NoReceiverMessagesException(val id: Long) : RuntimeException(
     "본인이 받은 메시지함이 아닙니다!"
 )
+
+data class NotSelfReportException(val nickname: String) : RuntimeException(
+    "본인은 본인을 신고할 수 없습니다"
+)
