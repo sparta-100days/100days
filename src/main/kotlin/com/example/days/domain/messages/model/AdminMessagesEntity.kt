@@ -21,7 +21,7 @@ class AdminMessagesEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
     @OnDelete(action = OnDeleteAction.NO_ACTION)
-    val sender: Admin,
+    val admin: Admin,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id")
@@ -31,8 +31,8 @@ class AdminMessagesEntity(
     @Column(name = "deletedByReceiver", nullable = false)
     var deletedByReceiver: Boolean = false,
 
-    @Column(name = "deletedBySender", nullable = false)
-    var deletedBySender: Boolean = false,
+    @Column(name = "readStatus", nullable = false)
+    var readStatus: Boolean = false
 
     ) {
     @Id
@@ -41,5 +41,13 @@ class AdminMessagesEntity(
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now()
+    var sentAt: LocalDateTime = LocalDateTime.now()
+
+    fun deletedByReceiver() {
+        deletedByReceiver = true
+    }
+
+    fun readStatus(){
+        readStatus = true
+    }
 }

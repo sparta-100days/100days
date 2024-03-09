@@ -1,9 +1,13 @@
 package com.example.days.domain.messages.service
 
+import com.example.days.domain.admin.repository.AdminRepository
 import com.example.days.domain.messages.dto.request.CreateMessageRequest
+import com.example.days.domain.messages.dto.response.AdminMessagesSendResponse
 import com.example.days.domain.messages.dto.response.MessageSendResponse
 import com.example.days.domain.messages.dto.response.MessagesReceiveResponse
+import com.example.days.domain.messages.model.AdminMessagesEntity
 import com.example.days.domain.messages.model.MessagesEntity
+import com.example.days.domain.messages.repository.AdminMessagesRepository
 import com.example.days.domain.messages.repository.MessagesRepository
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.common.exception.ModelNotFoundException
@@ -16,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class MessagesServiceImpl(
     private val messagesRepository: MessagesRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val adminRepository: AdminRepository,
+    private val adminMessagesRepository: AdminMessagesRepository
 ) : MessagesService {
     override fun createMessages(req: CreateMessageRequest, userId: Long): MessageSendResponse {
         val receiverNickname = userRepository.findByNickname(req.receiverNickname) ?: TODO()
@@ -93,5 +99,58 @@ class MessagesServiceImpl(
         }
         messages.deletedByReceiver()
         messagesRepository.save(messages)
+    }
+
+    override fun toUserCreateMessage(req: CreateMessageRequest, userId: Long): AdminMessagesSendResponse {
+        val receiverNickname = userRepository.findByNickname(req.receiverNickname) ?: TODO()
+        val admin = adminRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("Admin", userId)
+        // 어드민 가능하게 해야함.
+        val adminMessages = adminMessagesRepository.save(
+            AdminMessagesEntity(
+                title = req.title,
+                content = req.content,
+                receiver = receiverNickname,
+                admin = admin,
+                deletedByReceiver = false
+            )
+        )
+        return AdminMessagesSendResponse.from(adminMessages)
+    }
+
+    @Transactional
+    override fun readMessagesByAdmin(id: Long, userId: Long): AdminMessagesSendResponse {
+        // 받은 사람이 조회 가능하게 해야함. 그리고 위처럼 굳이 보낸 쪽지함은 안만들어도 됌 어드민이 조회가 가능할테니까? 이 부분은
+        val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
+        val receiver = adminMessagesRepository.findByIdOrNull(id) ?: throw ModelNotFoundException("AdminMessages", id)
+        if (receiver.deletedByReceiver) throw ModelNotFoundException("Messages", id)
+
+        if(receiver.receiver.id != user.id) throw NoReceiverMessagesException(userId)
+
+        receiver.readStatus()
+        adminMessagesRepository.save(receiver)
+        return AdminMessagesSendResponse.from(receiver)
+    }
+
+    @Transactional
+    override fun readAllMessagesByAdmin(userId: Long): List<AdminMessagesSendResponse> {
+        // 이것도 받은 사람이 조회 하게 해야함
+        return adminMessagesRepository.findAllByReceiverIdAndDeletedByReceiverFalseOrderByIdDesc(userId)
+            .map { AdminMessagesSendResponse.from(it) }
+    }
+
+    override fun readAllMessagesOnlyAdmin(userId: Long): List<AdminMessagesSendResponse> {
+        return adminMessagesRepository.findAll().map { AdminMessagesSendResponse.from(it) }
+    }
+
+    @Transactional
+    override fun deleteUserByAdminMessages(id: Long, userId: Long) {
+        val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
+        val admin = adminRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("Admin", userId)
+        val adminMessages = adminMessagesRepository.findByIdOrNull(id) ?: throw ModelNotFoundException("AdminMessages", id)
+        if(adminMessages.receiver.id != user.id && admin.id != userId){
+            throw NoReceiverMessagesException(id)
+        }
+        adminMessages.deletedByReceiver()
+        adminMessagesRepository.save(adminMessages)
     }
 }
