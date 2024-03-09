@@ -17,11 +17,9 @@ import com.example.days.global.infra.security.jwt.JwtPlugin
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
 
 @Service
 class AdminServiceImpl(
@@ -99,11 +97,4 @@ class AdminServiceImpl(
         admin.adminBanByAdmin()
         adminRepository.save(admin)
     }
-    @Scheduled(cron = "0 0 12 * * ?")
-    fun userDeletedAuto(){
-        val nowTime = LocalDateTime.now()
-        val userDeleteAuto = nowTime.minusDays(7)
-        userRepository.deleteUserByDeletedAndCreatedAtLessThanEqual(true, userDeleteAuto)
-    }
-
 }
