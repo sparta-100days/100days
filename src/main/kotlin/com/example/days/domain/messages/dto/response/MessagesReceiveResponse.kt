@@ -8,7 +8,7 @@ data class MessagesReceiveResponse(
     val title: String,
     val content: String,
     val senderNickname: String,
-    val createdAt: LocalDateTime,
+    val sentAt: LocalDateTime,
     val readStatus: Boolean
 ){
     companion object {
@@ -18,7 +18,7 @@ data class MessagesReceiveResponse(
                 title = messages.title,
                 content = messages.content,
                 senderNickname = messages.sender.nickname,
-                createdAt = messages.createdAt,
+                sentAt = messages.sentAt,
                 readStatus = messages.readStatus
             )
         }

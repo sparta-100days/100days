@@ -33,7 +33,7 @@ class MessagesEntity(
     @Column(name = "deletedBySender", nullable = false)
     var deletedBySender: Boolean = false,
 
-    @Column(name = "ReadStatus", nullable = false)
+    @Column(name = "readStatus", nullable = false)
     var readStatus: Boolean = false
 
     ) {
@@ -43,7 +43,7 @@ class MessagesEntity(
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now()
+    var sentAt: LocalDateTime = LocalDateTime.now()
 
     fun deletedByReceiver() {
         deletedByReceiver = true
