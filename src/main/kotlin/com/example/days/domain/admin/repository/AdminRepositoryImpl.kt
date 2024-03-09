@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 
-//ㅇㅅㅇ 페이지네이션 추가로 status 할 예정
 @Repository
 class AdminRepositoryImpl : AdminCustomRepository, QueryDslSupport() {
     private val user = QUser.user

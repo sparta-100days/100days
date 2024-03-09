@@ -26,7 +26,10 @@ class ReportController(
     @Operation(summary = "유저 신고 기능")
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/reports/users")
-    fun reportUser(@RequestBody req: UserReportRequest, @AuthenticationPrincipal userPrincipal: UserPrincipal): ResponseEntity<UserReportResponse>{
+    fun reportUser(
+        @RequestBody req: UserReportRequest,
+        @AuthenticationPrincipal userPrincipal: UserPrincipal
+    ): ResponseEntity<UserReportResponse> {
         val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.CREATED).body(reportService.reportUser(req, userId))
     }
@@ -37,7 +40,8 @@ class ReportController(
     fun getReportUser(
         @PageableDefault(size = 10, sort = ["nickname"]) pageable: Pageable,
         @RequestParam nickname: String,
-        @AuthenticationPrincipal userPrincipal: UserPrincipal): ResponseEntity<Page<UserReportResponse>> {
+        @AuthenticationPrincipal userPrincipal: UserPrincipal
+    ): ResponseEntity<Page<UserReportResponse>> {
         return ResponseEntity.status(HttpStatus.OK).body(reportService.getReportUser(pageable, nickname))
     }
 }

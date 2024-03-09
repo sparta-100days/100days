@@ -36,7 +36,7 @@ class MessagesEntity(
     @Column(name = "readStatus", nullable = false)
     var readStatus: Boolean = false
 
-    ) {
+) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
@@ -53,7 +53,7 @@ class MessagesEntity(
         deletedBySender = true
     }
 
-    fun readStatus(){
+    fun readStatus() {
         readStatus = true
     }
 

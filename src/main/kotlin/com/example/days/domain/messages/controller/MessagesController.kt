@@ -53,7 +53,7 @@ class MessagesController(
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<Page<MessageSendResponse>> {
         val userId = userPrincipal.id
-        return ResponseEntity.status(HttpStatus.OK).body(messagesService.sendMessagesAll(pageable,userId))
+        return ResponseEntity.status(HttpStatus.OK).body(messagesService.sendMessagesAll(pageable, userId))
     }
 
     @Operation(summary = "받은 쪽지 단건 조회")
@@ -75,7 +75,7 @@ class MessagesController(
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<Page<MessagesReceiveResponse>> {
         val userId = userPrincipal.id
-        return ResponseEntity.status(HttpStatus.OK).body(messagesService.receiverMessagesAll(pageable,userId))
+        return ResponseEntity.status(HttpStatus.OK).body(messagesService.receiverMessagesAll(pageable, userId))
     }
 
     @Operation(summary = "보낸 쪽지 삭제")
