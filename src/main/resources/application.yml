@@ -1,33 +1,36 @@
 spring:
- h2:
-  console:
-    enabled: true
-    path: /h2-console
-datasourse:
- driver-class-name: org.h2.Driver
- url: jdbc:h2:~/users
- username: sa
- password: 1111
-jpa:
-   properties:
-    hibernate:
-     format_sql: true
-     show_sql: true
-   show-sql: true
-   hibernate:
-    ddl-auto: create
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+        hbm2ddl:
+          auto: update
 logging:
- level:
-  org:
-   hibernate:
-    SQL: debug
-    orm:
-     jdbc:
-      bind: trace
-   springframework: # ??!
-    security: debug # ??!
+  level:
+    org:
+      hibernate:
+        SQL: debug
+        orm:
+          jdbc:
+            bind: trace
+      springframework:
+        security: debug
 auth:
   jwt:
-    issuer: team.100days.com
-    secret: PO4c8z41Hia5gJG3oeuFJMRYBB4Ws4aZ
-    accessTokenExpirationHour: 168
+    issuer: ${auth.jwt.issuer}
+    secret: ${auth.jwt.secret}
+    accessTokenExpirationHour: ${auth.jwt.accessTokenExpirationHour}
+mail:
+  host: smtp.gmail.com
+  port: 587
+  username: ${smtp.name}
+  password: ${smtp.password}
+  properties:
+    mail:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+          required: true
