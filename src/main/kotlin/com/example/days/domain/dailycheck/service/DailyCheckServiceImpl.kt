@@ -4,7 +4,6 @@ import com.example.days.domain.dailycheck.dto.request.DailyCheckRequest
 import com.example.days.domain.dailycheck.dto.response.DailyCheckResponse
 import com.example.days.domain.dailycheck.repository.DailyCheckRepository
 import com.example.days.domain.resolution.repository.ResolutionRepository
-import com.example.days.global.infra.security.AuthenticationUtil.getAuthenticationUserId
 import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service

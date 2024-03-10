@@ -2,12 +2,17 @@ package com.example.days.domain.admin.service
 
 import com.example.days.domain.admin.dto.request.LoginAdminRequest
 import com.example.days.domain.admin.dto.request.SignUpAdminRequest
-import com.example.days.domain.admin.dto.request.UserBanRequest
 import com.example.days.domain.admin.dto.response.AdminResponse
 import com.example.days.domain.admin.dto.response.LoginAdminResponse
 import com.example.days.domain.admin.model.Admin
 import com.example.days.domain.admin.model.checkingEmailAndNicknameExists
 import com.example.days.domain.admin.repository.AdminRepository
+import com.example.days.domain.messages.dto.request.CreateMessageRequest
+import com.example.days.domain.messages.dto.response.AdminMessagesSendResponse
+import com.example.days.domain.messages.model.AdminMessagesEntity
+import com.example.days.domain.messages.repository.AdminMessagesRepository
+import com.example.days.domain.report.dto.response.UserReportResponse
+import com.example.days.domain.report.repository.ReportRepository
 import com.example.days.domain.user.dto.response.UserResponse
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.UserRole
@@ -18,7 +23,6 @@ import com.example.days.global.infra.security.jwt.JwtPlugin
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -28,6 +32,8 @@ class AdminServiceImpl(
     private val adminRepository: AdminRepository,
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val reportRepository: ReportRepository,
+    private val adminMessagesRepository: AdminMessagesRepository,
     private val jwtPlugin: JwtPlugin,
     private val regexFunc: RegexFunc
 ) : AdminService {
@@ -65,21 +71,23 @@ class AdminServiceImpl(
     }
 
 
-    override fun getAllUser(pageable: Pageable): Page<UserResponse> {
-        return adminRepository.findByPageableUser(pageable).map { UserResponse.from(it) }
+    override fun getAllUser(pageable: Pageable, status: String?): Page<UserResponse> {
+        val userStatus = when (status) {
+            "WARNING" -> Status.WARNING
+            "BAN" -> Status.BAN
+            "ACTIVE" -> Status.ACTIVE
+            "WITHDRAW" -> Status.WITHDRAW
+            null -> null
+            else -> throw IllegalArgumentException("The status is invalid");
+        }
+        return adminRepository.findByPageableUserAndStatus(pageable, userStatus).map { UserResponse.from(it) }
     }
 
-    //이건 밴처리만
-    //또 탈퇴처리하는건 후에 하자
     @Transactional
-    override fun userBanByAdmin(userId: Long, req: UserBanRequest): String {
+    override fun userBanByAdmin(userId: Long): String {
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
-        if (req.status != Status.BAN) {
-            throw HttpMessageNotReadableException("BAN만 가능합니다. BAN을 입력해주세요")
-        } else {
-            user.status = req.status
-            userRepository.save(user)
-        }
+        user.userBanByAdmin()
+        userRepository.save(user)
         return "밴처리 되었습니다!!"
     }
 
@@ -96,5 +104,29 @@ class AdminServiceImpl(
         val admin = adminRepository.findByIdOrNull(adminId) ?: throw ModelNotFoundException("Admin", adminId)
         admin.adminBanByAdmin()
         adminRepository.save(admin)
+    }
+
+    override fun getReportUser(pageable: Pageable, reportedUserNickname: String): Page<UserReportResponse> {
+        return reportRepository.findByPageableAndReportedUserNickname(pageable, reportedUserNickname).map { UserReportResponse.from(it) }
+    }
+
+    override fun toUserCreateMessage(req: CreateMessageRequest, userId: Long): AdminMessagesSendResponse {
+        val receiverNickname = userRepository.findByNickname(req.receiverNickname) ?: TODO()
+        val admin = adminRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("Admin", userId)
+        // 어드민 가능하게 해야함.
+        val adminMessages = adminMessagesRepository.save(
+            AdminMessagesEntity(
+                title = req.title,
+                content = req.content,
+                receiver = receiverNickname,
+                admin = admin,
+                deletedByReceiver = false
+            )
+        )
+        return AdminMessagesSendResponse.from(adminMessages)
+    }
+
+    override fun readAllMessagesOnlyAdmin(pageable: Pageable, userId: Long): Page<AdminMessagesSendResponse> {
+        return adminMessagesRepository.findAll(pageable).map { AdminMessagesSendResponse.from(it) }
     }
 }

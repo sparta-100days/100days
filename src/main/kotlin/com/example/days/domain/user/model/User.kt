@@ -31,6 +31,8 @@ class User(
     @Column(name = "role")
     val role: UserRole,
 
+    @Column(name = "count_report") var countReport: Int = 0,
+
 ): BaseEntity() {
 
     @Id
@@ -40,6 +42,10 @@ class User(
 
     fun userDeleteByAdmin() {
         status = Status.WITHDRAW
+    }
+
+    fun userBanByAdmin() {
+        status = Status.BAN
     }
 
     fun userIsDeletedByAdmin() {
