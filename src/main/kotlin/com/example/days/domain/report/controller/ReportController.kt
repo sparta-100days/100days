@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
-@RestController
+@RestController("/api/reports")
 class ReportController(
     private val reportService: ReportService
 ) {
 
     @Operation(summary = "유저 신고 기능")
     @PreAuthorize("hasRole('USER')")
-    @PostMapping("/reports/users")
+    @PostMapping("/users")
     fun reportUser(
         @RequestBody req: UserReportRequest,
         @AuthenticationPrincipal userPrincipal: UserPrincipal

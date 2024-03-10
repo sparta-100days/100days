@@ -105,7 +105,7 @@ class MessagesController(
 
     @Operation(summary = "By 어드민 쪽지 단건 조회 Only 받은 유저만")
     @PreAuthorize("hasRole(hasRole('USER'))")
-    @GetMapping("/admins/read/{id}")
+    @GetMapping("/admins/{id}")
     fun readMessagesByAdmin(
         @PathVariable id: Long,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
@@ -116,7 +116,7 @@ class MessagesController(
 
     @Operation(summary = "By 어드민 받은 쪽지 전체 조회")
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("/admins/read/all")
+    @GetMapping("/admins")
     fun readAllMessagesByAdmin(
         @PageableDefault(size = 10, sort = ["sentAt"]) pageable: Pageable,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
