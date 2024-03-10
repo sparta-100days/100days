@@ -86,10 +86,10 @@ class AdminController(
     @GetMapping("/reports/users")
     fun getReportUser(
         @PageableDefault(size = 10, sort = ["nickname"]) pageable: Pageable,
-        @RequestParam nickname: String,
+        @RequestParam reportedUserNickname: String,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<Page<UserReportResponse>> {
-        return ResponseEntity.status(HttpStatus.OK).body(adminService.getReportUser(pageable, nickname))
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.getReportUser(pageable, reportedUserNickname))
     }
 
     @Operation(summary = "TO 유저 By 어드민 쪽지 생성")

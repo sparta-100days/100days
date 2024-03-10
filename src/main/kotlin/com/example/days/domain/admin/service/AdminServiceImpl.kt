@@ -106,8 +106,8 @@ class AdminServiceImpl(
         adminRepository.save(admin)
     }
 
-    override fun getReportUser(pageable: Pageable, nickname: String): Page<UserReportResponse> {
-        return reportRepository.findByPageableAndNickname(pageable, nickname).map { UserReportResponse.from(it) }
+    override fun getReportUser(pageable: Pageable, reportedUserNickname: String): Page<UserReportResponse> {
+        return reportRepository.findByPageableAndReportedUserNickname(pageable, reportedUserNickname).map { UserReportResponse.from(it) }
     }
 
     override fun toUserCreateMessage(req: CreateMessageRequest, userId: Long): AdminMessagesSendResponse {

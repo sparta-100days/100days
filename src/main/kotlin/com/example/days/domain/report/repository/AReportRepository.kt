@@ -6,5 +6,5 @@ import org.springframework.data.domain.Pageable
 
 interface AReportRepository {
 
-    fun findByPageableAndNickname(pageable: Pageable, nickname: String?): Page<UserReport>
+    fun findByPageableAndReportedUserNickname(pageable: Pageable, reportedUserNickname: String?): Page<UserReport>
 }

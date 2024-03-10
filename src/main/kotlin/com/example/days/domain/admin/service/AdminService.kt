@@ -31,7 +31,7 @@ interface AdminService {
     fun adminBanByAdmin(adminId: Long)
 
     // 유저 신고 기능
-    fun getReportUser(pageable: Pageable, nickname: String): Page<UserReportResponse>
+    fun getReportUser(pageable: Pageable, reportedUserNickname: String): Page<UserReportResponse>
 
     // 어드민이 유저에게 쪽지 보내는 기능
     fun toUserCreateMessage(req: CreateMessageRequest, userId: Long) : AdminMessagesSendResponse
