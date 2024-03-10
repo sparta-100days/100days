@@ -4,6 +4,7 @@ import com.example.days.domain.dailycheck.dto.request.DailyCheckRequest
 import com.example.days.domain.dailycheck.dto.response.DailyCheckResponse
 import com.example.days.domain.dailycheck.service.DailyCheckService
 import com.example.days.global.infra.security.UserPrincipal
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 class DailyCheckController(
     private val dailyCheckService: DailyCheckService
 ) {
+    @Operation(summary = "데일리체크 생성")
     @PostMapping
     fun createDailyCheck(
         @PathVariable resolutionId: Long,
@@ -32,6 +34,7 @@ class DailyCheckController(
         return ResponseEntity.status(HttpStatus.CREATED).body(createdDailyCheck)
     }
 
+    @Operation(summary = "데일리체크 조회")
     @GetMapping
     fun getDailyCheck(
         @PathVariable resolutionId: Long,
@@ -42,6 +45,7 @@ class DailyCheckController(
         return ResponseEntity.ok(dailyCheck)
     }
 
+    @Operation(summary = "데일리체크 수정")
     @PatchMapping("/{dailyCheckId}")
     fun updateDailyCheckMemo(
         @PathVariable resolutionId: Long,
@@ -54,6 +58,7 @@ class DailyCheckController(
         return ResponseEntity.ok(updatedDailyCheck)
     }
 
+    @Operation(summary = "데일리체크 삭제")
     @DeleteMapping("/{dailyCheckId}")
     fun deleteDailyCheck(
         @PathVariable resolutionId: Long,

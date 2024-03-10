@@ -1,11 +1,10 @@
 package com.example.days.domain.resolution.service
 
+import com.example.days.domain.category.repository.CategoryRepository
 import com.example.days.domain.resolution.dto.request.ResolutionRequest
 import com.example.days.domain.resolution.dto.response.ResolutionResponse
-import com.example.days.domain.resolution.model.Resolution
 import com.example.days.domain.resolution.repository.ResolutionRepository
 import com.example.days.domain.user.repository.UserRepository
-import com.example.days.global.infra.security.AuthenticationUtil.getAuthenticationUserId
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -13,12 +12,14 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ResolutionServiceImpl(
     private val resolutionRepository: ResolutionRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val categoryRepository: CategoryRepository
 ): ResolutionService {
     @Transactional
     override fun createResolution(request: ResolutionRequest, userId: Long): ResolutionResponse {
         val user = userRepository.findByIdOrNull(userId) ?: TODO()
-        val resolution = resolutionRepository.save(ResolutionRequest.of(request, user))
+        val category = categoryRepository.findByName(request.category) ?: TODO()
+        val resolution = resolutionRepository.save(ResolutionRequest.of(request, category, user))
         return ResolutionResponse.from(resolution)
     }
 
@@ -33,9 +34,10 @@ class ResolutionServiceImpl(
 
     @Transactional
     override fun updateResolution(resolutionId: Long, userId: Long, request: ResolutionRequest): ResolutionResponse {
+        val category = categoryRepository.findByName(request.category) ?: TODO()
         val updatedResolution = getByIdOrNull(resolutionId)
         if(updatedResolution.author.id == userId){
-            updatedResolution.updateResolution(request.title, request.description, request.category)
+            updatedResolution.updateResolution(request.title, request.description, category)
             return ResolutionResponse.from(updatedResolution)
         }
         else TODO("예외처리")
