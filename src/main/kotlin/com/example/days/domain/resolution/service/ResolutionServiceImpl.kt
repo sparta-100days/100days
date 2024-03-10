@@ -5,9 +5,12 @@ import com.example.days.domain.resolution.dto.request.ResolutionRequest
 import com.example.days.domain.resolution.dto.response.ResolutionResponse
 import com.example.days.domain.resolution.repository.ResolutionRepository
 import com.example.days.domain.user.repository.UserRepository
+import com.example.days.global.common.SortOrder
+import org.springframework.data.domain.Page
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+
 
 @Service
 class ResolutionServiceImpl(
@@ -28,8 +31,9 @@ class ResolutionServiceImpl(
         return ResolutionResponse.from(resolution)
     }
 
-    override fun getResolutionList(): List<ResolutionResponse> {
-        return resolutionRepository.findAll().map{ResolutionResponse.from(it)}
+    override fun getResolutionListPaginated(page: Int, sortOrder: SortOrder?): Page<ResolutionResponse> {
+        val resolutionList = resolutionRepository.findByPageable(page, sortOrder)
+        return resolutionList.map { ResolutionResponse.from(it) }
     }
 
     @Transactional

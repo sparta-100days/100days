@@ -2,11 +2,12 @@ package com.example.days.domain.resolution.controller
 
 import com.example.days.domain.resolution.dto.request.ResolutionRequest
 import com.example.days.domain.resolution.dto.response.ResolutionResponse
-import com.example.days.domain.resolution.model.Resolution
 import com.example.days.domain.resolution.service.ResolutionService
+import com.example.days.global.common.SortOrder
 import com.example.days.global.infra.security.UserPrincipal
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -40,9 +41,13 @@ class ResolutionController (
         val resolution = resolutionService.getResolutionById(resolutionId)
         return ResponseEntity.ok(resolution)
     }
-    @GetMapping@Operation(summary = "목표 전체 조회")
-    fun getResolutionList(): ResponseEntity<List<ResolutionResponse>>{
-        val resolutionList = resolutionService.getResolutionList()
+    @Operation(summary = "목표 전체 조회(페이징)")
+    @GetMapping
+    fun getResolutionListPagenated(
+        @RequestParam(defaultValue = "0") page: Int,
+        sortOrder: SortOrder?
+    ): ResponseEntity<Page<ResolutionResponse>>{
+        val resolutionList = resolutionService.getResolutionListPaginated(page, sortOrder)
         return ResponseEntity.ok(resolutionList)
     }
 
