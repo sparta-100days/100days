@@ -60,7 +60,7 @@ class AdminController(
         return ResponseEntity.status(HttpStatus.OK).body(adminService.userBanByAdmin(userId))
     }
 
-    //ㅇㅅㅇ 유저 삭제하는 부분 아직 스케줄러는 미완성
+
     @Operation(summary = "유저 삭제 처리")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/users/{userId}")
