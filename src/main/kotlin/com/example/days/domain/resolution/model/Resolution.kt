@@ -35,7 +35,7 @@ class Resolution(
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @Column(name = "category")
+    @JoinColumn(name = "category")
     var category: Category,
 
     @Column(name = "like_count")
