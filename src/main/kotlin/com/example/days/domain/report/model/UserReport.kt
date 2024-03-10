@@ -2,6 +2,7 @@ package com.example.days.domain.report.model
 
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
+import com.example.days.global.entity.BaseEntity
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -23,7 +24,7 @@ class UserReport(
     var content: String,
 
 
-    ) {
+    ) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
