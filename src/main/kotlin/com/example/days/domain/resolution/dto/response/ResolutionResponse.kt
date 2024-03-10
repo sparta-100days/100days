@@ -1,5 +1,6 @@
 package com.example.days.domain.resolution.dto.response
 
+import com.example.days.domain.category.model.Category
 import com.example.days.domain.resolution.dto.request.ResolutionRequest
 import com.example.days.domain.resolution.model.Resolution
 import com.example.days.domain.user.model.User
@@ -29,7 +30,7 @@ data class ResolutionResponse(
             description = resolution.description,
             completeStatus = resolution.completeStatus,
             dailyStatus = resolution.dailyStatus,
-            category = resolution.category,
+            category = resolution.category.name,
             likeCount = resolution.likeCount,
             createdAt = resolution.createdAt,
             updatedAt = resolution.updatedAt

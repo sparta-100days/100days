@@ -21,7 +21,10 @@ class MessagesController(
 
     @Operation(summary = "쪽지 작성")
     @PostMapping
-    fun createMessages(@Valid @RequestBody req: CreateMessageRequest, @AuthenticationPrincipal userPrincipal: UserPrincipal): ResponseEntity<MessageSendResponse> {
+    fun createMessages(
+        @Valid @RequestBody req: CreateMessageRequest,
+        @AuthenticationPrincipal userPrincipal: UserPrincipal
+    ): ResponseEntity<MessageSendResponse> {
         val user = userPrincipal.id
         return ResponseEntity.status(HttpStatus.CREATED).body(messagesService.createMessages(req, user))
     }
