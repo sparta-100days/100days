@@ -46,8 +46,4 @@ class ReportServiceImpl(
         userRepository.save(user)
         return UserReportResponse.from(report)
     }
-
-    override fun getReportUser(pageable: Pageable, nickname: String): Page<UserReportResponse> {
-        return reportRepository.findByPageableAndNickname(pageable, nickname).map { UserReportResponse.from(it) }
-    }
 }

@@ -102,16 +102,6 @@ class MessagesController(
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
-    @Operation(summary = "TO 유저 By 어드민 쪽지 생성")
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/admins")
-    fun toUserCreateMessage(
-        @RequestBody req: CreateMessageRequest,
-        @AuthenticationPrincipal userPrincipal: UserPrincipal
-    ): ResponseEntity<AdminMessagesSendResponse> {
-        val userId = userPrincipal.id
-        return ResponseEntity.status(HttpStatus.CREATED).body(messagesService.toUserCreateMessage(req, userId))
-    }
 
     @Operation(summary = "By 어드민 쪽지 단건 조회 Only 받은 유저만")
     @PreAuthorize("hasRole(hasRole('USER'))")
@@ -124,21 +114,10 @@ class MessagesController(
         return ResponseEntity.status(HttpStatus.OK).body(messagesService.readMessagesByAdmin(id, userId))
     }
 
-    @Operation(summary = "By 어드민 쪽지 전체 조회")
+    @Operation(summary = "By 어드민 받은 쪽지 전체 조회")
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/admins/read/all")
     fun readAllMessagesByAdmin(
-        @PageableDefault(size = 10, sort = ["sentAt"]) pageable: Pageable,
-        @AuthenticationPrincipal userPrincipal: UserPrincipal
-    ): ResponseEntity<Page<AdminMessagesSendResponse>> {
-        val userId = userPrincipal.id
-        return ResponseEntity.status(HttpStatus.OK).body(messagesService.readAllMessagesByAdmin(pageable, userId))
-    }
-
-    @Operation(summary = "어드민 쪽지 전체 조회 Only 어드민만")
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admins/all")
-    fun readAllMessagesOnlyAdmin(
         @PageableDefault(size = 10, sort = ["sentAt"]) pageable: Pageable,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<Page<AdminMessagesSendResponse>> {

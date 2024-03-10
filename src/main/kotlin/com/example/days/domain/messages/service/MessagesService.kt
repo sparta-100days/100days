@@ -22,13 +22,9 @@ interface MessagesService {
 
     fun deleteReceiverMessages(receiverId: Long, userId: Long)
 
-    fun toUserCreateMessage(req: CreateMessageRequest, userId: Long) : AdminMessagesSendResponse
-
     fun readMessagesByAdmin(id: Long, userId: Long): AdminMessagesSendResponse
 
     fun readAllMessagesByAdmin(pageable: Pageable, userId: Long): Page<AdminMessagesSendResponse>
-
-    fun readAllMessagesOnlyAdmin(pageable: Pageable, userId: Long): Page<AdminMessagesSendResponse>
 
     fun deleteUserByAdminMessages(id: Long, userId: Long)
 

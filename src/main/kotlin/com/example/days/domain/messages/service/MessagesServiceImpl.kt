@@ -5,7 +5,6 @@ import com.example.days.domain.messages.dto.request.CreateMessageRequest
 import com.example.days.domain.messages.dto.response.AdminMessagesSendResponse
 import com.example.days.domain.messages.dto.response.MessageSendResponse
 import com.example.days.domain.messages.dto.response.MessagesReceiveResponse
-import com.example.days.domain.messages.model.AdminMessagesEntity
 import com.example.days.domain.messages.model.MessagesEntity
 import com.example.days.domain.messages.repository.AdminMessagesRepository
 import com.example.days.domain.messages.repository.MessagesRepository
@@ -49,10 +48,10 @@ class MessagesServiceImpl(
     @Transactional
     override fun sendMessages(id: Long, userId: Long): MessageSendResponse {
         val sender = messagesRepository.findByIdOrNull(id) ?: throw ModelNotFoundException("Messages", id)
-        if (sender.deletedBySender){
+        if (sender.deletedBySender) {
             throw ModelNotFoundException("Messages", id)
         }
-        if(sender.sender.id != userId){
+        if (sender.sender.id != userId) {
             throw NoSendMessagesException(id)
         }
         sender.readStatus()
@@ -63,16 +62,17 @@ class MessagesServiceImpl(
     // 수정할 필요 있음
     @Transactional(readOnly = true)
     override fun sendMessagesAll(pageable: Pageable, userId: Long): Page<MessageSendResponse> {
-        return messagesRepository.findAllBySenderIdAndDeletedBySenderFalseOrderByIdDesc(pageable, userId).map { MessageSendResponse.from(it) }
+        return messagesRepository.findAllBySenderIdAndDeletedBySenderFalseOrderByIdDesc(pageable, userId)
+            .map { MessageSendResponse.from(it) }
     }
 
     @Transactional
     override fun receiverMessages(id: Long, userId: Long): MessagesReceiveResponse {
         val receiver = messagesRepository.findByIdOrNull(id) ?: throw ModelNotFoundException("Messages", id)
-        if (receiver.deletedByReceiver){
+        if (receiver.deletedByReceiver) {
             throw ModelNotFoundException("Messages", id)
         }
-        if(receiver.receiver.id != userId){
+        if (receiver.receiver.id != userId) {
             throw NoReceiverMessagesException(id)
         }
         receiver.readStatus()
@@ -82,14 +82,15 @@ class MessagesServiceImpl(
 
     // 수정할 필요 있음
     @Transactional(readOnly = true)
-    override fun receiverMessagesAll(pageable: Pageable,userId: Long): Page<MessagesReceiveResponse> {
-        return messagesRepository.findAllByReceiverIdAndDeletedByReceiverFalseOrderByIdDesc(pageable, userId).map { MessagesReceiveResponse.from(it) }
+    override fun receiverMessagesAll(pageable: Pageable, userId: Long): Page<MessagesReceiveResponse> {
+        return messagesRepository.findAllByReceiverIdAndDeletedByReceiverFalseOrderByIdDesc(pageable, userId)
+            .map { MessagesReceiveResponse.from(it) }
     }
 
     @Transactional
     override fun deleteSenderMessages(id: Long, userId: Long) {
         val messages = messagesRepository.findByIdOrNull(id) ?: throw ModelNotFoundException("Messages", id)
-        if(messages.sender.id != userId){
+        if (messages.sender.id != userId) {
             throw NoSendMessagesException(id)
         }
         messages.deletedBySender()
@@ -99,27 +100,11 @@ class MessagesServiceImpl(
     @Transactional
     override fun deleteReceiverMessages(id: Long, userId: Long) {
         val messages = messagesRepository.findByIdOrNull(id) ?: throw ModelNotFoundException("Messages", id)
-        if(messages.receiver.id != userId){
+        if (messages.receiver.id != userId) {
             throw NoReceiverMessagesException(id)
         }
         messages.deletedByReceiver()
         messagesRepository.save(messages)
-    }
-
-    override fun toUserCreateMessage(req: CreateMessageRequest, userId: Long): AdminMessagesSendResponse {
-        val receiverNickname = userRepository.findByNickname(req.receiverNickname) ?: TODO()
-        val admin = adminRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("Admin", userId)
-        // 어드민 가능하게 해야함.
-        val adminMessages = adminMessagesRepository.save(
-            AdminMessagesEntity(
-                title = req.title,
-                content = req.content,
-                receiver = receiverNickname,
-                admin = admin,
-                deletedByReceiver = false
-            )
-        )
-        return AdminMessagesSendResponse.from(adminMessages)
     }
 
     @Transactional
@@ -129,7 +114,7 @@ class MessagesServiceImpl(
         val receiver = adminMessagesRepository.findByIdOrNull(id) ?: throw ModelNotFoundException("AdminMessages", id)
         if (receiver.deletedByReceiver) throw ModelNotFoundException("Messages", id)
 
-        if(receiver.receiver.id != user.id) throw NoReceiverMessagesException(userId)
+        if (receiver.receiver.id != user.id) throw NoReceiverMessagesException(userId)
 
         receiver.readStatus()
         adminMessagesRepository.save(receiver)
@@ -143,16 +128,13 @@ class MessagesServiceImpl(
             .map { AdminMessagesSendResponse.from(it) }
     }
 
-    override fun readAllMessagesOnlyAdmin(pageable: Pageable, userId: Long): Page<AdminMessagesSendResponse> {
-        return adminMessagesRepository.findAll(pageable).map { AdminMessagesSendResponse.from(it) }
-    }
-
     @Transactional
     override fun deleteUserByAdminMessages(id: Long, userId: Long) {
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
         val admin = adminRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("Admin", userId)
-        val adminMessages = adminMessagesRepository.findByIdOrNull(id) ?: throw ModelNotFoundException("AdminMessages", id)
-        if(adminMessages.receiver.id != user.id && admin.id != userId){
+        val adminMessages =
+            adminMessagesRepository.findByIdOrNull(id) ?: throw ModelNotFoundException("AdminMessages", id)
+        if (adminMessages.receiver.id != user.id && admin.id != userId) {
             throw NoReceiverMessagesException(id)
         }
         adminMessages.deletedByReceiver()

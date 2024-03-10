@@ -9,5 +9,4 @@ interface ReportService {
 
     fun reportUser(req: UserReportRequest, userId: Long): UserReportResponse
 
-    fun getReportUser(pageable: Pageable, nickname: String): Page<UserReportResponse>
 }

@@ -7,6 +7,12 @@ import com.example.days.domain.admin.dto.response.LoginAdminResponse
 import com.example.days.domain.admin.model.Admin
 import com.example.days.domain.admin.model.checkingEmailAndNicknameExists
 import com.example.days.domain.admin.repository.AdminRepository
+import com.example.days.domain.messages.dto.request.CreateMessageRequest
+import com.example.days.domain.messages.dto.response.AdminMessagesSendResponse
+import com.example.days.domain.messages.model.AdminMessagesEntity
+import com.example.days.domain.messages.repository.AdminMessagesRepository
+import com.example.days.domain.report.dto.response.UserReportResponse
+import com.example.days.domain.report.repository.ReportRepository
 import com.example.days.domain.user.dto.response.UserResponse
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.UserRole
@@ -26,6 +32,8 @@ class AdminServiceImpl(
     private val adminRepository: AdminRepository,
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val reportRepository: ReportRepository,
+    private val adminMessagesRepository: AdminMessagesRepository,
     private val jwtPlugin: JwtPlugin,
     private val regexFunc: RegexFunc
 ) : AdminService {
@@ -96,5 +104,29 @@ class AdminServiceImpl(
         val admin = adminRepository.findByIdOrNull(adminId) ?: throw ModelNotFoundException("Admin", adminId)
         admin.adminBanByAdmin()
         adminRepository.save(admin)
+    }
+
+    override fun getReportUser(pageable: Pageable, nickname: String): Page<UserReportResponse> {
+        return reportRepository.findByPageableAndNickname(pageable, nickname).map { UserReportResponse.from(it) }
+    }
+
+    override fun toUserCreateMessage(req: CreateMessageRequest, userId: Long): AdminMessagesSendResponse {
+        val receiverNickname = userRepository.findByNickname(req.receiverNickname) ?: TODO()
+        val admin = adminRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("Admin", userId)
+        // 어드민 가능하게 해야함.
+        val adminMessages = adminMessagesRepository.save(
+            AdminMessagesEntity(
+                title = req.title,
+                content = req.content,
+                receiver = receiverNickname,
+                admin = admin,
+                deletedByReceiver = false
+            )
+        )
+        return AdminMessagesSendResponse.from(adminMessages)
+    }
+
+    override fun readAllMessagesOnlyAdmin(pageable: Pageable, userId: Long): Page<AdminMessagesSendResponse> {
+        return adminMessagesRepository.findAll(pageable).map { AdminMessagesSendResponse.from(it) }
     }
 }
