@@ -6,12 +6,11 @@ import com.example.days.domain.report.model.UserReport
 import com.example.days.domain.report.repository.ReportRepository
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.repository.UserRepository
+import com.example.days.global.common.exception.AlreadyTenReportException
 import com.example.days.global.common.exception.ModelNotFoundException
 import com.example.days.global.common.exception.NotReportException
 import com.example.days.global.common.exception.NotSelfReportException
 import jakarta.transaction.Transactional
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
@@ -31,6 +30,10 @@ class ReportServiceImpl(
 
         if (user.nickname == req.reportedUserNickname) {
             throw NotSelfReportException("본인은 본인을 신고할 수 없습니다.")
+        }
+
+        if( reportedUserNickname.countReport >= 10 ){
+            throw AlreadyTenReportException("이 닉네임은 이미 10번 신고 처리되어 밴 처리 진행중입니다.")
         }
 
         val report = reportRepository.save(

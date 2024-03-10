@@ -88,4 +88,11 @@ class GlobalExceptionHandler {
             .status(HttpStatus.BAD_REQUEST)
             .body(ErrorResponse(e.message))
     }
+
+    @ExceptionHandler(AlreadyTenReportException::class)
+    fun handleAlreadyTenReportException(e: AlreadyTenReportException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(e.message))
+    }
 }
