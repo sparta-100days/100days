@@ -1,6 +1,8 @@
 package com.example.days.domain.resolution.dto.request
 
+import com.example.days.domain.category.model.Category
 import com.example.days.domain.resolution.model.Resolution
+import com.example.days.domain.user.model.User
 import jakarta.validation.constraints.NotBlank
 
 data class ResolutionRequest(
@@ -15,10 +17,11 @@ data class ResolutionRequest(
 
 ){
     companion object{
-        fun of(request: ResolutionRequest) = Resolution(
+        fun of(request: ResolutionRequest,category: Category, user: User) = Resolution(
             title = request.title,
             description = request.description,
-            category = request.category
+            category = category,
+            author = user
         )
     }
 }

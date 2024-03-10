@@ -12,13 +12,13 @@ class User(
     var email: String,
 
     @Column(name = "nickname")
-    val nickname: String,
+    var nickname: String,
 
     @Column(name = "password")
     var password: String,
 
     @Column(name = "birth")
-    val birth: LocalDate,
+    var birth: LocalDate,
 
     @Column(name = "isdelete")
     var isDelete: Boolean,
@@ -51,6 +51,6 @@ class User(
     fun userIsDeletedByAdmin() {
         isDelete = true
     }
-
-
 }
+
+

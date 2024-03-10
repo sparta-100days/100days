@@ -13,6 +13,4 @@ data class UserPrincipal(
         status.map { SimpleGrantedAuthority("STATUS_$it") },
         role.map { SimpleGrantedAuthority("ROLE_$it") }
     )
-
-
 }

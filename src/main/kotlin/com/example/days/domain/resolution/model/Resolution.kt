@@ -1,5 +1,6 @@
 package com.example.days.domain.resolution.model
 
+import com.example.days.domain.category.model.Category
 import com.example.days.domain.resolution.dto.request.ResolutionRequest
 import com.example.days.domain.resolution.dto.response.ResolutionResponse
 import com.example.days.domain.user.model.User
@@ -18,10 +19,10 @@ class Resolution(
     @Column(name = "description", nullable = false)
     var description: String,
 
-//    @ManyToOne
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    @JoinColumn(name = "author")
-//    val author: User,
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "author")
+    val author: User,
 
     @Column(name = "complete_status")
     val completeStatus: Boolean = false,
@@ -32,9 +33,10 @@ class Resolution(
     @Column(name = "progress")
     val progress: Long = 0,
 
-    // ^오^: 카테고리를 목적 페이지와 연관관계를 굳이 지어야 하는지에 대해 의문입니다.
-    @Column(name = "category")
-    var category: String,
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "category")
+    var category: Category,
 
     @Column(name = "like_count")
     var likeCount: Long = 0
@@ -47,7 +49,7 @@ class Resolution(
     @Column(name = "deadline")
     val deadline: LocalDateTime = createdAt.plusDays(100)
 
-    fun updateResolution(updatedTitle: String, updatedDescription: String, updatedCategory: String){
+    fun updateResolution(updatedTitle: String, updatedDescription: String, updatedCategory: Category){
         title = updatedTitle
         description = updatedDescription
         category = updatedCategory

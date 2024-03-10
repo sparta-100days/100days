@@ -15,7 +15,7 @@ data class UserResponse (
     val isDelete: Boolean,
     val status: Status,
 ){
-    //ㅇㅅㅇ createdAt과 updatedAt은 수정해야할지도?
+
     companion object {
         fun from(user: User): UserResponse {
             return UserResponse(

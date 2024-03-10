@@ -103,7 +103,7 @@ class MessagesController(
     }
 
 
-    @Operation(summary = "By 어드민 쪽지 단건 조회 Only 받은 유저만")
+    @Operation(summary = "FROM 어드민 쪽지 단건 조회 Only 받은 유저만")
     @PreAuthorize("hasRole(hasRole('USER'))")
     @GetMapping("/admins/{id}")
     fun readMessagesByAdmin(
@@ -114,7 +114,7 @@ class MessagesController(
         return ResponseEntity.status(HttpStatus.OK).body(messagesService.readMessagesByAdmin(id, userId))
     }
 
-    @Operation(summary = "By 어드민 받은 쪽지 전체 조회")
+    @Operation(summary = "FROM 어드민 받은 쪽지 전체 조회")
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/admins")
     fun readAllMessagesByAdmin(
@@ -125,7 +125,7 @@ class MessagesController(
         return ResponseEntity.status(HttpStatus.OK).body(messagesService.readAllMessagesByAdmin(pageable, userId))
     }
 
-    @Operation(summary = "TO 유저 By 어드민 쪽지 삭제")
+    @Operation(summary = "TO 유저 FROM 어드민 쪽지 삭제")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @DeleteMapping("/admins/{id}")
     fun deleteMessage(

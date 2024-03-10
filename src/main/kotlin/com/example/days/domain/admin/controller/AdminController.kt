@@ -92,7 +92,7 @@ class AdminController(
         return ResponseEntity.status(HttpStatus.OK).body(adminService.getReportUser(pageable, reportedUserNickname))
     }
 
-    @Operation(summary = "TO 유저 By 어드민 쪽지 생성")
+    @Operation(summary = "TO 유저 FROM 어드민 쪽지 생성")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/messages")
     fun toUserCreateMessage(
