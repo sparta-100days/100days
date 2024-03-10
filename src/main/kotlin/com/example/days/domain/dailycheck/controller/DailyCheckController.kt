@@ -3,8 +3,10 @@ package com.example.days.domain.dailycheck.controller
 import com.example.days.domain.dailycheck.dto.request.DailyCheckRequest
 import com.example.days.domain.dailycheck.dto.response.DailyCheckResponse
 import com.example.days.domain.dailycheck.service.DailyCheckService
+import com.example.days.global.infra.security.UserPrincipal
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -22,17 +24,21 @@ class DailyCheckController(
     @PostMapping
     fun createDailyCheck(
         @PathVariable resolutionId: Long,
-        @RequestBody dailyCheckRequest: DailyCheckRequest
+        @RequestBody dailyCheckRequest: DailyCheckRequest,
+        @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<DailyCheckResponse>{
-        val createdDailyCheck = dailyCheckService.createDailyCheck(resolutionId, dailyCheckRequest)
+        val userId = userPrincipal.id
+        val createdDailyCheck = dailyCheckService.createDailyCheck(resolutionId, userId, dailyCheckRequest)
         return ResponseEntity.status(HttpStatus.CREATED).body(createdDailyCheck)
     }
 
     @GetMapping
     fun getDailyCheck(
-        @PathVariable resolutionId: Long
+        @PathVariable resolutionId: Long,
+        @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<List<DailyCheckResponse>>{
-        val dailyCheck = dailyCheckService.getDailyCheckByList(resolutionId)
+        val userId = userPrincipal.id
+        val dailyCheck = dailyCheckService.getDailyCheckByList(resolutionId, userId)
         return ResponseEntity.ok(dailyCheck)
     }
 
@@ -40,18 +46,22 @@ class DailyCheckController(
     fun updateDailyCheckMemo(
         @PathVariable resolutionId: Long,
         @PathVariable dailyCheckId: Long,
-        @RequestBody dailyCheckRequest: DailyCheckRequest
+        @RequestBody dailyCheckRequest: DailyCheckRequest,
+        @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<DailyCheckResponse>{
-        val updatedDailyCheck = dailyCheckService.updateDailyCheck(resolutionId, dailyCheckId, dailyCheckRequest)
+        val userId = userPrincipal.id
+        val updatedDailyCheck = dailyCheckService.updateDailyCheck(resolutionId, userId, dailyCheckId, dailyCheckRequest)
         return ResponseEntity.ok(updatedDailyCheck)
     }
 
     @DeleteMapping("/{dailyCheckId}")
     fun deleteDailyCheck(
         @PathVariable resolutionId: Long,
-        @PathVariable dailyCheckId: Long
+        @PathVariable dailyCheckId: Long,
+        @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<Unit>{
-        dailyCheckService.deleteDailyCheck(dailyCheckId)
+        val userId = userPrincipal.id
+        dailyCheckService.deleteDailyCheck(resolutionId, dailyCheckId, userId)
         return ResponseEntity.noContent().build()
     }
 }
