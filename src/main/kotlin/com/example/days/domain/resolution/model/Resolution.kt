@@ -8,6 +8,7 @@ import com.example.days.global.entity.BaseEntity
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity
@@ -25,13 +26,13 @@ class Resolution(
     val author: User,
 
     @Column(name = "complete_status")
-    val completeStatus: Boolean = false,
+    var completeStatus: Boolean = false,
 
     @Column(name = "daily_status")
-    val dailyStatus: Boolean = false,
+    var dailyStatus: Boolean = false,
 
     @Column(name = "progress")
-    val progress: Long = 0,
+    var progress: Long = 0,
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -47,7 +48,11 @@ class Resolution(
     val id: Long? = null
 
     @Column(name = "deadline")
-    val deadline: LocalDateTime = createdAt.plusDays(100)
+    val deadline: LocalDate = createdAt.toLocalDate().plusDays(100)
+
+    // 테스트용
+//    @Column(name = "deadline")
+//    val deadline: LocalDateTime = createdAt.plusMinutes(1)
 
     fun updateResolution(updatedTitle: String, updatedDescription: String, updatedCategory: Category){
         title = updatedTitle
@@ -57,6 +62,14 @@ class Resolution(
 
     fun updateLikeCount(b: Boolean){
         if(b) likeCount += 1 else likeCount -=1
+    }
+
+    fun updateProgress(){
+        dailyStatus = true
+        progress += 1
+        if(progress == 100L){
+            completeStatus = true
+        }
     }
 }
 

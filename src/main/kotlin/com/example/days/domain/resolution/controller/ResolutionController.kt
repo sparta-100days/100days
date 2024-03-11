@@ -18,9 +18,6 @@ import org.springframework.web.bind.annotation.*
 class ResolutionController (
     private val resolutionService: ResolutionService
 ){
-
-    // ^오^: 기본적인 CRUD 만 추가했습니다.
-
     @Operation(summary = "목표 생성")
     @PostMapping
     fun createResolution(
