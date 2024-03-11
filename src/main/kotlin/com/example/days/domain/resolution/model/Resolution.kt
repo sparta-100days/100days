@@ -28,7 +28,7 @@ class Resolution(
     val completeStatus: Boolean = false,
 
     @Column(name = "daily_status")
-    val dailyStatus: Boolean = false,
+    var dailyStatus: Boolean = false,
 
     @Column(name = "progress")
     var progress: Long = 0,
@@ -60,6 +60,7 @@ class Resolution(
     }
 
     fun updateProgress(){
+        dailyStatus = true
         progress += 1
     }
 }

@@ -8,6 +8,7 @@ import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.common.SortOrder
 import org.springframework.data.domain.Page
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -55,6 +56,17 @@ class ResolutionServiceImpl(
             resolutionRepository.delete(resolution)
         }
         else TODO("예외처리")
+    }
+
+//    테스트 시 ( 3분에 한번 동작 )
+//    @Scheduled(fixedRate = 180000)
+    @Scheduled(cron = "0 0 0 * * *")
+    fun resetResolutionDailyStatus() {
+        // ^오^
+        // resetResolutionDailyStatus, resetResolutionDailyStatus2 이렇게 2가지 버젼이 있습니다.
+        // 첫번째 건 queryDSL, 두번째건 JPQL 을 이용한 메서드입니다.
+        // 어떤 방법이 이득인지 고민입니다.
+        resolutionRepository.resetResolutionDailyStatus2()
     }
 
     fun getByIdOrNull(id: Long) = resolutionRepository.findByIdOrNull(id) ?: TODO("예외처리 구현예정")

@@ -19,13 +19,17 @@ class DailyCheckServiceImpl(
         val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: TODO("예외처리")
 
         if(userId == resolution.author.id){
-            return resolutionRepository.findByIdOrNull(resolutionId)
-                ?.let{
-                    it.updateProgress()
-                    dailyCheckRepository.save(DailyCheckRequest.of(request, it))
-                }
-                ?.let { DailyCheckResponse.from(it) }
-                ?: TODO("예외처리")
+            if(!resolution.dailyStatus){
+                return resolutionRepository.findByIdOrNull(resolutionId)
+                    ?.let{
+                        it.updateProgress()
+                        dailyCheckRepository.save(DailyCheckRequest.of(request, it))
+                    }
+                    ?.let { DailyCheckResponse.from(it) }
+                    ?: TODO("예외처리")
+            }
+            else
+                TODO("이미 데일리 체크를 끝냈을 때")
         }
         else{
             TODO("같은 사용자가 아닐 때")

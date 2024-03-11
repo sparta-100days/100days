@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
 class ResolutionRepositoryImpl: QueryDslSupport(), QueryResolutionRepository {
@@ -33,5 +34,13 @@ class ResolutionRepositoryImpl: QueryDslSupport(), QueryResolutionRepository {
 
         val contents = query.fetch()
         return PageImpl(contents, pageable, totalCount)
+    }
+
+    @Transactional
+    override fun resetResolutionDailyStatus() {
+        queryFactory
+            .update(resolution)
+            .set(resolution.dailyStatus, false)
+            .execute()
     }
 }
