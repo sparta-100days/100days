@@ -5,6 +5,7 @@ import com.example.days.domain.resolution.dto.request.ResolutionRequest
 import com.example.days.domain.resolution.model.Resolution
 import com.example.days.domain.user.model.User
 import com.fasterxml.jackson.annotation.JsonFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class ResolutionResponse(
@@ -18,6 +19,8 @@ data class ResolutionResponse(
     val likeCount: Long,
 
     // ^오^: 시간 형식으로 값을 바꿔주는 어노테이션
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    val deadline: LocalDate,
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     val createdAt: LocalDateTime,
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -35,7 +38,8 @@ data class ResolutionResponse(
             progress = resolution.progress,
             likeCount = resolution.likeCount,
             createdAt = resolution.createdAt,
-            updatedAt = resolution.updatedAt
+            updatedAt = resolution.updatedAt,
+            deadline = resolution.deadline
         )
     }
 }
