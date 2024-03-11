@@ -14,6 +14,7 @@ data class ResolutionResponse(
     val completeStatus: Boolean,
     val dailyStatus: Boolean,
     val category: String,
+    val progress: Long,
     val likeCount: Long,
 
     // ^오^: 시간 형식으로 값을 바꿔주는 어노테이션
@@ -31,6 +32,7 @@ data class ResolutionResponse(
             completeStatus = resolution.completeStatus,
             dailyStatus = resolution.dailyStatus,
             category = resolution.category.name,
+            progress = resolution.progress,
             likeCount = resolution.likeCount,
             createdAt = resolution.createdAt,
             updatedAt = resolution.updatedAt

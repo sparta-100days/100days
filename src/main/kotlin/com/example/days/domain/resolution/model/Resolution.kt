@@ -31,7 +31,7 @@ class Resolution(
     val dailyStatus: Boolean = false,
 
     @Column(name = "progress")
-    val progress: Long = 0,
+    var progress: Long = 0,
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -57,6 +57,10 @@ class Resolution(
 
     fun updateLikeCount(b: Boolean){
         if(b) likeCount += 1 else likeCount -=1
+    }
+
+    fun updateProgress(){
+        progress += 1
     }
 }
 
