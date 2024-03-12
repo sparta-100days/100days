@@ -1,8 +1,10 @@
 package com.example.days.domain.user.model
 
 import com.example.days.global.entity.BaseEntity
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "users")
@@ -32,6 +34,8 @@ class User(
     val role: UserRole,
 
     @Column(name = "count_report") var countReport: Int = 0,
+
+    @Column(name = "period") var period: LocalDate,
 
 ): BaseEntity() {
 

@@ -1,5 +1,6 @@
 package com.example.days.domain.user.service
 
+import com.example.days.domain.admin.dto.request.UserBanRequest
 import com.example.days.domain.user.dto.request.*
 import com.example.days.domain.user.dto.response.EmailResponse
 import com.example.days.domain.user.dto.response.LoginResponse
@@ -19,6 +20,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Service
@@ -67,7 +69,8 @@ class UserServiceImpl(
             birth = request.birth,
             isDelete = false,
             status = Status.ACTIVE,
-            role = UserRole.USER
+            role = UserRole.USER,
+            period = LocalDate.now() // 고칠 필요가 잇을까? 내일 튜터님께 찾아가야겠다
         ).let {
             userRepository.save(it)
         }.let { SignUpResponse.from(it) }
