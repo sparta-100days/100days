@@ -2,6 +2,7 @@ package com.example.days.domain.resolution.controller
 
 import com.example.days.domain.resolution.dto.request.ResolutionRequest
 import com.example.days.domain.resolution.dto.response.ResolutionResponse
+import com.example.days.domain.resolution.dto.response.SimpleResolutionResponse
 import com.example.days.domain.resolution.service.ResolutionService
 import com.example.days.global.common.SortOrder
 import com.example.days.global.infra.security.UserPrincipal
@@ -69,6 +70,13 @@ class ResolutionController (
         val userId = userPrincipal.id
         resolutionService.deleteResolution(resolutionId, userId)
         return ResponseEntity.noContent().build()
+    }
+
+    @Operation(summary = "목표 랭킹 API")
+    @GetMapping("/ranking")
+    fun getResolutionRanking(): ResponseEntity<List<SimpleResolutionResponse>>{
+        val rankedResolution = resolutionService.getResolutionRanking()
+        return ResponseEntity.ok(rankedResolution)
     }
 
 }

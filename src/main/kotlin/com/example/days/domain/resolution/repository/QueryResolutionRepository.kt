@@ -6,6 +6,4 @@ import org.springframework.data.domain.Page
 
 interface QueryResolutionRepository {
     fun findByPageable(page: Int, sortOrder: SortOrder?): Page<Resolution>
-
-    fun resetResolutionDailyStatus()
 }

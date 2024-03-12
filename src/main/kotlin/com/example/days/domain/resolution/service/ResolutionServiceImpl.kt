@@ -3,23 +3,25 @@ package com.example.days.domain.resolution.service
 import com.example.days.domain.category.repository.CategoryRepository
 import com.example.days.domain.resolution.dto.request.ResolutionRequest
 import com.example.days.domain.resolution.dto.response.ResolutionResponse
+import com.example.days.domain.resolution.dto.response.SimpleResolutionResponse
 import com.example.days.domain.resolution.repository.ResolutionRepository
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.common.SortOrder
 import org.springframework.data.domain.Page
+import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 
 @Service
 class ResolutionServiceImpl(
     private val resolutionRepository: ResolutionRepository,
     private val userRepository: UserRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val redisTemplate: RedisTemplate<Any, Any>,
 ) : ResolutionService {
     @Transactional
     override fun createResolution(request: ResolutionRequest, userId: Long): ResolutionResponse {
@@ -71,6 +73,19 @@ class ResolutionServiceImpl(
 //        val today: LocalDateTime = LocalDateTime.now()
         val today: LocalDate = LocalDate.now()
         resolutionRepository.checkResolutionDeadline(today)
+    }
+
+    override fun getResolutionRanking(): List<SimpleResolutionResponse> {
+        val resolutionRankingEntries
+        = redisTemplate.opsForZSet().reverseRangeWithScores("ranking", 0, 9) ?: emptySet()
+
+        return resolutionRankingEntries.map { entry ->
+            val resolution = resolutionRepository.findByIdOrNull(entry.value as Long) ?: TODO()
+            val title = resolution.title
+            val category = resolution.category.name
+            val likeCount = resolution.likeCount
+            SimpleResolutionResponse(title, category, likeCount)
+        }
     }
 
     fun getByIdOrNull(id: Long) = resolutionRepository.findByIdOrNull(id) ?: TODO("예외처리 구현예정")

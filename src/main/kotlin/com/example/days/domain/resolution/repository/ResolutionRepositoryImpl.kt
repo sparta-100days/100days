@@ -1,6 +1,7 @@
 package com.example.days.domain.resolution.repository
 
 import com.example.days.domain.resolution.model.QResolution
+import com.example.days.domain.resolution.model.QResolutionRanking
 import com.example.days.domain.resolution.model.Resolution
 import com.example.days.global.common.SortOrder
 import com.example.days.global.infra.queryDSL.QueryDslSupport
@@ -34,13 +35,5 @@ class ResolutionRepositoryImpl: QueryDslSupport(), QueryResolutionRepository {
 
         val contents = query.fetch()
         return PageImpl(contents, pageable, totalCount)
-    }
-
-    @Transactional
-    override fun resetResolutionDailyStatus() {
-        queryFactory
-            .update(resolution)
-            .set(resolution.dailyStatus, false)
-            .execute()
     }
 }
