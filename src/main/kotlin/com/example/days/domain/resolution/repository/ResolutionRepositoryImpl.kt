@@ -1,7 +1,6 @@
 package com.example.days.domain.resolution.repository
 
 import com.example.days.domain.resolution.model.QResolution
-import com.example.days.domain.resolution.model.QResolutionRanking
 import com.example.days.domain.resolution.model.Resolution
 import com.example.days.global.common.SortOrder
 import com.example.days.global.infra.queryDSL.QueryDslSupport
