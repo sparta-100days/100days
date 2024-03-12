@@ -18,6 +18,7 @@ import com.example.days.domain.user.dto.response.UserResponse
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.UserRole
 import com.example.days.domain.user.repository.UserRepository
+import com.example.days.global.common.exception.AlreadyBANException
 import com.example.days.global.common.exception.ModelNotFoundException
 import com.example.days.global.infra.regex.RegexFunc
 import com.example.days.global.infra.security.jwt.JwtPlugin
@@ -90,6 +91,9 @@ class AdminServiceImpl(
     @Transactional
     override fun userBanByAdmin(userId: Long, req: UserBanRequest): String {
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
+        if(user.status == Status.BAN){
+            throw AlreadyBANException("이미 밴 처리된 계정입니다.")
+        }
         user.period= req.period
         user.userBanByAdmin()
         userRepository.save(user)

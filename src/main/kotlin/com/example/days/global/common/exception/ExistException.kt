@@ -33,3 +33,7 @@ data class NotMessagesException(val status: String) : RuntimeException(
 data class AlreadyTenReportException(val nickname: String) : RuntimeException(
     "이 닉네임은 이미 10번 신고 처리되어 밴 처리 진행중입니다."
 )
+
+data class AlreadyBANException(val nickname: String) : RuntimeException(
+    "이미 밴으로 처리된 계정입니다."
+)
