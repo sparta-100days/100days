@@ -1,9 +1,6 @@
 package com.example.days.domain.resolution.dto.response
 
-import com.example.days.domain.category.model.Category
-import com.example.days.domain.resolution.dto.request.ResolutionRequest
 import com.example.days.domain.resolution.model.Resolution
-import com.example.days.domain.user.model.User
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
