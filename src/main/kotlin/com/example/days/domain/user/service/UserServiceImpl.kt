@@ -91,6 +91,11 @@ class UserServiceImpl(
         }
     }
 
+    override fun getInfo(userId: UserPrincipal): ModifyInfoResponse {
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
+        return user.let { ModifyInfoResponse.from(it) }
+    }
+
     @Transactional
     override fun modifyInfo(userId: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse {
         val user = userRepository.findByIdOrNull(userId.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
