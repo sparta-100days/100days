@@ -82,10 +82,10 @@ class UserServiceImpl(
 
     @Transactional
     override fun changeUserPassword(request: EmailRequest) {
-        val mail = mailUtility.emailSender(request.email, "2")
         val user = userRepository.findUserByEmail(request.email)
 
         if (user != null) {
+            val mail = mailUtility.emailSender(request.email, "2")
             user.email = request.email
             user.password = mail
             userRepository.save(user)
