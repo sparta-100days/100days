@@ -35,7 +35,6 @@ class User(
 
     @Column(name = "count_report") var countReport: Int = 0,
 
-    @Column(name = "period") var period: LocalDate,
 
 ): BaseEntity() {
 
@@ -43,6 +42,8 @@ class User(
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
+
+    @Column(name = "period") var period: LocalDate? = null
 
     fun userDeleteByAdmin() {
         status = Status.WITHDRAW
