@@ -104,7 +104,7 @@ class MessagesController(
 
 
     @Operation(summary = "FROM 어드민 쪽지 단건 조회 Only 받은 유저만")
-    @PreAuthorize("hasRole(hasRole('USER'))")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/admins/{id}")
     fun readMessagesByAdmin(
         @PathVariable id: Long,
