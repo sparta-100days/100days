@@ -1,6 +1,5 @@
 package com.example.days.global.infra.redis
 
-import com.example.days.global.support.MailType
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.data.redis.core.ValueOperations
 import org.springframework.stereotype.Component
