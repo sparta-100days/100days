@@ -17,7 +17,7 @@ class EmailRandomCode(
             code = (1..length)
                 .map { codePattern.random() }
                 .joinToString("")
-        }  while (!regexFunc.isValidPassword(code))
+        } while (!regexFunc.isValidPassword(code))
 
         return code
     }
