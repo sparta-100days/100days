@@ -5,6 +5,7 @@ import java.util.regex.Pattern
 
 @Component
 class RegexFunc {
+    val pass = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[.!@#%^&*])[a-zA-Z0-9.!@#%^&*]{4,20}\$"
 
     // userEmail
     fun regexUserEmail(userEmail: String): String {
@@ -14,8 +15,12 @@ class RegexFunc {
 
     // password
     fun regexPassword(userPassword: String): String {
-        val pass = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[.!@#%^&*])[a-zA-Z0-9.!@#%^&*]{4,20}\$"
         if (!Pattern.matches(pass, userPassword)) throw IllegalArgumentException("비밀번호 형식이 올바르지 않습니다.") else return userPassword
+    }
+
+    // isValidPassword
+    fun isValidPassword(userPassword: String): Boolean {
+        return Pattern.matches(pass, userPassword)
     }
 
 }

@@ -14,6 +14,7 @@ import com.example.days.global.infra.mail.MailUtility
 import com.example.days.global.infra.regex.RegexFunc
 import com.example.days.global.infra.security.UserPrincipal
 import com.example.days.global.infra.security.jwt.JwtPlugin
+import com.example.days.global.support.MailType
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -85,7 +86,7 @@ class UserServiceImpl(
         val user = userRepository.findUserByEmail(request.email)
 
         if (user != null) {
-            val mail = mailUtility.emailSender(request.email, "2")
+            val mail = mailUtility.emailSender(request.email, MailType.CHANGEPASSWORD)
             user.email = request.email
             user.password = mail
             userRepository.save(user)
@@ -129,6 +130,9 @@ class UserServiceImpl(
 
     override fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest) {
         val user = userRepository.findByIdOrNull(userId.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
+
+        if (encoder.matches(request.password, user.password))
+            throw IllegalArgumentException("이전에 사용한 비밀번호와 같은 비밀번호는 사용할 수 없습니다.")
 
         if (request.password == request.newPassword) {
             user.password = encoder.encode(regexFunc.regexPassword(request.newPassword))

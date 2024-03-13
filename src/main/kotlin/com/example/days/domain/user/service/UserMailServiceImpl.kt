@@ -4,6 +4,7 @@ import com.example.days.domain.user.dto.request.EmailRequest
 import com.example.days.domain.user.model.Mail
 import com.example.days.domain.user.repository.MailRepository
 import com.example.days.global.infra.mail.MailUtility
+import com.example.days.global.support.MailType
 import org.springframework.stereotype.Service
 
 @Service
@@ -13,7 +14,7 @@ class UserMailServiceImpl(
 ) : UserMailService {
 
     override fun sendVerificationEmail(request: EmailRequest) {
-        val mail = mailUtility.emailSender(request.email, "1")
+        val mail = mailUtility.emailSender(request.email, MailType.VERIFYCODE)
 
         mailRepository.save(
             Mail(

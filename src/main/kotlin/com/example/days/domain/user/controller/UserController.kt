@@ -23,7 +23,7 @@ class UserController(
         return ResponseEntity.status(HttpStatus.OK).body(userService.searchUserEmail(nickname))
     }
 
-    @Operation(summary = "비밀번호 찾기")
+    @Operation(summary = "비밀번호 분실시 재발급(메일보내기)")
     @PatchMapping("/searchPass")
     fun changeUserPassword(@RequestBody request: EmailRequest): ResponseEntity<Unit> {
         userService.changeUserPassword(request)
