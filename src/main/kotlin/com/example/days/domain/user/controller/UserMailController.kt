@@ -16,7 +16,7 @@ class UserMailController(
     @Operation(summary = "인증번호 보내기")
     @PostMapping("/sendmail")
     fun mailSend(@RequestBody request: EmailRequest): ResponseEntity<Unit> {
-        userMailService.sendEmail(request)
+        userMailService.sendVerificationEmail(request)
         return ResponseEntity.status(HttpStatus.OK).build()
     }
 

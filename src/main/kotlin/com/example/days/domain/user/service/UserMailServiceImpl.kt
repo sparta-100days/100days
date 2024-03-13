@@ -12,8 +12,8 @@ class UserMailServiceImpl(
     val mailUtility: MailUtility
 ) : UserMailService {
 
-    override fun sendEmail(request: EmailRequest) {
-        val mail = mailUtility.sendMailTemplate(request.email)
+    override fun sendVerificationEmail(request: EmailRequest) {
+        val mail = mailUtility.emailSender(request.email, "1")
 
         mailRepository.save(
             Mail(

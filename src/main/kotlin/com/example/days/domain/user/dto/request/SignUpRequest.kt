@@ -1,5 +1,7 @@
 package com.example.days.domain.user.dto.request
 
+import com.example.days.domain.user.model.User
+import com.example.days.domain.user.model.UserRole
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
