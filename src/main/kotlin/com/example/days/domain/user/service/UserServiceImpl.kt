@@ -56,6 +56,9 @@ class UserServiceImpl(
         if (userRepository.existsByEmail(regexFunc.regexUserEmail(request.email)))
             throw IllegalArgumentException("이미 동일한 이메일이 존재합니다.")
 
+        if (userRepository.existsByNickname(request.nickname))
+            throw IllegalArgumentException("이름은 중복될 수 없습니다.")
+
         val pass =
             if (request.password == request.newPassword) encoder.encode(regexFunc.regexPassword(request.password))
             else throw IllegalArgumentException("비밀번호 확인이 일치하지 않습니다.")
