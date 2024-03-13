@@ -1,5 +1,6 @@
 package com.example.days.global.infra.mail
 
+import com.example.days.global.infra.redis.RedisUtil
 import com.example.days.global.infra.regex.RegexFunc
 import com.example.days.global.support.EmailRandomCode
 import com.example.days.global.support.MailType
@@ -15,6 +16,7 @@ class MailUtility(
     private val passwordEncoder: PasswordEncoder,
     private val regexFunc: RegexFunc,
     private val emailRandomCode: EmailRandomCode,
+    private val redisUtil: RedisUtil,
     @Value("\${mail.username}") private val username: String,
     @Autowired val javaMailSender: JavaMailSender
 ) {
@@ -29,6 +31,7 @@ class MailUtility(
         helper.setTo(email)
 
         if (type == MailType.VERIFYCODE) {
+            redisUtil.setDataExpire(code, email, 50*5L)
             helper.setSubject("회원가입을 위한 이메일 인증번호입니다.")
             helper.setText("이메일 인증 번호는 $code 입니다.")
             helper.setFrom(username)
