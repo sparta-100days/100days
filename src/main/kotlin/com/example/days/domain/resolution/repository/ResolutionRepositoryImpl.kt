@@ -35,4 +35,10 @@ class ResolutionRepositoryImpl: QueryDslSupport(), QueryResolutionRepository {
         val contents = query.fetch()
         return PageImpl(contents, pageable, totalCount)
     }
+    override fun getResolutionRanking(): List<Resolution> {
+        return queryFactory.selectFrom(resolution)
+            .limit(10)
+            .orderBy(resolution.likeCount.desc())
+            .fetch()
+    }
 }

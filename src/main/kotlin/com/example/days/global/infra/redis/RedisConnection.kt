@@ -9,21 +9,22 @@ import org.springframework.data.redis.cache.RedisCacheManager
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
 import java.time.Duration
 
 @Configuration
 @EnableCaching
 class RedisConnection(
-    @Value("\${spring.data.redis.host")
+    @Value("\${spring.data.redis.host}")
     val host: String,
-    @Value("\${spring.data.redis.port")
+    @Value("\${spring.data.redis.port}")
     val port: Int
 ) {
     // Redis 와의 연결을 위한 설정.
     // Lettuce: Redis 클라이언트 라이브러리. Redis 를 비동기 형태로 사용하기 위한 팩토리를 지원한다.
     // 기본적으로 비동기 작업을 지원하지만 동기적으로도 가능하다고 함.
-    // RedisStandaloneConfiguration: Redis를 스탠드얼론 모드로 설정한 후 서버의 설정을 정의
+    // RedisStandaloneConfiguration: Redis 를 스탠드얼론 모드로 설정한 후 서버의 설정을 정의
     // Redis 의 모드는 여러가지가 있다고 합니다. 클러스터, 센티넬, 복제, 파이프라인 등등...
     @Bean
     fun lettuceConnectionFactory(): LettuceConnectionFactory{
@@ -63,7 +64,7 @@ class RedisConnection(
         return RedisTemplate<Any, Any>().apply{
             this.connectionFactory = lettuceConnectionFactory()
             this.keySerializer = StringRedisSerializer()
-            this.valueSerializer = StringRedisSerializer()
+            this.valueSerializer = GenericJackson2JsonRedisSerializer()
             this.hashKeySerializer = StringRedisSerializer()
             this.hashValueSerializer = StringRedisSerializer()
         }
