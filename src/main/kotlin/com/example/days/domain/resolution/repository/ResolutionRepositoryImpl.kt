@@ -35,12 +35,10 @@ class ResolutionRepositoryImpl: QueryDslSupport(), QueryResolutionRepository {
         val contents = query.fetch()
         return PageImpl(contents, pageable, totalCount)
     }
-
-    @Transactional
-    override fun resetResolutionDailyStatus() {
-        queryFactory
-            .update(resolution)
-            .set(resolution.dailyStatus, false)
-            .execute()
+    override fun getResolutionRanking(): List<Resolution> {
+        return queryFactory.selectFrom(resolution)
+            .limit(10)
+            .orderBy(resolution.likeCount.desc())
+            .fetch()
     }
 }
