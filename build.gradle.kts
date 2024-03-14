@@ -50,6 +50,9 @@ dependencies {
     // redis
     implementation ("org.springframework.boot:spring-boot-starter-data-redis")
 
+    //cache
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+
     // postgres
     runtimeOnly("org.postgresql:postgresql")
 
