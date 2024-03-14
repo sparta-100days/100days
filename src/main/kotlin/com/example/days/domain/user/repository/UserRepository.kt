@@ -15,10 +15,12 @@ interface UserRepository: JpaRepository<User, Long> {
     fun findUserByEmail(email: String): User?
     fun findByNickname(nickname: String): User?
 
+    fun findUserById(id: Long): User?
+
     @Modifying
     @Transactional
     @Query("DELETE FROM User u WHERE u.status = :status AND u.updatedAt <= :updatedAt")
-    fun deleteUsersByStatusAndupdatedAtIsLessThanEqualBatch(status: Status, updatedAt: LocalDateTime): Int
+    fun deleteUsersByStatusAndUpdatedAtIsLessThanEqualBatch(status: Status, updatedAt: LocalDateTime): Int
 
     @Modifying
     @Transactional
