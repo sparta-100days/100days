@@ -103,4 +103,11 @@ class GlobalExceptionHandler {
             .body(ErrorResponse(e.message))
     }
 
+    @ExceptionHandler(NotHaveSearchException::class)
+    fun handleNotHaveSearchException(e: NotHaveSearchException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(e.message))
+    }
+
 }

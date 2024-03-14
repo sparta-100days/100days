@@ -1,6 +1,5 @@
 package com.example.days.global.common.exception
 
-import com.example.days.domain.user.model.Status
 
 data class EmailExistException(val email: String) : RuntimeException(
     "이미 존재하는 회사 이메일입니다."
@@ -36,4 +35,8 @@ data class AlreadyTenReportException(val nickname: String) : RuntimeException(
 
 data class AlreadyBANException(val nickname: String) : RuntimeException(
     "이미 밴으로 처리된 계정입니다."
+)
+
+data class NotHaveSearchException(val title: String) : RuntimeException(
+    "검색 결과가 존재하지 않습니다."
 )
