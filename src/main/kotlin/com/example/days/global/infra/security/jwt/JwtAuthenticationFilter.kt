@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
@@ -47,21 +48,7 @@ class JwtAuthenticationFilter(
                     SecurityContextHolder.getContext().authentication = authentication
 
                 }.onFailure {
-                    val refreshToken = request.getHeader(HttpHeaders.AUTHORIZATION)?.let { headerValue ->
-                        BEARER_PATTERN.find(headerValue)?.groupValues?.get(1)
-                    }
 
-                    refreshToken?.let { e ->
-                        try {
-                            jwtPlugin.vaildateRefreshToken(refreshToken, jwt)
-
-                            val newAccessToken = jwtPlugin.recreateAccessToken(jwt)
-                            response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer $newAccessToken")
-
-                        } catch (e : IllegalArgumentException) {
-                            throw IllegalArgumentException("refresh token이 만료되었습니다.")
-                        }
-                    }
                 }
         }
         filterChain.doFilter(request, response)
