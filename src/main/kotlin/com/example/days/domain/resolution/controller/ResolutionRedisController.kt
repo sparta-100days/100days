@@ -22,7 +22,7 @@ class ResolutionRedisController(
 ) {
 
     @Operation(summary = "목표 검색")
-    @GetMapping("/api/searchLog")
+    @GetMapping("/search")
     fun searchByResolution(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @RequestParam title: String,
@@ -32,7 +32,7 @@ class ResolutionRedisController(
     }
 
     @Operation(summary = "최근 검색 기록: 저장")
-    @PostMapping("/api/searchLog")
+    @PostMapping("/searchLog")
     fun saveRecentSearchLog(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @RequestParam title: String
@@ -42,7 +42,7 @@ class ResolutionRedisController(
     }
 
     @Operation(summary = "최근 검색 기록: 조회")
-    @GetMapping("/api/searchLog")
+    @GetMapping("/searchLog")
     fun findRecentSearchLog(
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<List<SearchLogRedis>?>{
@@ -51,7 +51,7 @@ class ResolutionRedisController(
     }
 
     @Operation(summary = "최근 검색 기록: 삭제")
-    @DeleteMapping("/api/searchLog")
+    @DeleteMapping("/searchLog")
     fun deleteRecentSearchLog(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @RequestParam title: String

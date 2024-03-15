@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableJpaAuditing
 @EnableJpaRepositories
 @SpringBootApplication
-@EnableCaching
 class Application
 
 fun main(args: Array<String>) {
