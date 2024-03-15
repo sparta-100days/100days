@@ -4,7 +4,6 @@ import com.example.days.domain.user.model.UserRole
 import com.example.days.global.infra.redis.RedisUtil
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.jsonwebtoken.Claims
-import io.jsonwebtoken.Header
 import io.jsonwebtoken.Jws
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
