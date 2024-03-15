@@ -98,7 +98,7 @@ class JwtPlugin(
             .build()
 
         return Jwts.builder()
-            .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+            .header().add("typ", "JWT").and()
             .subject(id.toString())
             .issuer(issuer)
             .issuedAt(Date.from(now))

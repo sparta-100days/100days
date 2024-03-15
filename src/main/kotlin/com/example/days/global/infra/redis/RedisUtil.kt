@@ -1,10 +1,5 @@
 package com.example.days.global.infra.redis
 
-import com.example.days.domain.admin.repository.AdminRepository
-import com.example.days.domain.user.model.RefreshToken
-//import com.example.days.domain.user.repository.TokenRepository
-import com.example.days.domain.user.repository.UserRepository
-import org.springframework.data.redis.core.HashOperations
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.data.redis.core.ValueOperations
