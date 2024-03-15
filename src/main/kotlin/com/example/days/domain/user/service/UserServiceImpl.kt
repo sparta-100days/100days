@@ -5,12 +5,14 @@ import com.example.days.domain.user.dto.response.EmailResponse
 import com.example.days.domain.user.dto.response.LoginResponse
 import com.example.days.domain.user.dto.response.ModifyInfoResponse
 import com.example.days.domain.user.dto.response.SignUpResponse
+import com.example.days.domain.user.model.RefreshToken
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserRole
 import com.example.days.domain.user.repository.QueryDslUserRepository
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.infra.mail.MailUtility
+import com.example.days.global.infra.redis.RedisUtil
 import com.example.days.global.infra.regex.RegexFunc
 import com.example.days.global.infra.security.UserPrincipal
 import com.example.days.global.infra.security.jwt.JwtPlugin
@@ -24,11 +26,12 @@ import java.time.LocalDateTime
 
 @Service
 class UserServiceImpl(
-    val userRepository: UserRepository,
-    val queryDslUserRepository: QueryDslUserRepository,
-    val mailUtility: MailUtility,
+    private val userRepository: UserRepository,
+    private val queryDslUserRepository: QueryDslUserRepository,
+    private val mailUtility: MailUtility,
     private val encoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin,
+    private val redisUtil: RedisUtil,
     private val regexFunc: RegexFunc
 ) : UserService {
 
@@ -44,12 +47,23 @@ class UserServiceImpl(
             userRepository.save(user)
         }
 
+        // accessToken
+        val accessToken = jwtPlugin.accessToken(
+            id = user.id!!,
+            email = user.email,
+            role = user.role
+        )
+
+        // refreshToken
+        val refreshToken = RefreshToken(
+            id = user.id!!,
+            refreshToken = jwtPlugin.refreshToken(user.id!!, user.email, user.role),
+            accessToken = null.toString()
+        )
+        redisUtil.setDataExpire(accessToken, refreshToken.toString(), 60*60*24*1) // redis 저장 24시간
+
         return LoginResponse(
-            accessToken = jwtPlugin.generateAccessToken(
-                id = user.id!!,
-                status = user.status,
-                role = user.role
-            ), nickname = user.nickname, message = "로그인이 완료되었습니다."
+            accessToken, nickname = user.nickname, message = "로그인이 완료되었습니다."
         )
     }
 

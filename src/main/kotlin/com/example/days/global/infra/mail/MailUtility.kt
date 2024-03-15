@@ -31,7 +31,7 @@ class MailUtility(
         helper.setTo(email)
 
         if (type == MailType.VERIFYCODE) {
-            redisUtil.setDataExpire(code, email, 50*5L)
+            redisUtil.setDataExpire(code, email, 50*5L) // 인증시간 5분
             helper.setSubject("회원가입을 위한 이메일 인증번호입니다.")
             helper.setText("이메일 인증 번호는 $code 입니다.")
             helper.setFrom(username)

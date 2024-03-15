@@ -25,7 +25,6 @@ class UserMailServiceImpl(
         } else {
             mailRepository.findByCode(code)
         }
-
         return "인증번호가 일치합니다."
     }
 }

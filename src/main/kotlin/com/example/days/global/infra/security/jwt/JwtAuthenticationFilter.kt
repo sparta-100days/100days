@@ -29,13 +29,14 @@ class JwtAuthenticationFilter(
         if (jwt != null) {
             jwtPlugin.validateToken(jwt)
                 .onSuccess {
+                    // accessToken
                     val id = it.payload.subject.toLong()
-                    val status = it.payload.get("status", String::class.java)
+                    val email = it.payload.get("email", String::class.java)
                     val role = it.payload.get("role", String::class.java)
 
                     val principal = UserPrincipal(
                         id = id,
-                        status = setOf(status),
+                        email = email,
                         role = setOf(role)
                     )
                     val authentication = JwtAuthenticationToken(
@@ -44,6 +45,23 @@ class JwtAuthenticationFilter(
                     )
 
                     SecurityContextHolder.getContext().authentication = authentication
+
+                }.onFailure {
+                    val refreshToken = request.getHeader(HttpHeaders.AUTHORIZATION)?.let { headerValue ->
+                        BEARER_PATTERN.find(headerValue)?.groupValues?.get(1)
+                    }
+
+                    refreshToken?.let { e ->
+                        try {
+                            jwtPlugin.vaildateRefreshToken(refreshToken, jwt)
+
+                            val newAccessToken = jwtPlugin.recreateAccessToken(jwt)
+                            response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer $newAccessToken")
+
+                        } catch (e : IllegalArgumentException) {
+                            throw IllegalArgumentException("refresh token이 만료되었습니다.")
+                        }
+                    }
                 }
         }
         filterChain.doFilter(request, response)
