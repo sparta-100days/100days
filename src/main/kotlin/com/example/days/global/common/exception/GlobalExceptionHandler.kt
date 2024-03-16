@@ -1,6 +1,8 @@
 package com.example.days.global.common.exception
 
 
+import com.example.days.global.common.exception.auth.PermissionDeniedException
+import com.example.days.global.common.exception.common.*
 import com.example.days.global.common.exception.dto.BaseResponse
 import com.example.days.global.common.exception.dto.ErrorResponse
 import com.example.days.global.common.exception.status.ResultCode
@@ -51,6 +53,14 @@ class GlobalExceptionHandler {
             .body(ErrorResponse(errorCode.name, message))
     }
 
+    @ExceptionHandler(DuplicateNicknameException::class)
+    fun handlerDuplicateEmailException(e: DuplicateNicknameException): ResponseEntity<ErrorResponse>{
+        val errorCode = e.errorCode
+        val message = String.format(errorCode.message, e.nickname)
+        return ResponseEntity.status(errorCode.httpStatus)
+            .body(ErrorResponse(errorCode.name, message))
+    }
+
     @ExceptionHandler(NoSearchUserByEmailException::class)
     fun handleNoSearchUserException(e: NoSearchUserByEmailException): ResponseEntity<ErrorResponse>{
         val errorCode = e.errorCode
@@ -59,14 +69,44 @@ class GlobalExceptionHandler {
             .body(ErrorResponse(errorCode.name, message))
     }
 
-    @ExceptionHandler(MismatchPasswordException::class, UserSuspendedException::class, AuthCodeMismatchException::class)
-    fun handleCustomExceptions(e: RuntimeException): ResponseEntity<ErrorResponse> {
+    @ExceptionHandler(
+        MismatchPasswordException::class,
+        UserSuspendedException::class,
+        AuthCodeMismatchException::class,
+        InvalidPasswordError::class,
+        UserNotFoundException::class,
+        )
+    fun handleCustomUserExceptions(e: RuntimeException): ResponseEntity<ErrorResponse> {
         val errorCode = when (e) {
             is MismatchPasswordException -> e.errorCode
             is UserSuspendedException -> e.errorCode
             is AuthCodeMismatchException -> e.errorCode
+            is InvalidPasswordError -> e.errorCode
+            is UserNotFoundException -> e.errorCode
             else -> throw IllegalStateException("Unsupported exception type")
         }
+        val message = errorCode.message
+        return ResponseEntity.status(errorCode.httpStatus)
+            .body(ErrorResponse(errorCode.name, message))
+    }
+    @ExceptionHandler(
+        LikeAlreadyProcessedException::class,
+        CheckAlreadyCompletedException::class,
+        ResolutionAlreadyCompletedException::class)
+    fun handleCustomCommonExceptions(e: RuntimeException): ResponseEntity<ErrorResponse>{
+        val errorCode =  when (e) {
+            is LikeAlreadyProcessedException -> e.errorCode
+            is CheckAlreadyCompletedException -> e.errorCode
+            is ResolutionAlreadyCompletedException -> e.errorCode
+            else -> throw IllegalStateException("Unsupported exception type")
+        }
+        val message = errorCode.message
+        return ResponseEntity.status(errorCode.httpStatus)
+            .body(ErrorResponse(errorCode.name, message))
+    }
+    @ExceptionHandler(PermissionDeniedException::class)
+    fun handlePermissionDeniedException(e: PermissionDeniedException): ResponseEntity<ErrorResponse>{
+        val errorCode = e.errorCode
         val message = errorCode.message
         return ResponseEntity.status(errorCode.httpStatus)
             .body(ErrorResponse(errorCode.name, message))

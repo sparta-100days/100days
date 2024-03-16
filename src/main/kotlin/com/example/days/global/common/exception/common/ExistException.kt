@@ -1,4 +1,4 @@
-package com.example.days.global.common.exception
+package com.example.days.global.common.exception.common
 
 
 data class EmailExistException(val email: String) : RuntimeException(
