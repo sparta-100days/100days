@@ -1,7 +1,7 @@
 package com.example.days.domain.admin.dto.request
 
-import com.example.days.domain.user.model.Status
+import java.time.LocalDate
 
 data class UserBanRequest(
-    val status: Status
+    val period: LocalDate
 )

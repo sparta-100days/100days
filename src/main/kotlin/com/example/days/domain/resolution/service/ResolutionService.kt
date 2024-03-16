@@ -2,15 +2,16 @@ package com.example.days.domain.resolution.service
 
 import com.example.days.domain.resolution.dto.request.ResolutionRequest
 import com.example.days.domain.resolution.dto.response.ResolutionResponse
-import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestBody
+import com.example.days.domain.resolution.dto.response.SimpleResolutionResponse
+import com.example.days.global.common.SortOrder
+import org.springframework.data.domain.Page
+
 
 interface ResolutionService {
-    fun createResolution(resolutionRequest: ResolutionRequest): ResolutionResponse
+    fun createResolution(resolutionRequest: ResolutionRequest, userId: Long): ResolutionResponse
     fun getResolutionById(resolutionId: Long): ResolutionResponse
-    fun getResolutionList(): List<ResolutionResponse>
-    fun updateResolution(resolutionId: Long, resolutionRequest: ResolutionRequest): ResolutionResponse
-    fun deleteResolution(resolutionId: Long)
+    fun getResolutionListPaginated(page: Int, sortOrder: SortOrder?): Page<ResolutionResponse>
+    fun updateResolution(resolutionId: Long, userId: Long ,resolutionRequest: ResolutionRequest): ResolutionResponse
+    fun deleteResolution(resolutionId: Long, userId: Long)
+    fun getResolutionRanking(): List<SimpleResolutionResponse>
 }

@@ -1,12 +1,12 @@
 package com.example.days.domain.resolution.model
 
-import com.example.days.domain.resolution.dto.request.ResolutionRequest
-import com.example.days.domain.resolution.dto.response.ResolutionResponse
+import com.example.days.domain.category.model.Category
 import com.example.days.domain.user.model.User
 import com.example.days.global.entity.BaseEntity
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity
@@ -18,23 +18,24 @@ class Resolution(
     @Column(name = "description", nullable = false)
     var description: String,
 
-//    @ManyToOne
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    @JoinColumn(name = "author")
-//    val author: User,
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "author")
+    val author: User,
 
     @Column(name = "complete_status")
-    val completeStatus: Boolean = false,
+    var completeStatus: Boolean = false,
 
     @Column(name = "daily_status")
-    val dailyStatus: Boolean = false,
+    var dailyStatus: Boolean = false,
 
     @Column(name = "progress")
-    val progress: Long = 0,
+    var progress: Long = 0,
 
-    // ^오^: 카테고리를 목적 페이지와 연관관계를 굳이 지어야 하는지에 대해 의문입니다.
-    @Column(name = "category")
-    var category: String,
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "category")
+    var category: Category,
 
     @Column(name = "like_count")
     var likeCount: Long = 0
@@ -45,9 +46,15 @@ class Resolution(
     val id: Long? = null
 
     @Column(name = "deadline")
-    val deadline: LocalDateTime = createdAt.plusDays(100)
+    val deadline: LocalDate = createdAt.toLocalDate().plusDays(100)
+//    @Column(name = "deadline")
+//    val deadline: LocalDate? = null
 
-    fun updateResolution(updatedTitle: String, updatedDescription: String, updatedCategory: String){
+    // 테스트용
+//    @Column(name = "deadline")
+//    val deadline: LocalDateTime = createdAt.plusMinutes(1)
+
+    fun updateResolution(updatedTitle: String, updatedDescription: String, updatedCategory: Category){
         title = updatedTitle
         description = updatedDescription
         category = updatedCategory
@@ -55,6 +62,14 @@ class Resolution(
 
     fun updateLikeCount(b: Boolean){
         if(b) likeCount += 1 else likeCount -=1
+    }
+
+    fun updateProgress(){
+        dailyStatus = true
+        progress += 1
+        if(progress == 100L){
+            completeStatus = true
+        }
     }
 }
 

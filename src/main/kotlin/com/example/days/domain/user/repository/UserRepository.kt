@@ -6,6 +6,8 @@ import jakarta.transaction.Transactional
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 interface UserRepository: JpaRepository<User, Long> {
@@ -14,8 +16,15 @@ interface UserRepository: JpaRepository<User, Long> {
     fun findUserByEmail(email: String): User?
     fun findByNickname(nickname: String): User?
 
+    fun findUserById(id: Long): User?
+
     @Modifying
     @Transactional
     @Query("DELETE FROM User u WHERE u.status = :status AND u.updatedAt <= :updatedAt")
-    fun deleteUsersByStatusAndupdatedAtIsLessThanEqualBatch(status: Status, updatedAt: LocalDateTime): Int
+    fun deleteUsersByStatusAndUpdatedAtIsLessThanEqualBatch(status: Status, updatedAt: LocalDateTime): Int
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE User u SET u.status = :status WHERE u.period <= :today")
+    fun checkBanPeriod(status: Status, @Param("today") today: LocalDate)
 }

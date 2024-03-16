@@ -15,29 +15,57 @@ class DailyCheckServiceImpl(
     private val resolutionRepository: ResolutionRepository
 ):DailyCheckService {
     @Transactional
-    override fun createDailyCheck(resolutionId: Long, request: DailyCheckRequest): DailyCheckResponse {
-        return resolutionRepository.findByIdOrNull(resolutionId)
-            ?.let{ dailyCheckRepository.save(DailyCheckRequest.of(request, it)) }
-            ?.let { DailyCheckResponse.from(it) }
-            ?: TODO("예외처리")
+    override fun createDailyCheck(resolutionId: Long, userId: Long, request: DailyCheckRequest): DailyCheckResponse {
+        val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: TODO("예외처리")
+
+        if(userId == resolution.author.id){
+            when{
+                resolution.dailyStatus -> TODO("이미 데일리 체크를 끝냈을 때")
+                resolution.completeStatus -> TODO("이미 완료된 목표일때")
+                else -> return resolutionRepository.findByIdOrNull(resolutionId)
+                    ?.let{
+                        it.updateProgress()
+                        dailyCheckRepository.save(DailyCheckRequest.of(request, it))
+                    }
+                    ?.let { DailyCheckResponse.from(it) }
+                    ?: TODO("resolution 찾기 오류")
+            }
+        }
+        else{
+            TODO("같은 사용자가 아닐 때")
+        }
     }
 
-    override fun getDailyCheckByList(resolutionId: Long): List<DailyCheckResponse> {
-        return dailyCheckRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"))
-            .map { DailyCheckResponse.from(it) }
+    override fun getDailyCheckByList(resolutionId: Long, userId: Long): List<DailyCheckResponse> {
+        val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: TODO("예외처리")
+        if(userId == resolution.author.id){
+            return dailyCheckRepository.findByResolutionId(resolution)
+                .map { DailyCheckResponse.from(it) }
+        }
+        else TODO()
     }
 
     @Transactional
-    override fun updateDailyCheck(resolutionId: Long, dailyCheckId: Long, request: DailyCheckRequest)
+    override fun updateDailyCheck(resolutionId: Long, userId: Long, dailyCheckId: Long, request: DailyCheckRequest)
     : DailyCheckResponse {
-        val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: TODO()
+        val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: TODO("예외처리")
         val dailyCheck = dailyCheckRepository.findByIdOrNull(dailyCheckId) ?: TODO()
-        dailyCheck.updateDailyCheck(request.memo, resolution)
-        return DailyCheckResponse.from(dailyCheck)
+        if(userId == resolution.author.id){
+            dailyCheck.updateDailyCheck(request.memo, resolution)
+            return DailyCheckResponse.from(dailyCheck)
+        }
+        else TODO()
+
+
     }
 
     @Transactional
-    override fun deleteDailyCheck(dailyCheckId: Long) {
-        dailyCheckRepository.deleteById(dailyCheckId)
+    override fun deleteDailyCheck(resolutionId: Long, dailyCheckId: Long, userId: Long) {
+        val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: TODO("예외처리")
+
+        if(userId == resolution.author.id) {
+            dailyCheckRepository.deleteById(dailyCheckId)
+        }
+        else TODO()
     }
 }

@@ -151,7 +151,7 @@ class UserServiceImpl(
     fun userDeletedAuto() {
         val nowTime = LocalDateTime.now()
         val userDeleteAuto = nowTime.minusDays(7)
-        userRepository.deleteUsersByStatusAndupdatedAtIsLessThanEqualBatch(Status.WITHDRAW, userDeleteAuto)
+        userRepository.deleteUsersByStatusAndUpdatedAtIsLessThanEqualBatch(Status.WITHDRAW, userDeleteAuto)
     }
 
 }

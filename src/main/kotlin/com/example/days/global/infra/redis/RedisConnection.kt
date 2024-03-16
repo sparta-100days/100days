@@ -9,19 +9,23 @@ import org.springframework.data.redis.cache.RedisCacheManager
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
 import java.time.Duration
 
 @Configuration
 @EnableCaching
 class RedisConnection(
-    @Value("\${spring.data.redis.host}") val host: String,
-    @Value("\${spring.data.redis.port}") val port: Int
+    @Value("\${spring.data.redis.host}")
+    val host: String,
+    @Value("\${spring.data.redis.port}")
+    val port: Int
 ) {
     // Redis 와의 연결을 위한 설정.
     // Lettuce: Redis 클라이언트 라이브러리. Redis 를 비동기 형태로 사용하기 위한 팩토리를 지원한다.
     // 기본적으로 비동기 작업을 지원하지만 동기적으로도 가능하다고 함.
     // RedisStandaloneConfiguration: Redis를 스탠드얼론 모드로 설정한 후 서버의 설정을 정의
+    // RedisStandaloneConfiguration: Redis 를 스탠드얼론 모드로 설정한 후 서버의 설정을 정의
     // Redis 의 모드는 여러가지가 있다고 합니다. 클러스터, 센티넬, 복제, 파이프라인 등등...
     @Bean
     fun lettuceConnectionFactory(): LettuceConnectionFactory{
@@ -40,7 +44,7 @@ class RedisConnection(
 
     // 제가 구현한 랭킹 조회에서 Redis 는 캐시 기능을 사용하고 있지 않습니다!
     // 임시로 간단하게 작성했습니다. 나중에 사용하실 때 더 자세한 설정을 추가해 주시면 됩니다!
-    /*
+    
     @Bean
     fun redisCacheManager(): RedisCacheManager{
         return RedisCacheManager.builder(lettuceConnectionFactory())
@@ -50,7 +54,7 @@ class RedisConnection(
             )
             .build()
     }
-    */
+
 
     // RedisTemplate: Redis 의 데이터 엑세스 코드를 쉽게 작성할 수 있도록 Spring 에서 제공하는 클래스.
     // 아래 코드는 Redis 명령을 수행하는데 필요한 직렬화와 커넥션을 관리하는 코드.
@@ -58,12 +62,13 @@ class RedisConnection(
     // 일단 직렬화 방식을 StringRedisSerializer 으로 설정했습니다. 후에 직렬화 방식에 대해 좀 더 공부할 필요가 있어보입니다.
     @Bean
     fun redisTemplate(): RedisTemplate<*,*>{
+        val genericJackson2JsonRedisSerializer = GenericJackson2JsonRedisSerializer()
         return RedisTemplate<Any, Any>().apply{
             this.connectionFactory = lettuceConnectionFactory()
             this.keySerializer = StringRedisSerializer()
-            this.valueSerializer = StringRedisSerializer()
+            this.valueSerializer = genericJackson2JsonRedisSerializer
             this.hashKeySerializer = StringRedisSerializer()
-            this.hashValueSerializer = StringRedisSerializer()
+            this.hashValueSerializer = genericJackson2JsonRedisSerializer
         }
     }
 }
