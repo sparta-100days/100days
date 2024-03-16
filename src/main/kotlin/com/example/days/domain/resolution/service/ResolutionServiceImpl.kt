@@ -38,9 +38,9 @@ class ResolutionServiceImpl(
         return ResolutionResponse.from(resolution)
     }
 
-    override fun getResolutionListPaginated(page: Int, sortOrder: SortOrder?): Page<ResolutionResponse> {
+    override fun getResolutionListPaginated(page: Int, sortOrder: SortOrder?): Page<SimpleResolutionResponse> {
         val resolutionList = resolutionRepository.findByPageable(page, sortOrder)
-        return resolutionList.map { ResolutionResponse.from(it) }
+        return resolutionList.map { SimpleResolutionResponse.from(it) }
     }
 
     @Transactional
