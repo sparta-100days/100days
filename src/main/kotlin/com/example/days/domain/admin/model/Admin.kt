@@ -5,6 +5,7 @@ import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.UserRole
 import com.example.days.global.common.exception.EmailExistException
 import com.example.days.global.common.exception.NicknameExistException
+import com.example.days.global.common.exception.user.NoSearchUserByEmailException
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
@@ -46,7 +47,7 @@ class Admin(
 
 fun checkingEmailAndNicknameExists(email: String, nickname: String, adminRepository: AdminRepository) {
     if (adminRepository.existsByEmail(email)) {
-        throw EmailExistException(email)
+        throw NoSearchUserByEmailException(email)
     }
 
     if (adminRepository.existsByNickname(nickname)) {

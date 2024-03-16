@@ -3,6 +3,7 @@ package com.example.days.domain.report.service
 import com.example.days.domain.report.dto.request.UserReportRequest
 import com.example.days.domain.report.dto.response.UserReportResponse
 import com.example.days.domain.report.model.UserReport
+import com.example.days.domain.report.model.UserReportStatus
 import com.example.days.domain.report.repository.ReportRepository
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.repository.UserRepository
@@ -41,6 +42,7 @@ class ReportServiceImpl(
                 reporter = user,
                 reportedUserId = reportedUserNickname,
                 content = req.content,
+                reportStatus = req.reportStatus
 
                 )
         )

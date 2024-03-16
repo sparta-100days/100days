@@ -5,6 +5,7 @@ import com.example.days.domain.category.dto.request.CategoryUpdateRequest
 import com.example.days.domain.category.dto.response.CategoryResponse
 import com.example.days.domain.category.dto.response.CategoryResponse.Companion.from
 import com.example.days.domain.category.model.Category
+import com.example.days.domain.category.model.checkingNameExists
 import com.example.days.domain.category.repository.CategoryRepository
 import com.example.days.global.common.exception.ModelNotFoundException
 import org.springframework.data.repository.findByIdOrNull
@@ -21,6 +22,10 @@ class CategoryServiceImpl(
 
     @Transactional
     override fun createCategory(req: CategoryRequest): CategoryResponse {
+        checkingNameExists(
+            req.name,
+            categoryRepository
+        )
         val category = categoryRepository.save(
             Category(
                 name = req.name,

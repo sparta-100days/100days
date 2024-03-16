@@ -7,7 +7,21 @@ plugins {
 	kotlin("plugin.spring") version "1.9.22"
 	kotlin("plugin.jpa") version "1.9.22"
 	kotlin("kapt") version "1.8.22"
+    kotlin("plugin.noarg") version "1.9.21"
+    kotlin("plugin.serialization") version "1.9.21"
 }
+noArg {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
+}
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
+}
+
 
 group = "com.example"
 version = "0.0.1-SNAPSHOT"
@@ -50,8 +64,15 @@ dependencies {
     // redis
     implementation ("org.springframework.boot:spring-boot-starter-data-redis")
 
+    //cache
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+
     // postgres
     runtimeOnly("org.postgresql:postgresql")
+
+    implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+    implementation ("com.fasterxml.jackson.core:jackson-databind")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
   	runtimeOnly("com.h2database:h2")

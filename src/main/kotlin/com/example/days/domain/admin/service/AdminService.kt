@@ -2,6 +2,7 @@ package com.example.days.domain.admin.service
 
 import com.example.days.domain.admin.dto.request.LoginAdminRequest
 import com.example.days.domain.admin.dto.request.SignUpAdminRequest
+import com.example.days.domain.admin.dto.request.UserBanRequest
 import com.example.days.domain.admin.dto.response.AdminResponse
 import com.example.days.domain.admin.dto.response.LoginAdminResponse
 import com.example.days.domain.messages.dto.request.CreateMessageRequest
@@ -22,7 +23,7 @@ interface AdminService {
     fun getAllUser(pageable: Pageable, status: String?): Page<UserResponse>
 
     // 유저 밴 기능
-    fun userBanByAdmin(userId: Long): String
+    fun userBanByAdmin(userId: Long, req: UserBanRequest): String
 
     // 유저 삭제 기능
     fun userDeleteByAdmin(userId: Long)

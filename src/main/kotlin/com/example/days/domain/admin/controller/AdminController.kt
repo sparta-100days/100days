@@ -2,6 +2,7 @@ package com.example.days.domain.admin.controller
 
 import com.example.days.domain.admin.dto.request.LoginAdminRequest
 import com.example.days.domain.admin.dto.request.SignUpAdminRequest
+import com.example.days.domain.admin.dto.request.UserBanRequest
 import com.example.days.domain.admin.dto.response.AdminResponse
 import com.example.days.domain.admin.dto.response.LoginAdminResponse
 import com.example.days.domain.admin.service.AdminService
@@ -55,9 +56,10 @@ class AdminController(
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/users/{userId}")
     fun userBanByAdmin(
-        @PathVariable userId: Long
+        @PathVariable userId: Long,
+        @RequestBody req: UserBanRequest
     ): ResponseEntity<String> {
-        return ResponseEntity.status(HttpStatus.OK).body(adminService.userBanByAdmin(userId))
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.userBanByAdmin(userId, req))
     }
 
 

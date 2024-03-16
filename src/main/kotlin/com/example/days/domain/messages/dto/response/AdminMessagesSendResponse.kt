@@ -8,7 +8,7 @@ data class AdminMessagesSendResponse(
     val title: String,
     val content: String,
     val receiverNickname: String,
-    val createdAt: LocalDateTime,
+    val sentAt: LocalDateTime,
     val readStatus: Boolean
 ) {
     companion object {
@@ -18,7 +18,7 @@ data class AdminMessagesSendResponse(
                 title = messages.title,
                 content = messages.content,
                 receiverNickname = messages.receiver.nickname,
-                createdAt = messages.sentAt,
+                sentAt = messages.sentAt,
                 readStatus = messages.readStatus
             )
         }
