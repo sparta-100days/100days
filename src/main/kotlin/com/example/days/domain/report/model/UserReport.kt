@@ -2,6 +2,7 @@ package com.example.days.domain.report.model
 
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
+import com.example.days.domain.user.model.UserRole
 import com.example.days.global.entity.BaseEntity
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
@@ -22,6 +23,10 @@ class UserReport(
 
     @Column(name = "content")
     var content: String,
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "reportStatus")
+    val reportStatus: UserReportStatus,
 
 
     ) : BaseEntity() {

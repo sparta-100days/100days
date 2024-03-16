@@ -1,5 +1,7 @@
 package com.example.days.domain.category.model
 
+import com.example.days.domain.category.repository.CategoryRepository
+import com.example.days.global.common.exception.NicknameExistException
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
@@ -22,4 +24,10 @@ class Category(
     @CreatedDate
     @Column(nullable = false, updatable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
+}
+
+fun checkingNameExists(name: String, categoryRepository: CategoryRepository) {
+    if (categoryRepository.existsByName(name)) {
+        throw NicknameExistException(name)
+    }
 }
