@@ -27,10 +27,19 @@ class GlobalExceptionHandler {
         }
         return ResponseEntity(BaseResponse(ResultCode.ERROR.name, errors, ResultCode.ERROR.msg), HttpStatus.BAD_REQUEST)
     }
+    @ExceptionHandler
+    fun handleRuntimeException(e: RuntimeException): ResponseEntity<ErrorResponse> {
+        val errorCode = CommonExceptionCode.INTERNAL_SERVER_ERROR
+
+        return ResponseEntity.status(errorCode.status).body(ErrorResponse(errorCode.name, errorCode.message))
+    }
 
     @ExceptionHandler(ModelNotFoundException::class)
     fun handlerModelNotFoundException(e: ModelNotFoundException): ResponseEntity<ErrorResponse> {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse(e.message))
+        val errorCode = e.errorCode
+        val message = String.format(errorCode.message, e.modelName, e.modelId)
+        return ResponseEntity.status(errorCode.status)
+            .body(ErrorResponse(errorCode.name, message))
     }
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
