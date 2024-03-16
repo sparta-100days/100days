@@ -29,13 +29,14 @@ class JwtAuthenticationFilter(
         if (jwt != null) {
             jwtPlugin.validateToken(jwt)
                 .onSuccess {
+                    // accessToken
                     val id = it.payload.subject.toLong()
-                    val status = it.payload.get("status", String::class.java)
+                    val email = it.payload.get("email", String::class.java)
                     val role = it.payload.get("role", String::class.java)
 
                     val principal = UserPrincipal(
                         id = id,
-                        status = setOf(status),
+                        email = email,
                         role = setOf(role)
                     )
                     val authentication = JwtAuthenticationToken(
@@ -44,6 +45,9 @@ class JwtAuthenticationFilter(
                     )
 
                     SecurityContextHolder.getContext().authentication = authentication
+
+                }.onFailure {
+
                 }
         }
         filterChain.doFilter(request, response)

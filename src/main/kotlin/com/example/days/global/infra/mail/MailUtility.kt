@@ -1,57 +1,57 @@
 package com.example.days.global.infra.mail
 
+import com.example.days.global.infra.redis.RedisUtil
 import com.example.days.global.infra.regex.RegexFunc
+import com.example.days.global.support.EmailRandomCode
+import com.example.days.global.support.MailType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
-import java.util.*
 
 @Component
 class MailUtility(
     private val passwordEncoder: PasswordEncoder,
     private val regexFunc: RegexFunc,
+    private val emailRandomCode: EmailRandomCode,
+    private val redisUtil: RedisUtil,
     @Value("\${mail.username}") private val username: String,
     @Autowired val javaMailSender: JavaMailSender
 ) {
 
-    fun sendMailTemplate(email: String): String {
-        val random = UUID.randomUUID().toString().substring(0, 8)
+    fun emailSender(email: String, type: MailType): String {
+        val code = emailRandomCode.generateRandomCode(10)
+        val pass = passwordEncoder.encode(regexFunc.regexPassword(code))
 
         val message = javaMailSender.createMimeMessage()
         val helper = MimeMessageHelper(message, true)
 
         helper.setTo(email)
-        helper.setSubject("회원가입을 위한 이메일 인증번호입니다.")
-        helper.setText("이메일 인증 번호는" + random + "입니다.")
-        helper.setFrom(username)
 
-        javaMailSender.send(message)
+        if (type == MailType.VERIFYCODE) {
+            redisUtil.setDataExpire(code, email, 50*5L) // 인증시간 5분
+            helper.setSubject("회원가입을 위한 이메일 인증번호입니다.")
+            helper.setText("이메일 인증 번호는 $code 입니다.")
+            helper.setFrom(username)
+            javaMailSender.send(message)
 
-        return random
-    }
+            return code
 
-    fun randomPassword(): String {
-        return UUID.randomUUID().toString().substring(0, 7) + "00" + "!"
-    }
+        } else if (type == MailType.CHANGEPASSWORD) {
+            helper.setSubject("임시 비밀번호를 발급해드립니다.")
+            helper.setText(
+                "임시 비밀번호는 $code 입니다. \n " +
+                        "로그인 하신 뒤, 반드시 비밀번호를 변경해주세요."
+            )
+            helper.setFrom(username)
+            javaMailSender.send(message)
 
-    fun passwordChangeEMail(email: String): String {
-        val randomChange = randomPassword()
-        val pass = passwordEncoder.encode(regexFunc.regexPassword(randomChange))
+            return pass
 
-        val message = javaMailSender.createMimeMessage()
-        val helper = MimeMessageHelper(message, true)
-
-        helper.setTo(email)
-        helper.setSubject("임시 비밀번호를 발급해드립니다.")
-        helper.setText("임시 비밀번호는" + randomChange + "입니다. \n " +
-                "로그인 하신 뒤, 반드시 비밀번호를 변경해주세요.")
-        helper.setFrom(username)
-
-        javaMailSender.send(message)
-
-        return pass
+        } else {
+            throw IllegalArgumentException("어떤 메일을 보낼지 선택해주세요.")
+        }
     }
 }

@@ -14,6 +14,7 @@ import com.example.days.global.infra.mail.MailUtility
 import com.example.days.global.infra.regex.RegexFunc
 import com.example.days.global.infra.security.UserPrincipal
 import com.example.days.global.infra.security.jwt.JwtPlugin
+import com.example.days.global.support.MailType
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -23,9 +24,9 @@ import java.time.LocalDateTime
 
 @Service
 class UserServiceImpl(
-    val userRepository: UserRepository,
-    val queryDslUserRepository: QueryDslUserRepository,
-    val mailUtility: MailUtility,
+    private val userRepository: UserRepository,
+    private val queryDslUserRepository: QueryDslUserRepository,
+    private val mailUtility: MailUtility,
     private val encoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin,
     private val regexFunc: RegexFunc
@@ -43,18 +44,26 @@ class UserServiceImpl(
             userRepository.save(user)
         }
 
+        // accessToken
+        val accessToken = jwtPlugin.accessToken(
+            id = user.id!!,
+            email = user.email,
+            role = user.role
+        )
+
         return LoginResponse(
-            accessToken = jwtPlugin.generateAccessToken(
-                id = user.id!!,
-                status = user.status,
-                role = user.role
-            ), nickname = user.nickname, message = "로그인이 완료되었습니다."
+            accessToken,
+            nickname = user.nickname,
+            message = "로그인이 완료되었습니다."
         )
     }
 
     override fun signUp(request: SignUpRequest): SignUpResponse {
         if (userRepository.existsByEmail(regexFunc.regexUserEmail(request.email)))
             throw IllegalArgumentException("이미 동일한 이메일이 존재합니다.")
+
+        if (userRepository.existsByNickname(request.nickname))
+            throw IllegalArgumentException("이름은 중복될 수 없습니다.")
 
         val pass =
             if (request.password == request.newPassword) encoder.encode(regexFunc.regexPassword(request.password))
@@ -79,16 +88,21 @@ class UserServiceImpl(
 
     @Transactional
     override fun changeUserPassword(request: EmailRequest) {
-        val mail = mailUtility.passwordChangeEMail(request.email)
         val user = userRepository.findUserByEmail(request.email)
 
         if (user != null) {
+            val mail = mailUtility.emailSender(request.email, MailType.CHANGEPASSWORD)
             user.email = request.email
             user.password = mail
             userRepository.save(user)
         } else {
             throw IllegalArgumentException("해당 이메일을 사용하는 회원이 없습니다.")
         }
+    }
+
+    override fun getInfo(userId: UserPrincipal): ModifyInfoResponse {
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
+        return user.let { ModifyInfoResponse.from(it) }
     }
 
     @Transactional
@@ -121,6 +135,9 @@ class UserServiceImpl(
 
     override fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest) {
         val user = userRepository.findByIdOrNull(userId.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
+
+        if (encoder.matches(request.password, user.password))
+            throw IllegalArgumentException("이전에 사용한 비밀번호와 같은 비밀번호는 사용할 수 없습니다.")
 
         if (request.password == request.newPassword) {
             user.password = encoder.encode(regexFunc.regexPassword(request.newPassword))
