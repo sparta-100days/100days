@@ -1,5 +1,12 @@
 package com.example.days.global.infra.redis
 
+import com.example.days.domain.resolution.dto.response.SearchLogRedisResponse
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
@@ -9,6 +16,8 @@ import org.springframework.data.redis.cache.RedisCacheManager
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
 import java.time.Duration
 
@@ -59,12 +68,15 @@ class RedisConnection(
     // 일단 직렬화 방식을 StringRedisSerializer 으로 설정했습니다. 후에 직렬화 방식에 대해 좀 더 공부할 필요가 있어보입니다.
     @Bean
     fun redisTemplate(): RedisTemplate<*,*>{
+        // LocalDateTime 역직렬화를 위한 추가 코드
+        val genericJackson2JsonRedisSerializer = GenericJackson2JsonRedisSerializer()
+        // 여기에 나머지 구성 코드를 추가하세요.
         return RedisTemplate<Any, Any>().apply{
             this.connectionFactory = lettuceConnectionFactory()
             this.keySerializer = StringRedisSerializer()
-            this.valueSerializer = StringRedisSerializer()
+            this.valueSerializer = genericJackson2JsonRedisSerializer
             this.hashKeySerializer = StringRedisSerializer()
-            this.hashValueSerializer = StringRedisSerializer()
+            this.hashValueSerializer = genericJackson2JsonRedisSerializer
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.example.days.domain.resolution.controller
 
-import com.example.days.domain.resolution.dto.response.SearchLogRedis
+import com.example.days.domain.resolution.dto.response.SearchLogRedisResponse
 import com.example.days.domain.resolution.dto.response.SearchResponse
 import com.example.days.domain.resolution.service.ResolutionRedisService
 import com.example.days.global.infra.security.UserPrincipal
@@ -13,10 +13,11 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 
 
 @RestController
-@RequestMapping("api/v2/resolution")
+@RequestMapping("/api/v2/resolution")
 class ResolutionRedisController(
     @Qualifier("RedisResolutionV2") private val resolutionRedisService : ResolutionRedisService
 ) {
@@ -26,7 +27,7 @@ class ResolutionRedisController(
     fun searchByResolution(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @RequestParam title: String,
-        @PageableDefault(size = 0, page = 10,sort = ["title"]) pageable: Pageable
+        @PageableDefault(size = 10, sort = ["title"]) pageable: Pageable
     ): ResponseEntity<Page<SearchResponse>> {
         return ResponseEntity.status(HttpStatus.CREATED).body(resolutionRedisService.searchByResolution(title, pageable))
     }
@@ -45,7 +46,7 @@ class ResolutionRedisController(
     @GetMapping("/searchLog")
     fun findRecentSearchLog(
         @AuthenticationPrincipal userPrincipal: UserPrincipal
-    ): ResponseEntity<List<SearchLogRedis>?>{
+    ): ResponseEntity<List<SearchLogRedisResponse>>{
         val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.OK).body(resolutionRedisService.findRecentSearchLog(userId))
     }
@@ -54,10 +55,11 @@ class ResolutionRedisController(
     @DeleteMapping("/searchLog")
     fun deleteRecentSearchLog(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
-        @RequestParam title: String
-    ): ResponseEntity<List<SearchLogRedis>?> {
+        @RequestParam title: String,
+        @RequestParam createdAt: LocalDateTime,
+    ): ResponseEntity<List<SearchLogRedisResponse>?> {
         val userId = userPrincipal.id
-        resolutionRedisService.deleteRecentSearchLog(userId,title)
+        resolutionRedisService.deleteRecentSearchLog(userId,title,createdAt)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
