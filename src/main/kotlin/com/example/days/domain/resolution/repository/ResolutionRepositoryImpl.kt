@@ -39,12 +39,12 @@ class ResolutionRepositoryImpl: QueryDslSupport(), QueryResolutionRepository {
         return PageImpl(contents, pageable, totalCount)
     }
 
-    override fun searchByKeyword(
-        keyword: String,
+    override fun searchByTitle(
+        title: String,
         pageable: Pageable
     ): Page<SearchResponse> {
         val whereClause = BooleanBuilder()
-        whereClause.and(resolution.title.contains(keyword))
+        whereClause.and(resolution.title.contains(title))
 
         val totalCount = queryFactory
             .select(resolution.count())

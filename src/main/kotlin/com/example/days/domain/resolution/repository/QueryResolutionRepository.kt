@@ -9,8 +9,8 @@ import org.springframework.data.domain.Pageable
 interface QueryResolutionRepository {
     fun findByPageable(page: Int, sortOrder: SortOrder?): Page<Resolution>
 
-    fun searchByKeyword(
-        keyword: String,
+    fun searchByTitle(
+        title: String,
         pageable: Pageable
     ): Page<SearchResponse>
 }
