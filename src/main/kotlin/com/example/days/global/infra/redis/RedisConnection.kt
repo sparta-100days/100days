@@ -61,9 +61,7 @@ class RedisConnection(
     // 일단 직렬화 방식을 StringRedisSerializer 으로 설정했습니다. 후에 직렬화 방식에 대해 좀 더 공부할 필요가 있어보입니다.
     @Bean
     fun redisTemplate(): RedisTemplate<*,*>{
-        // LocalDateTime 역직렬화를 위한 추가 코드
         val genericJackson2JsonRedisSerializer = GenericJackson2JsonRedisSerializer()
-        // 여기에 나머지 구성 코드를 추가하세요.
         return RedisTemplate<Any, Any>().apply{
             this.connectionFactory = lettuceConnectionFactory()
             this.keySerializer = StringRedisSerializer()

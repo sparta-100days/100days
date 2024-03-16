@@ -1,9 +1,8 @@
 package com.example.days.domain.resolution.service
 
-import com.example.days.domain.resolution.dto.response.SearchLogRedisResponse
+import com.example.days.domain.resolution.dto.response.SearchLogSearchResponse
 import com.example.days.domain.resolution.dto.response.SearchResponse
 import com.example.days.domain.resolution.repository.ResolutionRepository
-import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.common.exception.NotHaveSearchException
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.cache.annotation.Cacheable
@@ -15,11 +14,10 @@ import java.time.LocalDateTime
 
 
 @Service("RedisResolutionV2")
-class ResolutionRedisServiceImpl(
+class ResolutionSearchServiceImpl(
     private val resolutionRepository: ResolutionRepository,
-    private val redisTemplate: RedisTemplate<String, SearchLogRedisResponse>,
-    private val userRepository: UserRepository
-): ResolutionRedisService {
+    private val redisTemplate: RedisTemplate<String, SearchLogSearchResponse>
+): ResolutionSearchService {
     @Cacheable(key = "#title", cacheNames = ["title"], condition = "#title != null")
     override fun searchByResolution(title: String, pageable: Pageable): Page<SearchResponse> {
         return resolutionRepository.searchByTitle(title, pageable)
@@ -30,7 +28,7 @@ class ResolutionRedisServiceImpl(
 
         userId?.let {
             val key: String = "SearchLog${userId}"
-            val value: SearchLogRedisResponse = SearchLogRedisResponse(title = title, createdAt = now.toString())
+            val value: SearchLogSearchResponse = SearchLogSearchResponse(title = title, createdAt = now.toString())
 
             val size: Long? = redisTemplate.opsForList().size(key)
             if (size == 10L) {
@@ -40,13 +38,13 @@ class ResolutionRedisServiceImpl(
         }
     }
 
-    override fun findRecentSearchLog(userId: Long): List<SearchLogRedisResponse> {
+    override fun findRecentSearchLog(userId: Long): List<SearchLogSearchResponse> {
 
         val key = "SearchLog${userId}"
-        val logs: List<SearchLogRedisResponse> = redisTemplate.opsForList().range(key, 0, -1) ?: emptyList()
+        val logs: List<SearchLogSearchResponse> = redisTemplate.opsForList().range(key, 0, -1) ?: emptyList()
 
         val objectMapper = ObjectMapper()
-        objectMapper.writeValueAsString(SearchLogRedisResponse)
+        objectMapper.writeValueAsString(SearchLogSearchResponse)
 
         return logs.map { it }
     }
@@ -54,7 +52,7 @@ class ResolutionRedisServiceImpl(
     override fun deleteRecentSearchLog(userId: Long, title: String, createdAt: LocalDateTime) {
 
         val key = "SearchLog${userId}"
-        val value: SearchLogRedisResponse = SearchLogRedisResponse(title = title, createdAt = createdAt.toString())
+        val value: SearchLogSearchResponse = SearchLogSearchResponse(title = title, createdAt = createdAt.toString())
 
         val count = redisTemplate.opsForList().remove(key, 1, value)
 
