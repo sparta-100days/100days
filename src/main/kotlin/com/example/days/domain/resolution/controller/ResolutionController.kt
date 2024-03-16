@@ -2,6 +2,7 @@ package com.example.days.domain.resolution.controller
 
 import com.example.days.domain.resolution.dto.request.ResolutionRequest
 import com.example.days.domain.resolution.dto.response.ResolutionResponse
+import com.example.days.domain.resolution.dto.response.SimpleResolutionResponse
 import com.example.days.domain.resolution.service.ResolutionService
 import com.example.days.global.common.SortOrder
 import com.example.days.global.infra.security.UserPrincipal
@@ -10,6 +11,7 @@ import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
@@ -18,9 +20,6 @@ import org.springframework.web.bind.annotation.*
 class ResolutionController (
     private val resolutionService: ResolutionService
 ){
-
-    // ^오^: 기본적인 CRUD 만 추가했습니다.
-
     @Operation(summary = "목표 생성")
     @PostMapping
     fun createResolution(
@@ -43,7 +42,7 @@ class ResolutionController (
     }
     @Operation(summary = "목표 전체 조회(페이징)")
     @GetMapping
-    fun getResolutionListPagenated(
+    fun getResolutionListPaginated(
         @RequestParam(defaultValue = "0") page: Int,
         sortOrder: SortOrder?
     ): ResponseEntity<Page<ResolutionResponse>>{
@@ -72,6 +71,13 @@ class ResolutionController (
         val userId = userPrincipal.id
         resolutionService.deleteResolution(resolutionId, userId)
         return ResponseEntity.noContent().build()
+    }
+
+    @Operation(summary = "목표 랭킹 API")
+    @GetMapping("/ranking")
+    fun getResolutionRanking(): ResponseEntity<List<SimpleResolutionResponse>>{
+        val rankedResolution = resolutionService.getResolutionRanking()
+        return ResponseEntity.ok(rankedResolution)
     }
 
 }

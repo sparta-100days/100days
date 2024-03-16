@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable
 
 interface QueryResolutionRepository {
     fun findByPageable(page: Int, sortOrder: SortOrder?): Page<Resolution>
+    fun getResolutionRanking(): List<Resolution>
 
     fun searchByTitle(
         title: String,

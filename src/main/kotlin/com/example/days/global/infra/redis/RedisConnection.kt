@@ -25,6 +25,7 @@ class RedisConnection(
     // Lettuce: Redis 클라이언트 라이브러리. Redis 를 비동기 형태로 사용하기 위한 팩토리를 지원한다.
     // 기본적으로 비동기 작업을 지원하지만 동기적으로도 가능하다고 함.
     // RedisStandaloneConfiguration: Redis를 스탠드얼론 모드로 설정한 후 서버의 설정을 정의
+    // RedisStandaloneConfiguration: Redis 를 스탠드얼론 모드로 설정한 후 서버의 설정을 정의
     // Redis 의 모드는 여러가지가 있다고 합니다. 클러스터, 센티넬, 복제, 파이프라인 등등...
     @Bean
     fun lettuceConnectionFactory(): LettuceConnectionFactory{

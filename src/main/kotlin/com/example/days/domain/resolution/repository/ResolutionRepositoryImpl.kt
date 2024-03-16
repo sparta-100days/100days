@@ -14,6 +14,7 @@ import com.querydsl.core.types.dsl.EntityPathBase
 import com.querydsl.core.types.dsl.PathBuilder
 import org.springframework.data.domain.*
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
 class ResolutionRepositoryImpl: QueryDslSupport(), QueryResolutionRepository {
@@ -37,6 +38,12 @@ class ResolutionRepositoryImpl: QueryDslSupport(), QueryResolutionRepository {
 
         val contents = query.fetch()
         return PageImpl(contents, pageable, totalCount)
+    }
+    override fun getResolutionRanking(): List<Resolution> {
+        return queryFactory.selectFrom(resolution)
+            .limit(10)
+            .orderBy(resolution.likeCount.desc())
+            .fetch()
     }
 
     override fun searchByTitle(
