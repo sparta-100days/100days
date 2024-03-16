@@ -5,9 +5,10 @@ import com.example.days.domain.post.dto.response.PostResponse
 import com.example.days.domain.post.service.PostService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
-@RequestMapping("/posts")
+@RequestMapping("/api/posts")
 @RestController
 class PostController(
     private val postService: PostService
@@ -39,6 +40,7 @@ class PostController(
     }
 
     @PutMapping("/{postId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     fun updatePost(
         @PathVariable postId: Long,
         @RequestBody request: PostRequest
@@ -49,6 +51,7 @@ class PostController(
     }
 
     @DeleteMapping("/{postId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     fun deletePost(
         @PathVariable postId: Long
     ) : ResponseEntity<Unit> {

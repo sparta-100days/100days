@@ -79,13 +79,27 @@ class ResolutionServiceImpl(
 
     override fun getResolutionRanking(): List<SimpleResolutionResponse> {
         val resolutionRanking = redisTemplate.opsForList().range("ranking", 0, -1)
-        val objectMapper = ObjectMapper()
-
-        return resolutionRanking?.map {
-            objectMapper.readValue(it.toString(), SimpleResolutionResponse::class.java)
-        } ?: emptyList()
-//        return resolutionRanking ?: emptyList()
+//        val objectMapper = ObjectMapper()
+//
+//        return resolutionRanking?.map {
+//            objectMapper.readValue(it.toString(), SimpleResolutionResponse::class.java)
+//        } ?: emptyList()
+        return resolutionRanking ?: emptyList()
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     fun getByIdOrNull(id: Long) = resolutionRepository.findByIdOrNull(id) ?: TODO("예외처리 구현예정")
 }
