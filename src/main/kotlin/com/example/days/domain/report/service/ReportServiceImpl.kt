@@ -3,14 +3,14 @@ package com.example.days.domain.report.service
 import com.example.days.domain.report.dto.request.UserReportRequest
 import com.example.days.domain.report.dto.response.UserReportResponse
 import com.example.days.domain.report.model.UserReport
-import com.example.days.domain.report.model.UserReportStatus
 import com.example.days.domain.report.repository.ReportRepository
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.repository.UserRepository
-import com.example.days.global.common.exception.AlreadyTenReportException
-import com.example.days.global.common.exception.ModelNotFoundException
-import com.example.days.global.common.exception.NotReportException
-import com.example.days.global.common.exception.NotSelfReportException
+import com.example.days.global.common.exception.common.AlreadyTenReportException
+import com.example.days.global.common.exception.common.ModelNotFoundException
+import com.example.days.global.common.exception.common.NotReportException
+import com.example.days.global.common.exception.common.NotSelfReportException
+import com.example.days.global.common.exception.user.UserNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -22,7 +22,7 @@ class ReportServiceImpl(
 ) : ReportService {
     @Transactional
     override fun reportUser(req: UserReportRequest, userId: Long): UserReportResponse {
-        val reportedUserNickname = userRepository.findByNickname(req.reportedUserNickname) ?: TODO()
+        val reportedUserNickname = userRepository.findByNickname(req.reportedUserNickname) ?: throw UserNotFoundException()
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
 
         if (reportedUserNickname.status == Status.BAN || reportedUserNickname.status == Status.WITHDRAW || user.status == Status.BAN || user.status == Status.WITHDRAW) {

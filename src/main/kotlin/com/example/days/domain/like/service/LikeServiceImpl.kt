@@ -6,6 +6,8 @@ import com.example.days.domain.like.repository.LikeRepository
 import com.example.days.domain.resolution.dto.response.SimpleResolutionResponse
 import com.example.days.domain.resolution.repository.ResolutionRepository
 import com.example.days.domain.user.repository.UserRepository
+import com.example.days.global.common.exception.common.LikeAlreadyProcessedException
+import com.example.days.global.common.exception.common.ModelNotFoundException
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.scheduling.annotation.Scheduled
@@ -21,34 +23,26 @@ class LikeServiceImpl(
 ): LikeService {
     @Transactional
     override fun insertLike(request: LikeRequest) {
-        val user = userRepository.findByIdOrNull(request.userId) ?: TODO("예외처리")
-        val resolution = resolutionRepository.findByIdOrNull(request.resolutionId) ?: TODO("예외처리")
+        val user = userRepository.findByIdOrNull(request.userId) ?: throw ModelNotFoundException("User", request.userId)
+        val resolution = resolutionRepository.findByIdOrNull(request.resolutionId)
+            ?: throw ModelNotFoundException("Resolution", request.resolutionId)
         if (!likeRepository.existsByUserAndResolution(user, resolution)){
             resolution.updateLikeCount(true)
             likeRepository.save(LikeResponse.from(user, resolution))
         }
-        else{
-            TODO("이미 좋아요를 눌렀을 때")
-        }
+        else throw LikeAlreadyProcessedException()
     }
 
     @Transactional
     override fun deleteLike(request: LikeRequest) {
-        val user = userRepository.findByIdOrNull(request.userId) ?: TODO("예외처리")
-        val resolution = resolutionRepository.findByIdOrNull(request.resolutionId) ?: TODO("예외처리")
-        val canceledLike = likeRepository.findByUserAndResolution(user, resolution) ?: TODO("예외처리")
+        val user = userRepository.findByIdOrNull(request.userId) ?: throw ModelNotFoundException("User", request.userId)
+        val resolution = resolutionRepository.findByIdOrNull(request.resolutionId)
+            ?: throw ModelNotFoundException("Resolution", request.resolutionId)
+        val canceledLike = likeRepository.findByUserAndResolution(user, resolution) ?: throw LikeAlreadyProcessedException()
 
         resolution.updateLikeCount(false)
         likeRepository.delete(canceledLike)
     }
 
-    @Scheduled(fixedRate = 120000)
-    fun getResolutionTop10(){
-        redisTemplate.delete("ranking")
-        resolutionRepository.getResolutionRanking()
-            .forEach{
-                redisTemplate.opsForList().rightPush("ranking", SimpleResolutionResponse.from(it))
-            }
-    }
 
 }

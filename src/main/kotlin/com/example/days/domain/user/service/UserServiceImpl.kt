@@ -10,11 +10,8 @@ import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserRole
 import com.example.days.domain.user.repository.QueryDslUserRepository
 import com.example.days.domain.user.repository.UserRepository
-import com.example.days.global.common.exception.ModelNotFoundException
-import com.example.days.global.common.exception.user.DuplicateEmailException
-import com.example.days.global.common.exception.user.MismatchPasswordException
-import com.example.days.global.common.exception.user.NoSearchUserByEmailException
-import com.example.days.global.common.exception.user.UserSuspendedException
+import com.example.days.global.common.exception.common.ModelNotFoundException
+import com.example.days.global.common.exception.user.*
 import com.example.days.global.infra.mail.MailUtility
 import com.example.days.global.infra.regex.RegexFunc
 import com.example.days.global.infra.security.UserPrincipal
@@ -68,7 +65,7 @@ class UserServiceImpl(
             throw DuplicateEmailException(request.email)
 
         if (userRepository.existsByNickname(request.nickname))
-            throw IllegalArgumentException("이름은 중복될 수 없습니다.")
+            throw DuplicateNicknameException(request.nickname)
 
         val pass =
             if (request.password == request.newPassword) encoder.encode(regexFunc.regexPassword(request.password))
@@ -101,12 +98,12 @@ class UserServiceImpl(
             user.password = mail
             userRepository.save(user)
         } else {
-            throw IllegalArgumentException("해당 이메일을 사용하는 회원이 없습니다.")
+            throw NoSearchUserByEmailException(request.email)
         }
     }
 
     override fun getInfo(userId: UserPrincipal): ModifyInfoResponse {
-        val user = userRepository.findByIdOrNull(userId.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("User", userId.id)
         return user.let { ModifyInfoResponse.from(it) }
     }
 
@@ -142,7 +139,7 @@ class UserServiceImpl(
         val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
 
         if (encoder.matches(request.password, user.password))
-            throw IllegalArgumentException("이전에 사용한 비밀번호와 같은 비밀번호는 사용할 수 없습니다.")
+            throw InvalidPasswordError()
 
         if (request.password == request.newPassword) {
             user.password = encoder.encode(regexFunc.regexPassword(request.newPassword))
