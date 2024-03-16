@@ -67,9 +67,9 @@ class AdminServiceImpl(
         if(admin.status == Status.BAN) throw IllegalArgumentException("해당 유저는 활동정지 상태입니다.")
 
         return LoginAdminResponse(
-            accessToken = jwtPlugin.generateAccessToken(
+            accessToken = jwtPlugin.accessToken(
                 id = admin.id!!,
-                status = admin.status,
+                email = admin.email,
                 role = admin.role
             ), nickname = admin.nickname, message = "로그인이 완료되었습니다."
         )

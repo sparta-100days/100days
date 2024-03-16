@@ -44,6 +44,7 @@ class RedisConnection(
 
     // 제가 구현한 랭킹 조회에서 Redis 는 캐시 기능을 사용하고 있지 않습니다!
     // 임시로 간단하게 작성했습니다. 나중에 사용하실 때 더 자세한 설정을 추가해 주시면 됩니다!
+    
     @Bean
     fun redisCacheManager(): RedisCacheManager{
         return RedisCacheManager.builder(lettuceConnectionFactory())

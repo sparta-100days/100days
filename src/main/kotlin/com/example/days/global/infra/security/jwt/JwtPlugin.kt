@@ -1,9 +1,7 @@
 package com.example.days.global.infra.security.jwt
 
-import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.UserRole
 import io.jsonwebtoken.Claims
-import io.jsonwebtoken.Header
 import io.jsonwebtoken.Jws
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
@@ -19,7 +17,7 @@ import java.util.*
 class JwtPlugin(
     @Value("\${auth.jwt.issuer}") private val issuer: String,
     @Value("\${auth.jwt.secret}") private val secret: String,
-    @Value("\${auth.jwt.accessTokenExpirationHour}") private val accessTokenExpirationHour: Long,
+    @Value("\${auth.jwt.accessTokenExpirationHour}") private val accessTokenExpirationHour: Long
 ) {
 
     fun validateToken(jwt: String): Result<Jws<Claims>> {
@@ -29,22 +27,20 @@ class JwtPlugin(
         }
     }
 
-
-    fun generateAccessToken(id: Long, status: Status, role: UserRole): String {
-        return generateToken(id, status, role, Duration.ofHours(accessTokenExpirationHour))
+    fun accessToken(id: Long, email: String, role: UserRole): String {
+        return generateToken(id, email, role, Duration.ofHours(accessTokenExpirationHour))
     }
 
-
-    fun generateToken(id: Long, status: Status, role: UserRole, expirationPeriod: Duration): String {
-        val claims: Claims = Jwts.claims()
-            .add(mapOf("id" to id, "status" to status, "role" to role))
-            .build()
-
+    fun generateToken(id: Long, email: String, role: UserRole, expirationPeriod: Duration): String {
         val key = Keys.hmacShaKeyFor(secret.toByteArray(StandardCharsets.UTF_8))
         val now = Instant.now()
 
+        val claims: Claims = Jwts.claims()
+            .add(mapOf("email" to email, "role" to role))
+            .build()
+
         return Jwts.builder()
-            .setHeaderParam(Header.TYPE, Header.JWT_TYPE) // ~@~ Header: "typ"
+            .header().add("typ", "JWT").and()
             .subject(id.toString())
             .issuer(issuer)
             .issuedAt(Date.from(now))
