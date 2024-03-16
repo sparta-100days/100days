@@ -4,9 +4,7 @@ package com.example.days.global.common.exception
 import com.example.days.global.common.exception.dto.BaseResponse
 import com.example.days.global.common.exception.dto.ErrorResponse
 import com.example.days.global.common.exception.status.ResultCode
-import com.example.days.global.common.exception.user.DuplicateEmailException
-import com.example.days.global.common.exception.user.MismatchPasswordException
-import com.example.days.global.common.exception.user.NoSearchUserException
+import com.example.days.global.common.exception.user.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -53,17 +51,22 @@ class GlobalExceptionHandler {
             .body(ErrorResponse(errorCode.name, message))
     }
 
-    @ExceptionHandler(NoSearchUserException::class)
-    fun handleNoSearchUserException(e: NoSearchUserException): ResponseEntity<ErrorResponse>{
+    @ExceptionHandler(NoSearchUserByEmailException::class)
+    fun handleNoSearchUserException(e: NoSearchUserByEmailException): ResponseEntity<ErrorResponse>{
         val errorCode = e.errorCode
         val message = String.format(errorCode.message, e.email)
         return ResponseEntity.status(errorCode.httpStatus)
             .body(ErrorResponse(errorCode.name, message))
     }
 
-    @ExceptionHandler(MismatchPasswordException::class)
-    fun handleMismatchPasswordException(e: MismatchPasswordException): ResponseEntity<ErrorResponse>{
-        val errorCode = e.errorCode
+    @ExceptionHandler(MismatchPasswordException::class, UserSuspendedException::class, AuthCodeMismatchException::class)
+    fun handleCustomExceptions(e: RuntimeException): ResponseEntity<ErrorResponse> {
+        val errorCode = when (e) {
+            is MismatchPasswordException -> e.errorCode
+            is UserSuspendedException -> e.errorCode
+            is AuthCodeMismatchException -> e.errorCode
+            else -> throw IllegalStateException("Unsupported exception type")
+        }
         val message = errorCode.message
         return ResponseEntity.status(errorCode.httpStatus)
             .body(ErrorResponse(errorCode.name, message))
