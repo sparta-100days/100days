@@ -4,6 +4,9 @@ package com.example.days.global.common.exception
 import com.example.days.global.common.exception.dto.BaseResponse
 import com.example.days.global.common.exception.dto.ErrorResponse
 import com.example.days.global.common.exception.status.ResultCode
+import com.example.days.global.common.exception.user.DuplicateEmailException
+import com.example.days.global.common.exception.user.MismatchPasswordException
+import com.example.days.global.common.exception.user.NoSearchUserException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -31,14 +34,38 @@ class GlobalExceptionHandler {
     fun handleRuntimeException(e: RuntimeException): ResponseEntity<ErrorResponse> {
         val errorCode = CommonExceptionCode.INTERNAL_SERVER_ERROR
 
-        return ResponseEntity.status(errorCode.status).body(ErrorResponse(errorCode.name, errorCode.message))
+        return ResponseEntity.status(errorCode.httpStatus).body(ErrorResponse(errorCode.name, errorCode.message))
     }
 
     @ExceptionHandler(ModelNotFoundException::class)
     fun handlerModelNotFoundException(e: ModelNotFoundException): ResponseEntity<ErrorResponse> {
         val errorCode = e.errorCode
         val message = String.format(errorCode.message, e.modelName, e.modelId)
-        return ResponseEntity.status(errorCode.status)
+        return ResponseEntity.status(errorCode.httpStatus)
+            .body(ErrorResponse(errorCode.name, message))
+    }
+
+    @ExceptionHandler(DuplicateEmailException::class)
+    fun handlerDuplicateEmailException(e: DuplicateEmailException): ResponseEntity<ErrorResponse>{
+        val errorCode = e.errorCode
+        val message = String.format(errorCode.message, e.email)
+        return ResponseEntity.status(errorCode.httpStatus)
+            .body(ErrorResponse(errorCode.name, message))
+    }
+
+    @ExceptionHandler(NoSearchUserException::class)
+    fun handleNoSearchUserException(e: NoSearchUserException): ResponseEntity<ErrorResponse>{
+        val errorCode = e.errorCode
+        val message = String.format(errorCode.message, e.email)
+        return ResponseEntity.status(errorCode.httpStatus)
+            .body(ErrorResponse(errorCode.name, message))
+    }
+
+    @ExceptionHandler(MismatchPasswordException::class)
+    fun handleMismatchPasswordException(e: MismatchPasswordException): ResponseEntity<ErrorResponse>{
+        val errorCode = e.errorCode
+        val message = errorCode.message
+        return ResponseEntity.status(errorCode.httpStatus)
             .body(ErrorResponse(errorCode.name, message))
     }
 
