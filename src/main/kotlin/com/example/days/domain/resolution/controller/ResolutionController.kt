@@ -45,7 +45,7 @@ class ResolutionController (
     fun getResolutionListPaginated(
         @RequestParam(defaultValue = "0") page: Int,
         sortOrder: SortOrder?
-    ): ResponseEntity<Page<ResolutionResponse>>{
+    ): ResponseEntity<Page<SimpleResolutionResponse>>{
         val resolutionList = resolutionService.getResolutionListPaginated(page, sortOrder)
         return ResponseEntity.ok(resolutionList)
     }

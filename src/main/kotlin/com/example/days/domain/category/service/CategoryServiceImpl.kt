@@ -7,7 +7,7 @@ import com.example.days.domain.category.dto.response.CategoryResponse.Companion.
 import com.example.days.domain.category.model.Category
 import com.example.days.domain.category.model.checkingNameExists
 import com.example.days.domain.category.repository.CategoryRepository
-import com.example.days.global.common.exception.ModelNotFoundException
+import com.example.days.global.common.exception.common.ModelNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

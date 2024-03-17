@@ -4,6 +4,10 @@ import com.example.days.domain.dailycheck.dto.request.DailyCheckRequest
 import com.example.days.domain.dailycheck.dto.response.DailyCheckResponse
 import com.example.days.domain.dailycheck.repository.DailyCheckRepository
 import com.example.days.domain.resolution.repository.ResolutionRepository
+import com.example.days.global.common.exception.auth.PermissionDeniedException
+import com.example.days.global.common.exception.common.CheckAlreadyCompletedException
+import com.example.days.global.common.exception.common.ModelNotFoundException
+import com.example.days.global.common.exception.common.ResolutionAlreadyCompletedException
 import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -16,56 +20,58 @@ class DailyCheckServiceImpl(
 ):DailyCheckService {
     @Transactional
     override fun createDailyCheck(resolutionId: Long, userId: Long, request: DailyCheckRequest): DailyCheckResponse {
-        val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: TODO("예외처리")
+        val resolution = getByIdOrNull(resolutionId)
 
         if(userId == resolution.author.id){
             when{
-                resolution.dailyStatus -> TODO("이미 데일리 체크를 끝냈을 때")
-                resolution.completeStatus -> TODO("이미 완료된 목표일때")
+                resolution.dailyStatus -> throw CheckAlreadyCompletedException()
+                resolution.completeStatus -> throw ResolutionAlreadyCompletedException()
                 else -> return resolutionRepository.findByIdOrNull(resolutionId)
                     ?.let{
                         it.updateProgress()
                         dailyCheckRepository.save(DailyCheckRequest.of(request, it))
                     }
                     ?.let { DailyCheckResponse.from(it) }
-                    ?: TODO("resolution 찾기 오류")
+                    ?: throw ModelNotFoundException("Resolution", resolutionId)
             }
         }
-        else{
-            TODO("같은 사용자가 아닐 때")
-        }
+        else throw PermissionDeniedException()
     }
 
     override fun getDailyCheckByList(resolutionId: Long, userId: Long): List<DailyCheckResponse> {
-        val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: TODO("예외처리")
+        val resolution = getByIdOrNull(resolutionId)
         if(userId == resolution.author.id){
             return dailyCheckRepository.findByResolutionId(resolution)
                 .map { DailyCheckResponse.from(it) }
         }
-        else TODO()
+        else throw PermissionDeniedException()
     }
 
     @Transactional
     override fun updateDailyCheck(resolutionId: Long, userId: Long, dailyCheckId: Long, request: DailyCheckRequest)
     : DailyCheckResponse {
-        val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: TODO("예외처리")
-        val dailyCheck = dailyCheckRepository.findByIdOrNull(dailyCheckId) ?: TODO()
+        val resolution = getByIdOrNull(resolutionId)
+        val dailyCheck = dailyCheckRepository.findByIdOrNull(dailyCheckId)
+            ?: throw ModelNotFoundException("DailyCheck", dailyCheckId)
         if(userId == resolution.author.id){
             dailyCheck.updateDailyCheck(request.memo, resolution)
             return DailyCheckResponse.from(dailyCheck)
         }
-        else TODO()
+        else throw PermissionDeniedException()
 
 
     }
 
     @Transactional
     override fun deleteDailyCheck(resolutionId: Long, dailyCheckId: Long, userId: Long) {
-        val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: TODO("예외처리")
+        val resolution = getByIdOrNull(resolutionId)
 
         if(userId == resolution.author.id) {
             dailyCheckRepository.deleteById(dailyCheckId)
         }
-        else TODO()
+        else throw PermissionDeniedException()
     }
+
+    fun getByIdOrNull(id: Long) = resolutionRepository.findByIdOrNull(id)
+        ?: throw ModelNotFoundException("Resolution", id)
 }

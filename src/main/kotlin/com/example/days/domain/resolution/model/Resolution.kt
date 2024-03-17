@@ -47,12 +47,6 @@ class Resolution(
 
     @Column(name = "deadline")
     val deadline: LocalDate = createdAt.toLocalDate().plusDays(100)
-//    @Column(name = "deadline")
-//    val deadline: LocalDate? = null
-
-    // 테스트용
-//    @Column(name = "deadline")
-//    val deadline: LocalDateTime = createdAt.plusMinutes(1)
 
     fun updateResolution(updatedTitle: String, updatedDescription: String, updatedCategory: Category){
         title = updatedTitle

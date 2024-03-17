@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page
 interface ResolutionService {
     fun createResolution(resolutionRequest: ResolutionRequest, userId: Long): ResolutionResponse
     fun getResolutionById(resolutionId: Long): ResolutionResponse
-    fun getResolutionListPaginated(page: Int, sortOrder: SortOrder?): Page<ResolutionResponse>
+    fun getResolutionListPaginated(page: Int, sortOrder: SortOrder?): Page<SimpleResolutionResponse>
     fun updateResolution(resolutionId: Long, userId: Long ,resolutionRequest: ResolutionRequest): ResolutionResponse
     fun deleteResolution(resolutionId: Long, userId: Long)
     fun getResolutionRanking(): List<SimpleResolutionResponse>

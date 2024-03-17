@@ -18,8 +18,12 @@ import com.example.days.domain.user.dto.response.UserResponse
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.UserRole
 import com.example.days.domain.user.repository.UserRepository
-import com.example.days.global.common.exception.AlreadyBANException
-import com.example.days.global.common.exception.ModelNotFoundException
+import com.example.days.global.common.exception.common.AlreadyBANException
+import com.example.days.global.common.exception.common.ModelNotFoundException
+import com.example.days.global.common.exception.user.MismatchPasswordException
+import com.example.days.global.common.exception.user.NoSearchUserByEmailException
+import com.example.days.global.common.exception.user.UserNotFoundException
+import com.example.days.global.common.exception.user.UserSuspendedException
 import com.example.days.global.infra.regex.RegexFunc
 import com.example.days.global.infra.security.jwt.JwtPlugin
 import org.springframework.data.domain.Page
@@ -30,7 +34,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Service
 class AdminServiceImpl(
@@ -62,9 +65,12 @@ class AdminServiceImpl(
 
     override fun adminLogin(req: LoginAdminRequest): LoginAdminResponse {
         val admin = adminRepository.findAdminByEmail(regexFunc.regexUserEmail(req.email))
-            ?.takeIf { passwordEncoder.matches(regexFunc.regexPassword(req.password), it.password) }
-            ?: throw IllegalArgumentException("이메일 또는 패스워드가 일치하지 않습니다.")
-        if(admin.status == Status.BAN) throw IllegalArgumentException("해당 유저는 활동정지 상태입니다.")
+            ?: throw NoSearchUserByEmailException(req.email)
+            if(!passwordEncoder.matches(regexFunc.regexPassword(req.password), admin.password)){
+                throw MismatchPasswordException()
+            }
+
+        if(admin.status == Status.BAN) throw throw UserSuspendedException()
 
         return LoginAdminResponse(
             accessToken = jwtPlugin.accessToken(
@@ -120,7 +126,7 @@ class AdminServiceImpl(
     }
 
     override fun toUserCreateMessage(req: CreateMessageRequest, userId: Long): AdminMessagesSendResponse {
-        val receiverNickname = userRepository.findByNickname(req.receiverNickname) ?: TODO()
+        val receiverNickname = userRepository.findByNickname(req.receiverNickname) ?: throw UserNotFoundException()
         val admin = adminRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("Admin", userId)
         // 어드민 가능하게 해야함.
         val adminMessages = adminMessagesRepository.save(
