@@ -33,6 +33,15 @@ jobs:
       - name: Make Directory
         run: mkdir -p deploy
 
+      # appspec.yml 파일 복사
+      - name: Copy appspec.yml
+        run: cp appspec.yml ./deploy
+
+
+      # script files 복사
+      - name: Copy script
+        run: cp ./scripts/*.sh ./deploy
+
       # Jar 파일 복사
       - name: Copy Jar
         run: cp ./build/libs/*.jar ./deploy
@@ -50,3 +59,16 @@ jobs:
 
       - name: Upload to S3
         run: aws s3 cp --region ap-northeast-2 ./100days.zip s3://100days-deploy/
+
+      # Deploy
+      - name: Deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws deploy create-deployment \
+          --application-name 100days \
+          --deployment-group-name 100days-group \
+          --file-exists-behavior OVERWRITE \
+          --s3-location bucket=100days-deploy,bundleType=zip,key=100days.zip \ 
+          --region ap-northeast-2
