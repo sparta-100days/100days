@@ -3,7 +3,7 @@ package com.example.days.domain.resolution.service
 import com.example.days.domain.resolution.dto.response.SearchLogSearchResponse
 import com.example.days.domain.resolution.dto.response.SearchResponse
 import com.example.days.domain.resolution.repository.ResolutionRepository
-import com.example.days.global.common.exception.NotHaveSearchException
+import com.example.days.global.common.exception.common.NotHaveSearchException
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page

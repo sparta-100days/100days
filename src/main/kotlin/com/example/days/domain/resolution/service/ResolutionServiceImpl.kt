@@ -4,11 +4,11 @@ import com.example.days.domain.category.repository.CategoryRepository
 import com.example.days.domain.resolution.dto.request.ResolutionRequest
 import com.example.days.domain.resolution.dto.response.ResolutionResponse
 import com.example.days.domain.resolution.dto.response.SimpleResolutionResponse
-import com.example.days.domain.resolution.model.Resolution
 import com.example.days.domain.resolution.repository.ResolutionRepository
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.common.SortOrder
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.example.days.global.common.exception.common.ModelNotFoundException
+import com.example.days.global.common.exception.auth.PermissionDeniedException
 import org.springframework.data.domain.Page
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
@@ -27,8 +27,8 @@ class ResolutionServiceImpl(
 ) : ResolutionService {
     @Transactional
     override fun createResolution(request: ResolutionRequest, userId: Long): ResolutionResponse {
-        val user = userRepository.findByIdOrNull(userId) ?: TODO()
-        val category = categoryRepository.findByName(request.category) ?: TODO()
+        val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
+        val category = categoryRepository.findByName(request.category) ?: throw ModelNotFoundException("Category")
         val resolution = resolutionRepository.save(ResolutionRequest.of(request, category, user))
         return ResolutionResponse.from(resolution)
     }
@@ -38,19 +38,19 @@ class ResolutionServiceImpl(
         return ResolutionResponse.from(resolution)
     }
 
-    override fun getResolutionListPaginated(page: Int, sortOrder: SortOrder?): Page<ResolutionResponse> {
+    override fun getResolutionListPaginated(page: Int, sortOrder: SortOrder?): Page<SimpleResolutionResponse> {
         val resolutionList = resolutionRepository.findByPageable(page, sortOrder)
-        return resolutionList.map { ResolutionResponse.from(it) }
+        return resolutionList.map { SimpleResolutionResponse.from(it) }
     }
 
     @Transactional
     override fun updateResolution(resolutionId: Long, userId: Long, request: ResolutionRequest): ResolutionResponse {
-        val category = categoryRepository.findByName(request.category) ?: TODO()
+        val category = categoryRepository.findByName(request.category) ?: throw ModelNotFoundException("Category")
         val updatedResolution = getByIdOrNull(resolutionId)
         if (updatedResolution.author.id == userId) {
             updatedResolution.updateResolution(request.title, request.description, category)
             return ResolutionResponse.from(updatedResolution)
-        } else TODO("예외처리")
+        } else throw PermissionDeniedException()
 
     }
 
@@ -59,7 +59,12 @@ class ResolutionServiceImpl(
         val resolution = getByIdOrNull(resolutionId)
         if (resolution.author.id == userId) {
             resolutionRepository.delete(resolution)
-        } else TODO("예외처리")
+        } else throw PermissionDeniedException()
+    }
+
+    override fun getResolutionRanking(): List<SimpleResolutionResponse> {
+        val resolutionRanking = redisTemplate.opsForList().range("ranking", 0, -1)
+        return resolutionRanking ?: emptyList()
     }
 
     // 테스트 시 ( 3분에 한번 동작 )
@@ -76,30 +81,14 @@ class ResolutionServiceImpl(
         val today: LocalDate = LocalDate.now()
         resolutionRepository.checkResolutionDeadline(today)
     }
-
-    override fun getResolutionRanking(): List<SimpleResolutionResponse> {
-        val resolutionRanking = redisTemplate.opsForList().range("ranking", 0, -1)
-//        val objectMapper = ObjectMapper()
-//
-//        return resolutionRanking?.map {
-//            objectMapper.readValue(it.toString(), SimpleResolutionResponse::class.java)
-//        } ?: emptyList()
-        return resolutionRanking ?: emptyList()
+    @Scheduled(fixedRate = 120000)
+    fun getResolutionTop10(){
+        redisTemplate.delete("ranking")
+        resolutionRepository.getResolutionRanking()
+            .forEach{
+                redisTemplate.opsForList().rightPush("ranking", SimpleResolutionResponse.from(it))
+            }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    fun getByIdOrNull(id: Long) = resolutionRepository.findByIdOrNull(id) ?: TODO("예외처리 구현예정")
+    fun getByIdOrNull(id: Long) = resolutionRepository.findByIdOrNull(id) ?: throw ModelNotFoundException("Resolution", id)
 }

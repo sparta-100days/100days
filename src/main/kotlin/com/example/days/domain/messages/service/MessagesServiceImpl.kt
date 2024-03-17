@@ -10,7 +10,11 @@ import com.example.days.domain.messages.repository.AdminMessagesRepository
 import com.example.days.domain.messages.repository.MessagesRepository
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.repository.UserRepository
-import com.example.days.global.common.exception.*
+import com.example.days.global.common.exception.common.ModelNotFoundException
+import com.example.days.global.common.exception.common.NoReceiverMessagesException
+import com.example.days.global.common.exception.common.NoSendMessagesException
+import com.example.days.global.common.exception.common.NotMessagesException
+import com.example.days.global.common.exception.user.UserNotFoundException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -25,7 +29,7 @@ class MessagesServiceImpl(
     private val adminMessagesRepository: AdminMessagesRepository
 ) : MessagesService {
     override fun createMessages(req: CreateMessageRequest, userId: Long): MessageSendResponse {
-        val receiverNickname = userRepository.findByNickname(req.receiverNickname) ?: TODO()
+        val receiverNickname = userRepository.findByNickname(req.receiverNickname) ?: throw UserNotFoundException()
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
 
         if (receiverNickname.status == Status.BAN || receiverNickname.status == Status.WITHDRAW || user.status == Status.BAN || user.status == Status.WITHDRAW) {

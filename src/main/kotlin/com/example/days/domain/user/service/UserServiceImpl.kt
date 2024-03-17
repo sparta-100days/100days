@@ -10,6 +10,8 @@ import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserRole
 import com.example.days.domain.user.repository.QueryDslUserRepository
 import com.example.days.domain.user.repository.UserRepository
+import com.example.days.global.common.exception.common.ModelNotFoundException
+import com.example.days.global.common.exception.user.*
 import com.example.days.global.infra.mail.MailUtility
 import com.example.days.global.infra.regex.RegexFunc
 import com.example.days.global.infra.security.UserPrincipal
@@ -34,10 +36,10 @@ class UserServiceImpl(
 
     override fun login(request: LoginRequest): LoginResponse {
         val user = userRepository.findUserByEmail(regexFunc.regexUserEmail(request.email))
-            ?.takeIf { encoder.matches(regexFunc.regexPassword(request.password), it.password) }
-            ?: throw IllegalArgumentException("이메일 또는 패스워드가 일치하지 않습니다.")
+            ?: throw NoSearchUserByEmailException(request.email)
+        if(!encoder.matches(regexFunc.regexPassword(request.password), user.password)) throw MismatchPasswordException()
 
-        if (user.status == Status.BAN) throw IllegalArgumentException("해당 유저는 활동정지 상태입니다.")
+        if (user.status == Status.BAN) throw UserSuspendedException()
         if (user.status == Status.WITHDRAW) {
             user.isDelete = false
             user.status = Status.ACTIVE
@@ -60,14 +62,14 @@ class UserServiceImpl(
 
     override fun signUp(request: SignUpRequest): SignUpResponse {
         if (userRepository.existsByEmail(regexFunc.regexUserEmail(request.email)))
-            throw IllegalArgumentException("이미 동일한 이메일이 존재합니다.")
+            throw DuplicateEmailException(request.email)
 
         if (userRepository.existsByNickname(request.nickname))
-            throw IllegalArgumentException("이름은 중복될 수 없습니다.")
+            throw DuplicateNicknameException(request.nickname)
 
         val pass =
             if (request.password == request.newPassword) encoder.encode(regexFunc.regexPassword(request.password))
-            else throw IllegalArgumentException("비밀번호 확인이 일치하지 않습니다.")
+            else throw MismatchPasswordException()
 
         return User(
             email = regexFunc.regexUserEmail(request.email),
@@ -96,18 +98,18 @@ class UserServiceImpl(
             user.password = mail
             userRepository.save(user)
         } else {
-            throw IllegalArgumentException("해당 이메일을 사용하는 회원이 없습니다.")
+            throw NoSearchUserByEmailException(request.email)
         }
     }
 
     override fun getInfo(userId: UserPrincipal): ModifyInfoResponse {
-        val user = userRepository.findByIdOrNull(userId.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("User", userId.id)
         return user.let { ModifyInfoResponse.from(it) }
     }
 
     @Transactional
     override fun modifyInfo(userId: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse {
-        val user = userRepository.findByIdOrNull(userId.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
 
         if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
 
@@ -116,34 +118,34 @@ class UserServiceImpl(
 
             userRepository.save(user)
         } else {
-            throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")
+            throw MismatchPasswordException()
         }
 
         return ModifyInfoResponse(user.email, user.nickname, user.birth)
     }
 
     override fun withdraw(userId: UserPrincipal, request: UserPasswordRequest) {
-        val user = userRepository.findByIdOrNull(userId.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
         if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
             user.isDelete = true
             user.status = Status.WITHDRAW
             userRepository.save(user)
         } else {
-            throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")
+            throw MismatchPasswordException()
         }
     }
 
     override fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest) {
-        val user = userRepository.findByIdOrNull(userId.id) ?: throw IllegalArgumentException("회원정보가 없습니다.")
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
 
         if (encoder.matches(request.password, user.password))
-            throw IllegalArgumentException("이전에 사용한 비밀번호와 같은 비밀번호는 사용할 수 없습니다.")
+            throw InvalidPasswordError()
 
         if (request.password == request.newPassword) {
             user.password = encoder.encode(regexFunc.regexPassword(request.newPassword))
             userRepository.save(user)
         } else {
-            throw IllegalArgumentException("비밀번호 확인이 일치하지 않습니다.")
+            throw MismatchPasswordException()
         }
     }
 
