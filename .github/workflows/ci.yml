@@ -1,25 +1,52 @@
-# 1 워크플로의 이름 지정
 name: CI
 
-# 2 워크플로가 시작될 조건 지정
 on:
   push:
     branches: [ feat/#73 ]
+  pull_request:
+    branches: [ dev ]
+
+env:
+  S3_BUCKET_NAME: 100days-deploy
 
 jobs:
   build:
-    runs-on: ubuntu-latest # 3 실행 환경 지정
-    #4 실행스텝지정
-    steps:
-      - uses: actions/checkout@v3
 
-      - uses: actions/setup-java@v3
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          distribution: 'zulu'
           java-version: '17'
+          distribution: 'zulu'
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Build with Gradle
         run: ./gradlew clean build
+
+      # 디렉토리 생성
+      - name: Make Directory
+        run: mkdir -p deploy
+
+      # Jar 파일 복사
+      - name: Copy Jar
+        run: cp ./build/libs/*.jar ./deploy
+
+      - name: Make zip file
+        run: zip -r ./100days.zip ./deploy
+        shell: bash
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./100days.zip s3://$100days-deploy/
