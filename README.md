@@ -1,6 +1,8 @@
 # 🕛작심 백일
 
 ## 👨‍🏫 프로젝트 소개
+작심삼일이라는 사자성어와 습관을 만드는데 세 달이 걸린다는 속설에서 영감을 얻어
+어떤 일이든 100일간 시도해 나의 일상으로 만드는 것을 목표로 하는 사이트입니다
 
 👥 팀소개
 -------------
@@ -35,9 +37,17 @@
 ![Redis](https://img.shields.io/static/v1?style=for-the-badge&message=Redis&color=DC382D&logo=Redis&logoColor=FFFFFF&label=)
 ![PostgreSQL](https://img.shields.io/static/v1?style=for-the-badge&message=PostgreSQL&color=4169E1&logo=PostgreSQL&logoColor=FFFFFF&label=)
 -------------
-와이어프레임
-API 명세서
-ERD
+### ✔️ 협업 TOOLS
+![Discord](https://img.shields.io/static/v1?style=for-the-badge&message=Discord&color=5865F2&logo=Discord&logoColor=FFFFFF&label=)
+![Notion](https://img.shields.io/static/v1?style=for-the-badge&message=Notion&color=000000&logo=Notion&logoColor=FFFFFF&label=)
+![Slack](https://img.shields.io/static/v1?style=for-the-badge&message=Slack&color=38096C&&logo=Slack&logoColor=FFFFFF&label=)
+-------------
+### ✔️와이어프레임
+![wire-frame](/img/wire-frame.png)
+### ✔️API 명세서
+[API 명세서](https://productive-sesame-df1.notion.site/909a6906c57945f1a70c0bda40b8451d?v=3bbf20a27af54f529688a43126f16fdb&pvs=4)
+### ✔️ ERD
+![erd](/img/작심백일 erd.png)
 패키지 구조
 서비스 구조
 Trouble Shooting
