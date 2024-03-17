@@ -47,7 +47,7 @@
 ### ✔️API 명세서
 [API 명세서](https://productive-sesame-df1.notion.site/909a6906c57945f1a70c0bda40b8451d?v=3bbf20a27af54f529688a43126f16fdb&pvs=4)
 ### ✔️ ERD
-![erd](/img/작심백일 erd.png)
+![erd](/img/erd.png)
 패키지 구조
 서비스 구조
 Trouble Shooting
