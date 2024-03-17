@@ -49,4 +49,4 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./100days.zip s3://$100days-deploy/
+        run: aws s3 cp --region ap-northeast-2 ./100days.zip s3://100days-deploy/
