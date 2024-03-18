@@ -16,7 +16,7 @@ import java.time.Duration
 @Configuration
 @EnableCaching
 class RedisConnection(
-    @Value("\${spring_data_redis_host}")
+    @Value("\${spring.data.redis.host}")
     val host: String,
     @Value("\${spring.data.redis.port}")
     val port: Int
