@@ -15,9 +15,9 @@ import java.util.*
 
 @Component
 class JwtPlugin(
-    @Value("\${auth_jwt_issuer}") private val issuer: String,
-    @Value("\${auth_jwt_secret}") private val secret: String,
-    @Value("\${auth_jwt_accessTokenExpirationHour}") private val accessTokenExpirationHour: Long
+    @Value("\${auth.jwt.issuer}") private val issuer: String,
+    @Value("\${auth.jwt.secret}") private val secret: String,
+    @Value("\${auth.jwt.accessTokenExpirationHour}") private val accessTokenExpirationHour: Long
 ) {
 
     fun validateToken(jwt: String): Result<Jws<Claims>> {
