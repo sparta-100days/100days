@@ -8,10 +8,10 @@ import java.util.*
 
 @Configuration
 class MailConfig(
-    @Value("\${mail.host}") private val host: String,
+    @Value("\${mail_host}") private val host: String,
     @Value("\${mail.port}") private val port: Int,
-    @Value("\${mail.username}") private val username: String,
-    @Value("\${mail.password}") private val password: String,
+    @Value("\${mail_username}") private val username: String,
+    @Value("\${mail_password}") private val password: String,
     @Value("\${mail.properties.mail.smtp.auth}") private var auth: Boolean,
     @Value("\${mail.properties.mail.smtp.starttls.enable}") private var enable: Boolean,
     @Value("\${mail.properties.mail.smtp.starttls.required}") private var required: Boolean
@@ -28,9 +28,9 @@ class MailConfig(
 
 
         val props = Properties()
-        props["mail.smtp.auth"] = auth.toString()
-        props["mail.smtp.starttls.enable"] = enable.toString()
-        props["mail.smtp.starttls.required"] = required.toString()
+        props["mail_smtp_auth"] = auth.toString()
+        props["mail_smtp_starttls_enable"] = enable.toString()
+        props["mail_smtp_starttls_required"] = required.toString()
 
         javaMailSender.javaMailProperties = props
 
