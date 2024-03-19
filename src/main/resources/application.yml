@@ -11,6 +11,7 @@ spring:
     redis:
       host: ${spring_data_redis_host}
       port: ${spring_data_redis_port}
+      password: ${spring_data_redis_password}
 logging:
   level:
     org:

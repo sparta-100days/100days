@@ -17,9 +17,11 @@ import java.time.Duration
 @EnableCaching
 class RedisConnection(
     @Value("\${spring.data.redis.host}")
-    val host: String,
+    private val host: String,
     @Value("\${spring.data.redis.port}")
-    val port: Int
+    private val port: Int,
+    @Value("\${spring.data.redis.password}")
+    private val password: String
 ) {
     // Redis 와의 연결을 위한 설정.
     // Lettuce: Redis 클라이언트 라이브러리. Redis 를 비동기 형태로 사용하기 위한 팩토리를 지원한다.
@@ -28,10 +30,13 @@ class RedisConnection(
     // RedisStandaloneConfiguration: Redis 를 스탠드얼론 모드로 설정한 후 서버의 설정을 정의
     // Redis 의 모드는 여러가지가 있다고 합니다. 클러스터, 센티넬, 복제, 파이프라인 등등...
     @Bean
-    fun lettuceConnectionFactory(): LettuceConnectionFactory{
-        val redisStandaloneConfiguration = RedisStandaloneConfiguration(host, port)
-        return LettuceConnectionFactory(redisStandaloneConfiguration)
-    }
+    fun lettuceConnectionFactory() = RedisStandaloneConfiguration().let {
+            it.hostName = host
+            it.port = port
+            it.setPassword(password)
+            it
+        }.let { LettuceConnectionFactory(it) }
+
 
     // 캐시 매니져로 Redis 를 설정할 때 필요한 configuration
     // RedisCacheManager 는 spring 에서 제공하는 클래스임!
