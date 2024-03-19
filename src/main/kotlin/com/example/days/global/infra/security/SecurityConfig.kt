@@ -26,7 +26,7 @@ class SecurityConfig(
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .csrf { it.disable() }
-            .headers { it.frameOptions { foc -> foc.disable() } }
+            .headers { it.frameOptions { frameOptionConfig -> frameOptionConfig.disable() } }
             .authorizeHttpRequests {
 
                 it.requestMatchers(AntPathRequestMatcher("/api/users")).permitAll()
@@ -43,6 +43,7 @@ class SecurityConfig(
                 it.requestMatchers(AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/oauth2/**")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/**")).permitAll()
                 it.requestMatchers(PathRequest.toH2Console()).permitAll()
                     .anyRequest().authenticated()
             }

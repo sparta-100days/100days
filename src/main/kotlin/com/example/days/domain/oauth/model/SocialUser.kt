@@ -26,6 +26,14 @@ class SocialUser(
                 nickname = nickname
             )
         }
+
+        fun ofGoogle(id: Long, nickname: String): SocialUser {
+            return SocialUser(
+                provider = OAuth2Provider.GOOGLE,
+                providerId = id.toString(),
+                nickname = nickname
+            )
+        }
     }
 }
 
