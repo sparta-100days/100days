@@ -26,6 +26,7 @@ class SecurityConfig(
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .csrf { it.disable() }
+            .cors { it.disable() }
             .authorizeHttpRequests {
 
                 it.requestMatchers(AntPathRequestMatcher("/api/users")).permitAll()
@@ -37,6 +38,7 @@ class SecurityConfig(
                 it.requestMatchers(AntPathRequestMatcher("/api/users/searchEmail")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/searchPass")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/mail")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/h2-console/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/mail/sendmail")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/mail/verifycode")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/swagger-ui/**")).permitAll()
