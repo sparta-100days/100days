@@ -9,11 +9,11 @@ import com.example.days.global.support.MailType
 import org.springframework.stereotype.Service
 
 @Service
-class UserMailServiceImpl(
+class MailServiceImpl(
     val mailRepository: MailRepository,
     val mailUtility: MailUtility,
     val redisUtil: RedisUtil
-) : UserMailService {
+) : MailService {
 
     override fun sendVerificationEmail(request: EmailRequest) {
         mailUtility.emailSender(request.email, MailType.VERIFYCODE)

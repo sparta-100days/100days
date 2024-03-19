@@ -34,12 +34,4 @@ class RedisUtil(
     fun deleteData(key: String) {
         stringRedisTemplate.delete(key)
     }
-
-    fun saveRefreshToken(id: String, refreshToken: String) {
-        redisTemplate.opsForHash<String, String>().put(id, refreshToken, token)
-    }
-
-    fun getRefreshToken(id: String): String? {
-        return redisTemplate.opsForHash<String, String>().get(token, id)
-    }
 }
