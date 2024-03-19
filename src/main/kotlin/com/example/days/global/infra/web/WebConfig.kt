@@ -1,6 +1,7 @@
 package com.example.days.global.infra.web
 
 import org.springframework.context.annotation.Configuration
+import org.springframework.format.FormatterRegistry
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
@@ -8,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class WebConfig : WebMvcConfigurer {
 
 //    override fun addFormatters(registry: FormatterRegistry) {
-//
+//        registry.addConverter(OAuth2ProviderConverter())
 //    }
 
     override fun addCorsMappings(registry: CorsRegistry) {
