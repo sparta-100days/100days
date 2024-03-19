@@ -1,7 +1,7 @@
-package com.example.days.domain.user.controller
+package com.example.days.domain.mail.controller
 
-import com.example.days.domain.user.dto.request.EmailRequest
-import com.example.days.domain.user.service.UserMailService
+import com.example.days.domain.mail.dto.request.EmailRequest
+import com.example.days.domain.mail.service.UserMailService
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

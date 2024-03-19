@@ -1,5 +1,7 @@
 package com.example.days.domain.user.service
 
+import com.example.days.domain.mail.dto.request.EmailRequest
+import com.example.days.domain.mail.dto.response.EmailResponse
 import com.example.days.domain.user.dto.request.*
 import com.example.days.domain.user.dto.response.*
 import com.example.days.global.infra.security.UserPrincipal

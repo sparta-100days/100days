@@ -1,7 +1,7 @@
-package com.example.days.domain.user.service
+package com.example.days.domain.mail.service
 
-import com.example.days.domain.user.dto.request.EmailRequest
-import com.example.days.domain.user.repository.MailRepository
+import com.example.days.domain.mail.dto.request.EmailRequest
+import com.example.days.domain.mail.repository.MailRepository
 import com.example.days.global.common.exception.user.AuthCodeMismatchException
 import com.example.days.global.infra.mail.MailUtility
 import com.example.days.global.infra.redis.RedisUtil
