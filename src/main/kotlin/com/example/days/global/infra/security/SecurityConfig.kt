@@ -29,6 +29,7 @@ class SecurityConfig(
             .cors { it.disable() }
             .authorizeHttpRequests {
 
+                it.requestMatchers(AntPathRequestMatcher("/h2-console/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/admins/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/signup")).permitAll()
@@ -38,12 +39,12 @@ class SecurityConfig(
                 it.requestMatchers(AntPathRequestMatcher("/api/users/searchEmail")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/searchPass")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/mail")).permitAll()
-                it.requestMatchers(AntPathRequestMatcher("/h2-console/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/mail/sendmail")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/mail/verifycode")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
-                it.requestMatchers(PathRequest.toH2Console()).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/")).permitAll()
+//                it.requestMatchers(PathRequest.toH2Console()).permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
