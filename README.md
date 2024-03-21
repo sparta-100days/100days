@@ -50,11 +50,17 @@
 ### ✔️ DB  
 ![Redis](https://img.shields.io/static/v1?style=for-the-badge&message=Redis&color=DC382D&logo=Redis&logoColor=FFFFFF&label=)
 ![PostgreSQL](https://img.shields.io/static/v1?style=for-the-badge&message=PostgreSQL&color=4169E1&logo=PostgreSQL&logoColor=FFFFFF&label=)
+![Amazon RDS](https://img.shields.io/static/v1?style=for-the-badge&message=Amazon+RDS&color=527FFF&logo=Amazon+RDS&logoColor=FFFFFF&label=)
 -------------
 ### ✔️ 협업 TOOLS
 ![Discord](https://img.shields.io/static/v1?style=for-the-badge&message=Discord&color=5865F2&logo=Discord&logoColor=FFFFFF&label=)
 ![Notion](https://img.shields.io/static/v1?style=for-the-badge&message=Notion&color=000000&logo=Notion&logoColor=FFFFFF&label=)
 ![Slack](https://img.shields.io/static/v1?style=for-the-badge&message=Slack&color=38096C&&logo=Slack&logoColor=FFFFFF&label=)
+-------------
+### ✔️ deploy
+![Amazon EC2](https://img.shields.io/static/v1?style=for-the-badge&message=Amazon+EC2&color=222222&logo=Amazon+EC2&logoColor=FF9900&label=)
+![Amazon S3](https://img.shields.io/static/v1?style=for-the-badge&message=Amazon+S3&color=569A31&logo=Amazon+S3&logoColor=FFFFFF&label=)
+![Amazon CodeDeploy](https://img.shields.io/static/v1?style=for-the-badge&message=Amazon+CodeDeploy&color=527FFF&logo=Amazon+CodeDeploy&logoColor=FFFFFF&label=)
 -------------
 ### ✔️와이어프레임
 ![wire-frame](/img/wire-frame.png)
@@ -63,6 +69,6 @@
 ### ✔️ ERD
 ![erd](/img/erd.png)
 
-### ✔️ 패키지 구조
 ### ✔️ 서비스 구조
+![architecture](/img/architecture.png)
 ### ✔️ Trouble Shooting
