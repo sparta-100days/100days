@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
@@ -26,7 +27,7 @@ class SecurityConfig(
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .csrf { it.disable() }
-            .headers { it.frameOptions { frameOptionConfig -> frameOptionConfig.disable() } }
+            .headers { it.frameOptions { options -> options.disable() } }
             .authorizeHttpRequests {
 
                 it.requestMatchers(AntPathRequestMatcher("/api/users")).permitAll()

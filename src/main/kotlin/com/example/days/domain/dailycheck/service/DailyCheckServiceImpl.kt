@@ -58,8 +58,6 @@ class DailyCheckServiceImpl(
             return DailyCheckResponse.from(dailyCheck)
         }
         else throw PermissionDeniedException()
-
-
     }
 
     @Transactional
