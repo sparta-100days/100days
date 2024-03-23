@@ -2,6 +2,9 @@ package com.example.days.domain.user.service
 
 import com.example.days.domain.mail.dto.request.EmailRequest
 import com.example.days.domain.mail.dto.response.EmailResponse
+import com.example.days.domain.oauth2.client.OAuth2Client
+import com.example.days.domain.oauth2.client.kakao.dto.KakaoUserInfoResponse
+import com.example.days.domain.oauth2.model.OAuth2Provider
 import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
@@ -26,6 +29,8 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.client.RestClient
+import org.springframework.web.client.body
 import java.time.LocalDateTime
 
 @Service
@@ -52,7 +57,7 @@ class UserServiceImpl(
 
         // accessToken
         val accessToken = jwtPlugin.accessToken(
-            id = user.id!!,
+            subject = user.id!!,
             email = user.email,
             role = user.role
         )
@@ -82,7 +87,9 @@ class UserServiceImpl(
             birth = request.birth,
             isDelete = false,
             status = Status.ACTIVE,
-            role = UserRole.USER
+            role = UserRole.USER,
+            provider = TODO(),
+            providerId = TODO()
         ).let {
             userRepository.save(it)
         }.let { SignUpResponse.from(it) }
@@ -107,13 +114,13 @@ class UserServiceImpl(
     }
 
     override fun getInfo(userId: UserPrincipal): ModifyInfoResponse {
-        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("User", userId.id)
+        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("User", userId.subject)
         return user.let { ModifyInfoResponse.from(it) }
     }
 
     @Transactional
     override fun modifyInfo(userId: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse {
-        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
+        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("user", userId.subject)
 
         if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
             user.updateUser(request)
@@ -126,7 +133,7 @@ class UserServiceImpl(
     }
 
     override fun withdraw(userId: UserPrincipal, request: UserPasswordRequest) {
-        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
+        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("user", userId.subject)
         if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
             user.isDelete = true
             user.status = Status.WITHDRAW
@@ -137,7 +144,7 @@ class UserServiceImpl(
     }
 
     override fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest) {
-        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
+        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("user", userId.subject)
 
         if (encoder.matches(request.password, user.password))
             throw InvalidPasswordError()
@@ -147,6 +154,16 @@ class UserServiceImpl(
             userRepository.save(user)
         } else {
             throw MismatchPasswordException()
+        }
+    }
+
+    // 소셜 로그인 쪽 코드
+    override fun registerIfAbsent(userInfo: KakaoUserInfoResponse): User {
+        return if (!userRepository.existsByProviderAndProviderId(OAuth2Provider.KAKAO, userInfo.id.toString())) {
+            val socialUser = User.ofKakao(userInfo.id)
+            userRepository.save(socialUser)
+        } else {
+            userRepository.findByProviderAndProviderId(OAuth2Provider.KAKAO, userInfo.id.toString())
         }
     }
 

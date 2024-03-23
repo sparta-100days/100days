@@ -26,7 +26,7 @@ class ResolutionController (
         @Valid @RequestBody resolutionRequest: ResolutionRequest,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ):ResponseEntity<ResolutionResponse>{
-        val userId = userPrincipal.id
+        val userId = userPrincipal.subject
         val createResolution = resolutionService.createResolution(resolutionRequest, userId)
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createResolution)
@@ -57,7 +57,7 @@ class ResolutionController (
         @Valid @RequestBody resolutionRequest: ResolutionRequest,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<ResolutionResponse>{
-        val userId = userPrincipal.id
+        val userId = userPrincipal.subject
         val updateResolution = resolutionService.updateResolution(resolutionId, userId ,resolutionRequest)
         return ResponseEntity.ok(updateResolution)
     }
@@ -68,7 +68,7 @@ class ResolutionController (
         @PathVariable resolutionId: Long,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<Unit>{
-        val userId = userPrincipal.id
+        val userId = userPrincipal.subject
         resolutionService.deleteResolution(resolutionId, userId)
         return ResponseEntity.noContent().build()
     }

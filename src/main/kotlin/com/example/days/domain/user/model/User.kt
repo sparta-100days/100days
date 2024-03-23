@@ -1,5 +1,6 @@
 package com.example.days.domain.user.model
 
+import com.example.days.domain.oauth2.model.OAuth2Provider
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
 import com.example.days.global.entity.BaseEntity
 import jakarta.persistence.*
@@ -34,7 +35,13 @@ class User(
 
     @Column(name = "count_report") var countReport: Int = 0,
 
-) : BaseEntity() {
+    @Column(name = "provider")
+    val provider: OAuth2Provider,
+
+    @Column(name = "provider_id")
+    val providerId: String,
+
+    ) : BaseEntity() {
 
     @Id
     @Column(name = "id")
@@ -59,6 +66,23 @@ class User(
     fun updateUser(request: ModifyInfoRequest) {
         nickname = request.nickname
         birth = request.birth
+    }
+
+    companion object {
+
+        fun ofKakao(id: Long): User {
+            return User(
+                provider = OAuth2Provider.KAKAO,
+                providerId = id.toString(),
+                nickname = id.toString(),
+                email = id.toString(),
+                password = id.toString(),
+                birth = LocalDate.now(),
+                isDelete = false,
+                role = UserRole.USER,
+                status = Status.ACTIVE
+            )
+        }
     }
 }
 

@@ -27,11 +27,11 @@ class JwtPlugin(
         }
     }
 
-    fun accessToken(id: Long, email: String, role: UserRole): String {
-        return generateToken(id, email, role, Duration.ofHours(accessTokenExpirationHour))
+    fun accessToken(subject: Long, email: String, role: UserRole): String {
+        return generateToken(subject, email, role, Duration.ofHours(accessTokenExpirationHour))
     }
 
-    fun generateToken(id: Long, email: String, role: UserRole, expirationPeriod: Duration): String {
+    fun generateToken(subject: Long, email: String, role: UserRole, expirationPeriod: Duration): String {
         val key = Keys.hmacShaKeyFor(secret.toByteArray(StandardCharsets.UTF_8))
         val now = Instant.now()
 
@@ -41,7 +41,7 @@ class JwtPlugin(
 
         return Jwts.builder()
             .header().add("typ", "JWT").and()
-            .subject(id.toString())
+            .subject(subject.toString())
             .issuer(issuer)
             .issuedAt(Date.from(now))
             .expiration(Date.from(now.plus(expirationPeriod)))

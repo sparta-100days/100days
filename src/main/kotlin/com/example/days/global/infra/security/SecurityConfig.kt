@@ -1,7 +1,5 @@
 package com.example.days.global.infra.security
 
-import com.example.days.domain.oauth.service.OAuth2LoginSuccessHandler
-import com.example.days.domain.oauth.service.SocialUserService
 import com.example.days.global.infra.security.jwt.JwtAuthenticationFilter
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
@@ -18,9 +16,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 @EnableWebSecurity
 @EnableMethodSecurity
 class SecurityConfig(
-    private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val oAuth2UserService: SocialUserService,
-    private val oAuth2LoginSuccessHandler: OAuth2LoginSuccessHandler
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter
 ) {
 
     @Bean
@@ -29,9 +25,9 @@ class SecurityConfig(
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .csrf { it.disable() }
-            .cors { it.disable() }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .headers { it.frameOptions { option -> option.disable() } }
+//            .cors { it.disable() }
+//            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+//            .headers { it.frameOptions { option -> option.disable() } }
             .authorizeHttpRequests {
                 it.requestMatchers(AntPathRequestMatcher("/api/users")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/admins/**")).permitAll()
@@ -47,19 +43,19 @@ class SecurityConfig(
                 it.requestMatchers(AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/oauth2/**")).permitAll()
-                it.requestMatchers(AntPathRequestMatcher("/**")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("**")).permitAll()
                 it.requestMatchers(PathRequest.toH2Console()).permitAll()
                     .anyRequest().authenticated()
             }
-            .oauth2Login { oauthConfig ->
-                oauthConfig.authorizationEndpoint {
-                    it.baseUri("/api/v1/oauth2/login")
-                }.redirectionEndpoint {
-                    it.baseUri("/api/v1/oauth2/callback/*")
-                }.userInfoEndpoint {
-                    it.userService(oAuth2UserService)
-                }.successHandler(oAuth2LoginSuccessHandler)
-            }
+//            .oauth2Login { oauthConfig ->
+//                oauthConfig.authorizationEndpoint {
+//                    it.baseUri("/api/v1/oauth2/login")
+//                }.redirectionEndpoint {
+//                    it.baseUri("/api/v1/oauth2/callback/*")
+//                }.userInfoEndpoint {
+//                    it.userService(oAuth2UserService)
+//                }.successHandler(oAuth2LoginSuccessHandler)
+//            }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .exceptionHandling {
 //                it.authenticationEntryPoint(authenticationEntryPoint)
