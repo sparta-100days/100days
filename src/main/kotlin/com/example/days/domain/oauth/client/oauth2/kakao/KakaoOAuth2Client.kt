@@ -1,43 +1,52 @@
 package com.example.days.domain.oauth.client.oauth2.kakao
 
 import com.example.days.domain.oauth.client.oauth2.OAuth2Client
-import com.example.days.domain.oauth.client.oauth2.OAuth2LoginUserInfo
+import com.example.days.domain.oauth.client.oauth2.dto.OAuth2UserInfo
 import com.example.days.domain.oauth.client.oauth2.kakao.dto.KakaoTokenResponse
-import com.example.days.domain.oauth.client.oauth2.kakao.dto.KakaoUserInfoResponse
 import com.example.days.domain.oauth.model.OAuth2Provider
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestClient
+import org.springframework.web.client.RestClientException
 import org.springframework.web.client.body
 
 @Component
 class KakaoOAuth2Client(
-    @Value("\${oauth2.kakao.client_id}") val clientId: String,
-    @Value("\${oauth2.kakao.client_secret}") val clientSecret: String,
-    @Value("\${oauth2.kakao.redirect_url}") val redirectUrl: String,
+    @Value("\${security.oauth2.client.registration.kakao.client_id}") val clientId: String,
+    @Value("\${security.oauth2.client.registration.kakao.client_secret}") val clientSecret: String,
+    @Value("\${security.oauth2.client.registration.kakao.redirect_uri}") val redirectUrl: String,
+    @Value("\${security.oauth2.client.registration.kakao.authorization-grant-type}") val grantType: String,
+    @Value("\${security.oauth2.client.registration.kakao.client-name}") val clientName: String,
+    @Value("\${security.oauth2.client.provider.kakao.authorization-uri}") val authorizationUri: String,
+    @Value("\${security.oauth2.client.provider.kakao.token-uri}") val tokenUri: String,
+    @Value("\${security.oauth2.client.provider.kakao.user-info-uri}") val userInfoUri: String,
+    @Value("\${security.oauth2.client.provider.kakao.user-name-attribute}") val userNameAttribute: String,
     private val restClient: RestClient
 ) : OAuth2Client {
 
     override fun generateLoginPageUrl(): String {
         return StringBuilder(KAKAO_AUTH_BASE_URL)
-            .append("/authorize")
-            .append("&response_type=").append("code")
+            .append("/oauth/authorize")
             .append("?client_id=").append(clientId)
             .append("&redirect_uri=").append(redirectUrl)
+            .append("&response_type=").append("code")
+            .append("&scope=").append("profile_nickname,account_email")
             .toString()
     }
 
     override fun getAccessToken(authorizationCode: String): String {
         val requestData = mutableMapOf(
-            "grant_type" to "authorization_code",
+            "grant_type" to grantType,
             "client_id" to clientId,
             "client_secret" to clientSecret,
+            "redirect_uri" to redirectUrl,
             "code" to authorizationCode
         )
+
         return restClient.post()
-            .uri("$KAKAO_AUTH_BASE_URL/token")
+            .uri("$KAKAO_AUTH_BASE_URL/oauth/token")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .body(LinkedMultiValueMap<String, String>().apply { this.setAll(requestData) })
             .retrieve()
@@ -46,12 +55,12 @@ class KakaoOAuth2Client(
             ?: throw RuntimeException("Kakao AccessToken 조회 실패")
     }
 
-    override fun retrieveUserInfo(accessToken: String): OAuth2LoginUserInfo {
+    override fun retrieveUserInfo(accessToken: String): OAuth2UserInfo {
         return restClient.get()
             .uri("$KAKAO_API_BASE_URL/v2/user/me")
             .header("Authorization", "Bearer $accessToken")
             .retrieve()
-            .body<KakaoUserInfoResponse>()
+            .body<OAuth2UserInfo>()
             ?: throw RuntimeException("Kakao UserInfo 조회 실패")
     }
 

@@ -1,8 +1,11 @@
 package com.example.days.domain.user.service
 
 import com.example.days.domain.mail.dto.request.EmailRequest
-import com.example.days.domain.user.dto.request.*
 import com.example.days.domain.mail.dto.response.EmailResponse
+import com.example.days.domain.user.dto.request.LoginRequest
+import com.example.days.domain.user.dto.request.ModifyInfoRequest
+import com.example.days.domain.user.dto.request.SignUpRequest
+import com.example.days.domain.user.dto.request.UserPasswordRequest
 import com.example.days.domain.user.dto.response.LoginResponse
 import com.example.days.domain.user.dto.response.ModifyInfoResponse
 import com.example.days.domain.user.dto.response.SignUpResponse
@@ -75,7 +78,7 @@ class UserServiceImpl(
         return User(
             email = regexFunc.regexUserEmail(request.email),
             nickname = request.nickname,
-            password = pass,
+            pass,
             birth = request.birth,
             isDelete = false,
             status = Status.ACTIVE,
@@ -113,10 +116,7 @@ class UserServiceImpl(
         val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
 
         if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
-
-            user.nickname = request.nickname
-            user.birth = request.birth
-
+            user.updateUser(request)
             userRepository.save(user)
         } else {
             throw MismatchPasswordException()

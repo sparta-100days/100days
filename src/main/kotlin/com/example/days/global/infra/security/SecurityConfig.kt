@@ -1,5 +1,7 @@
 package com.example.days.global.infra.security
 
+import com.example.days.domain.oauth.service.OAuth2LoginSuccessHandler
+import com.example.days.domain.oauth.service.SocialUserService
 import com.example.days.global.infra.security.jwt.JwtAuthenticationFilter
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
@@ -18,7 +20,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
     private val authenticationEntryPoint: CustomAuthenticationEntryPoint,
-    private val accessDeniedHandler: CustomAccessDeniedHandler
+    private val accessDeniedHandler: CustomAccessDeniedHandler,
+    private val oAuth2UserService: SocialUserService,
+    private val oAuth2LoginSuccessHandler: OAuth2LoginSuccessHandler
 ) {
 
     @Bean
@@ -27,9 +31,10 @@ class SecurityConfig(
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .csrf { it.disable() }
-            .headers { it.frameOptions { options -> options.disable() } }
+            .cors { it.disable() }
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .headers { it.frameOptions { option -> option.disable() } }
             .authorizeHttpRequests {
-
                 it.requestMatchers(AntPathRequestMatcher("/api/users")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/admins/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/signup")).permitAll()
@@ -47,6 +52,15 @@ class SecurityConfig(
                 it.requestMatchers(AntPathRequestMatcher("/**")).permitAll()
                 it.requestMatchers(PathRequest.toH2Console()).permitAll()
                     .anyRequest().authenticated()
+            }
+            .oauth2Login { oauthConfig ->
+                oauthConfig.authorizationEndpoint {
+                    it.baseUri("/api/v1/oauth2/login")
+                }.redirectionEndpoint {
+                    it.baseUri("/api/v1/oauth2/callback/*")
+                }.userInfoEndpoint {
+                    it.userService(oAuth2UserService)
+                }.successHandler(oAuth2LoginSuccessHandler)
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .exceptionHandling {

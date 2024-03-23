@@ -29,9 +29,9 @@ class OAuth2LoginController(
     @GetMapping("/oauth2/callback/{provider}")
     fun callback(
         @PathVariable provider: OAuth2Provider,
-        @RequestParam(name = "code")
-        authorizationCode: String
+        @RequestParam(name = "code") authorizationCode: String,
+        response: HttpServletResponse
     ): String {
-        return oAuth2LoginService.login(provider, authorizationCode)
+        return oAuth2LoginService.socialLogin(provider, authorizationCode, response.toString())
     }
 }
