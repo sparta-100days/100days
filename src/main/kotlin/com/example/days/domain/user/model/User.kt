@@ -1,6 +1,5 @@
 package com.example.days.domain.user.model
 
-import com.example.days.domain.oauth.model.SocialUser
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
 import com.example.days.global.entity.BaseEntity
 import jakarta.persistence.*

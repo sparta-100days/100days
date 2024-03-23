@@ -1,6 +1,5 @@
 package com.example.days.domain.user.repository
 
-import com.example.days.domain.oauth.model.QSocialUser
 import com.example.days.domain.user.model.QUser
 import com.example.days.domain.user.model.User
 import com.example.days.global.infra.queryDSL.QueryDslSupport
