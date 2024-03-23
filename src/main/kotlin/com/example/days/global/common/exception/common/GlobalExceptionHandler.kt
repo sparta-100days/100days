@@ -1,8 +1,7 @@
-package com.example.days.global.common.exception
+package com.example.days.global.common.exception.common
 
 
 import com.example.days.global.common.exception.auth.PermissionDeniedException
-import com.example.days.global.common.exception.common.*
 import com.example.days.global.common.exception.dto.BaseResponse
 import com.example.days.global.common.exception.dto.ErrorResponse
 import com.example.days.global.common.exception.status.ResultCode
