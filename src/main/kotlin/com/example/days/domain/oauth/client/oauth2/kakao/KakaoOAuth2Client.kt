@@ -9,7 +9,6 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestClient
-import org.springframework.web.client.RestClientException
 import org.springframework.web.client.body
 
 @Component
@@ -18,11 +17,6 @@ class KakaoOAuth2Client(
     @Value("\${security.oauth2.client.registration.kakao.client_secret}") val clientSecret: String,
     @Value("\${security.oauth2.client.registration.kakao.redirect_uri}") val redirectUrl: String,
     @Value("\${security.oauth2.client.registration.kakao.authorization-grant-type}") val grantType: String,
-    @Value("\${security.oauth2.client.registration.kakao.client-name}") val clientName: String,
-    @Value("\${security.oauth2.client.provider.kakao.authorization-uri}") val authorizationUri: String,
-    @Value("\${security.oauth2.client.provider.kakao.token-uri}") val tokenUri: String,
-    @Value("\${security.oauth2.client.provider.kakao.user-info-uri}") val userInfoUri: String,
-    @Value("\${security.oauth2.client.provider.kakao.user-name-attribute}") val userNameAttribute: String,
     private val restClient: RestClient
 ) : OAuth2Client {
 

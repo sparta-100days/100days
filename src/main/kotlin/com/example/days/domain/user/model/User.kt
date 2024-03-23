@@ -35,9 +35,6 @@ class User(
 
     @Column(name = "count_report") var countReport: Int = 0,
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    var socialUser: SocialUser? = null
-
 ) : BaseEntity() {
 
     @Id

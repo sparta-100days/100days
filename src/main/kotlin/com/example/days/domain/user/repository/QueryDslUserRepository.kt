@@ -10,19 +10,10 @@ import org.springframework.stereotype.Repository
 class QueryDslUserRepository : QueryDslSupport() {
 
     private val user = QUser.user
-    private val socialUser = QSocialUser.socialUser
 
     fun searchUserByNickname(nickname: String): List<User> {
         return queryFactory.selectFrom(user)
             .where(user.nickname.containsIgnoreCase(nickname))
-            .fetch()
-    }
-
-    fun userWithSocialUser(id: Long): List<User> {
-        return queryFactory.selectFrom(user)
-            .join(user.socialUser, socialUser)
-            .fetchJoin()
-            .where(socialUser.id.eq(id))
             .fetch()
     }
 }

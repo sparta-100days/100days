@@ -17,8 +17,6 @@ interface UserRepository: JpaRepository<User, Long> {
     fun findByNickname(nickname: String): User?
     fun findByEmail(email: String): User
 
-    fun findUserById(id: Long): User?
-
     @Modifying
     @Transactional
     @Query("DELETE FROM User u WHERE u.status = :status AND u.updatedAt <= :updatedAt")

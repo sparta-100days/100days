@@ -19,8 +19,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 @EnableMethodSecurity
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val authenticationEntryPoint: CustomAuthenticationEntryPoint,
-    private val accessDeniedHandler: CustomAccessDeniedHandler,
     private val oAuth2UserService: SocialUserService,
     private val oAuth2LoginSuccessHandler: OAuth2LoginSuccessHandler
 ) {
