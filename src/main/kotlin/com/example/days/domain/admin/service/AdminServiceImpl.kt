@@ -89,7 +89,7 @@ class AdminServiceImpl(
             "ACTIVE" -> Status.ACTIVE
             "WITHDRAW" -> Status.WITHDRAW
             null -> null
-            else -> throw IllegalArgumentException("The status is invalid");
+            else -> throw IllegalArgumentException("The status is invalid")
         }
         return adminRepository.findByPageableUserAndStatus(pageable, userStatus).map { UserResponse.from(it) }
     }
