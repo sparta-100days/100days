@@ -36,10 +36,10 @@ class User(
     @Column(name = "count_report") var countReport: Int = 0,
 
     @Column(name = "provider")
-    val provider: OAuth2Provider,
+    val provider: OAuth2Provider? = null,
 
     @Column(name = "provider_id")
-    val providerId: String,
+    val providerId: String = null.toString(),
 
     ) : BaseEntity() {
 

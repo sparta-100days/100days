@@ -2,7 +2,6 @@ package com.example.days.domain.user.service
 
 import com.example.days.domain.mail.dto.request.EmailRequest
 import com.example.days.domain.mail.dto.response.EmailResponse
-import com.example.days.domain.oauth2.client.OAuth2Client
 import com.example.days.domain.oauth2.client.kakao.dto.KakaoUserInfoResponse
 import com.example.days.domain.oauth2.model.OAuth2Provider
 import com.example.days.domain.user.dto.request.LoginRequest
@@ -29,8 +28,6 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.client.RestClient
-import org.springframework.web.client.body
 import java.time.LocalDateTime
 
 @Service
@@ -88,8 +85,8 @@ class UserServiceImpl(
             isDelete = false,
             status = Status.ACTIVE,
             role = UserRole.USER,
-            provider = TODO(),
-            providerId = TODO()
+            provider = null,
+            providerId = null.toString()
         ).let {
             userRepository.save(it)
         }.let { SignUpResponse.from(it) }

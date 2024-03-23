@@ -10,7 +10,7 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
 
 @Component
-class OAuth2Client(
+class KakaoOAuth2Client(
     @Value("\${oauth2.kakao.client_id}") val clientId: String,
     @Value("\${oauth2.kakao.redirect_url}") val redirectUrl: String,
     private val restClient: RestClient
@@ -43,7 +43,7 @@ class OAuth2Client(
 
     fun retrieveUserInfo(accessToken: String): KakaoUserInfoResponse {
         return restClient.get()
-            .uri("${OAuth2Client.KAKAO_API_BASE_URL}/v2/user/me")
+            .uri("${KAKAO_API_BASE_URL}/v2/user/me")
             .header("Authorization", "Bearer $accessToken")
             .retrieve()
             .body<KakaoUserInfoResponse>()

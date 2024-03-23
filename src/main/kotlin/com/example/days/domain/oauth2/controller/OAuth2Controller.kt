@@ -1,6 +1,6 @@
 package com.example.days.domain.oauth2.controller
 
-import com.example.days.domain.oauth2.client.OAuth2Client
+import com.example.days.domain.oauth2.client.KakaoOAuth2Client
 import com.example.days.domain.oauth2.service.OAuth2Service
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.web.bind.annotation.GetMapping
@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class OAuth2Controller(
     private val oauth2Service: OAuth2Service,
-    private val oauth2Client: OAuth2Client
+    private val kakaoOAuth2Client: KakaoOAuth2Client
 ) {
 
     // login 페이지로 redirect
     @GetMapping("/oauth2/login/kakao")
     fun redirectLoginPage(response: HttpServletResponse) {
-        val loginPageUrl = oauth2Client.generateLoginPageUrl()
+        val loginPageUrl = kakaoOAuth2Client.generateLoginPageUrl()
         response.sendRedirect(loginPageUrl)
     }
 
