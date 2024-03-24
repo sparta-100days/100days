@@ -26,4 +26,6 @@ class KakaoOAuth2Controller(
     fun callback(@RequestParam(name = "code") authorizationCode: String): String {
         return oauth2Service.login(OAuth2Provider.KAKAO, authorizationCode)
     }
+
+
 }

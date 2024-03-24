@@ -8,10 +8,7 @@ import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
 import com.example.days.domain.user.dto.request.UserPasswordRequest
-import com.example.days.domain.user.dto.response.AccountSearchResponse
-import com.example.days.domain.user.dto.response.LoginResponse
-import com.example.days.domain.user.dto.response.ModifyInfoResponse
-import com.example.days.domain.user.dto.response.SignUpResponse
+import com.example.days.domain.user.dto.response.*
 import com.example.days.domain.user.model.User
 import com.example.days.global.infra.security.UserPrincipal
 
@@ -30,6 +27,9 @@ interface UserService {
     fun modifyInfo(userId: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse
 
     fun withdraw(userId: UserPrincipal, request: UserPasswordRequest)
+
+    // 로그아웃
+    fun logout(userId: UserPrincipal): LogoutResponse
 
     fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest)
 

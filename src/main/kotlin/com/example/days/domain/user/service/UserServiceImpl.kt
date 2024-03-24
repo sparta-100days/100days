@@ -8,10 +8,7 @@ import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
 import com.example.days.domain.user.dto.request.UserPasswordRequest
-import com.example.days.domain.user.dto.response.AccountSearchResponse
-import com.example.days.domain.user.dto.response.LoginResponse
-import com.example.days.domain.user.dto.response.ModifyInfoResponse
-import com.example.days.domain.user.dto.response.SignUpResponse
+import com.example.days.domain.user.dto.response.*
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserRole
@@ -147,6 +144,18 @@ class UserServiceImpl(
         } else {
             throw MismatchPasswordException()
         }
+    }
+
+    // 유저 정보가 있는지 확인 후, 있다면 유효시간 1초의 토큰을 재발급하며 로그아웃
+    // 나중에 다른 방법도 찾아서 시도해 볼 예정
+    override fun logout(userId: UserPrincipal): LogoutResponse {
+        userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("User", userId.subject)
+        val deleteToken = jwtPlugin.logoutToken(
+            subject = userId.subject,
+            email = userId.email,
+            role = UserRole.USER
+        )
+        return LogoutResponse(deleteToken, message = "logout")
     }
 
     override fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest) {
