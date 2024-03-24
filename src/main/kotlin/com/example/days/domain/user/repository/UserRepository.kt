@@ -16,11 +16,10 @@ interface UserRepository: JpaRepository<User, Long> {
     fun existsByNickname(nickname: String): Boolean
     fun findUserByEmail(email: String): User?
     fun findByNickname(nickname: String): User?
-    fun findByEmail(email: String): User
+//    fun findByEmail(email: String): User
 
     fun existsByProviderAndProviderId(provider: OAuth2Provider, toString: String): Boolean
     fun findByProviderAndProviderId(provider: OAuth2Provider, toString: String): User
-
 
     @Modifying
     @Transactional

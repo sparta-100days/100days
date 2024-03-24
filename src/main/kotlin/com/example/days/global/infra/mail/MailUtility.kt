@@ -2,7 +2,7 @@ package com.example.days.global.infra.mail
 
 import com.example.days.global.infra.redis.RedisUtil
 import com.example.days.global.infra.regex.RegexFunc
-import com.example.days.global.support.EmailRandomCode
+import com.example.days.global.support.RandomCode
 import com.example.days.global.support.MailType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -15,14 +15,14 @@ import org.springframework.stereotype.Component
 class MailUtility(
     private val passwordEncoder: PasswordEncoder,
     private val regexFunc: RegexFunc,
-    private val emailRandomCode: EmailRandomCode,
+    private val randomCode: RandomCode,
     private val redisUtil: RedisUtil,
     @Value("\${mail.username}") private val username: String,
     @Autowired val javaMailSender: JavaMailSender
 ) {
 
     fun emailSender(email: String, type: MailType): String {
-        val code = emailRandomCode.generateRandomCode(10)
+        val code = randomCode.generateRandomCode(10)
         val pass = passwordEncoder.encode(regexFunc.regexPassword(code))
 
         val message = javaMailSender.createMimeMessage()

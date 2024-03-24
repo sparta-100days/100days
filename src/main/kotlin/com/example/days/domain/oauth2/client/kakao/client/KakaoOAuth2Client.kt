@@ -1,7 +1,9 @@
-package com.example.days.domain.oauth2.client
+package com.example.days.domain.oauth2.client.kakao.client
 
+import com.example.days.domain.oauth2.client.OAuth2Client
 import com.example.days.domain.oauth2.client.kakao.dto.KakaoTokenResponse
 import com.example.days.domain.oauth2.client.kakao.dto.KakaoUserInfoResponse
+import com.example.days.domain.oauth2.model.OAuth2Provider
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
@@ -11,12 +13,12 @@ import org.springframework.web.client.body
 
 @Component
 class KakaoOAuth2Client(
-    @Value("\${oauth2.kakao.client_id}") val clientId: String,
-    @Value("\${oauth2.kakao.redirect_url}") val redirectUrl: String,
+    @Value("\${oauth2.kakao.client-id}") val clientId: String,
+    @Value("\${oauth2.kakao.redirect-uri}") val redirectUrl: String,
     private val restClient: RestClient
-) {
+) : OAuth2Client {
 
-    fun generateLoginPageUrl(): String {
+    override fun generateLoginPageUrl(): String {
         return StringBuilder(KAKAO_AUTH_BASE_URL)
             .append("/oauth/authorize")
             .append("?client_id=").append(clientId)
@@ -25,7 +27,7 @@ class KakaoOAuth2Client(
             .toString()
     }
 
-    fun getAccessToken(authorizationCode: String): String {
+    override fun getAccessToken(authorizationCode: String): String {
         val requestData = mutableMapOf(
             "grant_type" to "authorization_code",
             "client_id" to clientId,
@@ -41,13 +43,17 @@ class KakaoOAuth2Client(
             ?: throw RuntimeException("AccessToken 조회 실패")
     }
 
-    fun retrieveUserInfo(accessToken: String): KakaoUserInfoResponse {
+    override fun retrieveUserInfo(accessToken: String): KakaoUserInfoResponse {
         return restClient.get()
-            .uri("${KAKAO_API_BASE_URL}/v2/user/me")
+            .uri("$KAKAO_API_BASE_URL/v2/user/me")
             .header("Authorization", "Bearer $accessToken")
             .retrieve()
             .body<KakaoUserInfoResponse>()
             ?: throw RuntimeException("UserInfo 조회 실패")
+    }
+
+    override fun supports(provider: OAuth2Provider): Boolean {
+        return provider == OAuth2Provider.KAKAO
     }
 
     companion object {

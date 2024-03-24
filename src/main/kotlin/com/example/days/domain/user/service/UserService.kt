@@ -3,6 +3,7 @@ package com.example.days.domain.user.service
 import com.example.days.domain.mail.dto.request.EmailRequest
 import com.example.days.domain.mail.dto.response.EmailResponse
 import com.example.days.domain.oauth2.client.kakao.dto.KakaoUserInfoResponse
+import com.example.days.domain.oauth2.model.OAuth2Provider
 import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
@@ -32,5 +33,5 @@ interface UserService {
     fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest)
 
     // 소셜 로그인 관련 처리, 있으면 조회 없으면 가입
-    fun registerIfAbsent(userInfo: KakaoUserInfoResponse): User
+    fun registerIfAbsent(provider: OAuth2Provider, userInfo: KakaoUserInfoResponse): User
 }

@@ -4,7 +4,7 @@ import com.example.days.global.infra.regex.RegexFunc
 import org.springframework.stereotype.Component
 
 @Component
-class EmailRandomCode(
+class RandomCode(
     private val regexFunc: RegexFunc
 ) {
 
