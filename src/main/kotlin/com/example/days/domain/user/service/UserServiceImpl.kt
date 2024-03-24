@@ -2,15 +2,13 @@ package com.example.days.domain.user.service
 
 import com.example.days.domain.mail.dto.request.EmailRequest
 import com.example.days.domain.mail.dto.response.EmailResponse
-import com.example.days.domain.oauth2.client.kakao.dto.KakaoUserInfoResponse
+import com.example.days.domain.oauth2.client.OAurh2UserInfo
 import com.example.days.domain.oauth2.model.OAuth2Provider
 import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
 import com.example.days.domain.user.dto.request.UserPasswordRequest
-import com.example.days.domain.user.dto.response.LoginResponse
-import com.example.days.domain.user.dto.response.ModifyInfoResponse
-import com.example.days.domain.user.dto.response.SignUpResponse
+import com.example.days.domain.user.dto.response.*
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserRole
@@ -148,6 +146,18 @@ class UserServiceImpl(
         }
     }
 
+    // 유저 정보가 있는지 확인 후, 있다면 유효시간 1초의 토큰을 재발급하며 로그아웃
+    // 나중에 다른 방법도 찾아서 시도해 볼 예정
+    override fun logout(userId: UserPrincipal): LogoutResponse {
+        userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("User", userId.subject)
+        val deleteToken = jwtPlugin.logoutToken(
+            subject = userId.subject,
+            email = userId.email,
+            role = UserRole.USER
+        )
+        return LogoutResponse(deleteToken, message = "logout")
+    }
+
     override fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest) {
         val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("user", userId.subject)
 
@@ -162,15 +172,19 @@ class UserServiceImpl(
         }
     }
 
-    // 소셜 로그인 쪽 코드
-    override fun registerIfAbsent(provider: OAuth2Provider, userInfo: KakaoUserInfoResponse): User {
-        // 순서대로 위에서부터 이메일과 소셜 아이디가 같은게 존재하는지 확인하며 내려가게 하기
+    // 소셜 로그인
+    override fun registerIfAbsent(provider: OAuth2Provider, userInfo: OAurh2UserInfo): User {
         return if (!userRepository.existsByProviderAndProviderId(provider, userInfo.id)) {
             val socialUser = User.of(userInfo.id, provider)
             userRepository.save(socialUser)
         } else {
             userRepository.findByProviderAndProviderId(provider, userInfo.id)
         }
+    }
+
+    // 고유아이디 or 닉네임 검색기능 > 닉네임의 경우 동일아이디 전부 출력
+    override fun searchUserAccountId(accountId: String): List<AccountSearchResponse> {
+        return queryDslUserRepository.seacrhUserByAccountIdAndNickname(accountId).map { AccountSearchResponse.from(it) }
     }
 
     @Scheduled(cron = "0 0 12 * * ?")

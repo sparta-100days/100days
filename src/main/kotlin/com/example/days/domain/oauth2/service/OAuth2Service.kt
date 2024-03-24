@@ -16,11 +16,5 @@ class OAuth2Service(
         return oauth2ClientService.login(provider, authorizationCode)
             .let { userService.registerIfAbsent(provider, it) }
             .let { jwtPlugin.accessToken(it.id!!, it.email, it.role) }
-
-
-//        return oauth2ClientService.getAccessToken()
-//            .let { oauth2ClientService.retrieveUserInfo(it) }
-//            .let { userService.registerIfAbsent(it) }
-//            .let { jwtPlugin.accessToken(it.id!!, it.email, it.role) }
     }
 }

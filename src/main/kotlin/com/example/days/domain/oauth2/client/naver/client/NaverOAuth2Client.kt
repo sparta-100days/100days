@@ -1,4 +1,4 @@
-package com.example.days.domain.oauth2.client.google.client
+package com.example.days.domain.oauth2.client.naver.client
 
 import com.example.days.domain.oauth2.client.OAurh2UserInfo
 import com.example.days.domain.oauth2.client.OAuth2Client
@@ -11,20 +11,21 @@ import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
 
+
+// 임시구현, 나중에 추가하게 될 경우 보완 필요할 듯. 테스트 X
 @Component
-class GoogleOAuth2Client(
-    @Value("\${oauth2.google.client-id}") val clientId: String,
-    @Value("\${oauth2.google.client-secret}") val clientSecret: String,
-    @Value("\${oauth2.google.redirect-uri}") val redirectUrl: String,
+class NaverOAuth2Client(
+    @Value("\${oauth2.naver.client-id}") val clientId: String,
+    @Value("\${oauth2.naver.redirect-uri}") val redirectUrl: String,
     private val restClient: RestClient
 ) : OAuth2Client {
 
     override fun generateLoginPageUrl(): String {
-        return StringBuilder(GOOGLE_AUTH_BASE_URL)
+        return StringBuilder(NAVER_AUTH_BASE_URL)
+            .append("/authorize")
             .append("?client_id=").append(clientId)
             .append("&redirect_uri=").append(redirectUrl)
             .append("&response_type=").append("code")
-            .append("&scope=").append("https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email")
             .toString()
     }
 
@@ -32,36 +33,34 @@ class GoogleOAuth2Client(
         val requestData = mutableMapOf(
             "grant_type" to "authorization_code",
             "client_id" to clientId,
-            "client_secret" to clientSecret,
             "redirect_uri" to redirectUrl,
             "code" to authorizationCode
         )
         return restClient.post()
-            .uri("$GOOGLE_TOKEN_BASE_URL/token")
+            .uri("$NAVER_AUTH_BASE_URL/token")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .body(LinkedMultiValueMap<String, String>().apply { this.setAll(requestData) })
             .retrieve()
             .body<OAuth2TokenResponse>()
             ?.accessToken
-            ?: throw RuntimeException("Google AccessToken 조회 실패")
+            ?: throw RuntimeException("Naver AccessToken 조회 실패")
     }
 
     override fun retrieveUserInfo(accessToken: String): OAurh2UserInfo {
         return restClient.get()
-            .uri("$GOOGLE_API_BASE_URL/userinfo")
+            .uri("$NAVER_API_BASE_URL/userinfo")
             .header("Authorization", "Bearer $accessToken")
             .retrieve()
             .body<OAurh2UserInfo>()
-            ?: throw RuntimeException("Google UserInfo 조회 실패")
+            ?: throw RuntimeException("Naver UserInfo 조회 실패")
     }
 
     override fun supports(provider: OAuth2Provider): Boolean {
-        return provider == OAuth2Provider.GOOGLE
+        return provider == OAuth2Provider.NAVER
     }
 
     companion object {
-        const val GOOGLE_AUTH_BASE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
-        const val GOOGLE_API_BASE_URL = "https://www.googleapis.com/oauth2/v2"
-        const val GOOGLE_TOKEN_BASE_URL = "https://oauth2.googleapis.com"
+        const val NAVER_AUTH_BASE_URL = "https://nid.naver.com/oauth2.0"
+        const val NAVER_API_BASE_URL = "https://openapi.naver.com/v1"
     }
 }

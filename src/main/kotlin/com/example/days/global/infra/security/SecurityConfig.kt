@@ -36,6 +36,7 @@ class SecurityConfig(
                 it.requestMatchers(AntPathRequestMatcher("/api/users/login")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/searchEmail")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/users/searchPass")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/api/users/searchAccountId")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/mail")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/mail/sendmail")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/api/mail/verifycode")).permitAll()

@@ -1,8 +1,8 @@
 package com.example.days.domain.oauth2.client.kakao.client
 
+import com.example.days.domain.oauth2.client.OAurh2UserInfo
 import com.example.days.domain.oauth2.client.OAuth2Client
-import com.example.days.domain.oauth2.client.kakao.dto.KakaoTokenResponse
-import com.example.days.domain.oauth2.client.kakao.dto.KakaoUserInfoResponse
+import com.example.days.domain.oauth2.client.OAuth2TokenResponse
 import com.example.days.domain.oauth2.model.OAuth2Provider
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
@@ -38,18 +38,18 @@ class KakaoOAuth2Client(
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .body(LinkedMultiValueMap<String, String>().apply { this.setAll(requestData) })
             .retrieve()
-            .body<KakaoTokenResponse>()
+            .body<OAuth2TokenResponse>()
             ?.accessToken
-            ?: throw RuntimeException("AccessToken 조회 실패")
+            ?: throw RuntimeException("Kakao AccessToken 조회 실패")
     }
 
-    override fun retrieveUserInfo(accessToken: String): KakaoUserInfoResponse {
+    override fun retrieveUserInfo(accessToken: String): OAurh2UserInfo {
         return restClient.get()
             .uri("$KAKAO_API_BASE_URL/v2/user/me")
             .header("Authorization", "Bearer $accessToken")
             .retrieve()
-            .body<KakaoUserInfoResponse>()
-            ?: throw RuntimeException("UserInfo 조회 실패")
+            .body<OAurh2UserInfo>()
+            ?: throw RuntimeException("Kakao UserInfo 조회 실패")
     }
 
     override fun supports(provider: OAuth2Provider): Boolean {
