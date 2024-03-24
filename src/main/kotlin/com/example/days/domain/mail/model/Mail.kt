@@ -1,4 +1,4 @@
-package com.example.days.domain.user.model
+package com.example.days.domain.mail.model
 
 import com.example.days.global.entity.BaseEntity
 import jakarta.persistence.*

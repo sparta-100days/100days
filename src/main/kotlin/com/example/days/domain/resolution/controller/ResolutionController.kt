@@ -11,7 +11,6 @@ import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
@@ -26,7 +25,7 @@ class ResolutionController (
         @Valid @RequestBody resolutionRequest: ResolutionRequest,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ):ResponseEntity<ResolutionResponse>{
-        val userId = userPrincipal.id
+        val userId = userPrincipal.subject
         val createResolution = resolutionService.createResolution(resolutionRequest, userId)
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createResolution)
@@ -57,7 +56,7 @@ class ResolutionController (
         @Valid @RequestBody resolutionRequest: ResolutionRequest,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<ResolutionResponse>{
-        val userId = userPrincipal.id
+        val userId = userPrincipal.subject
         val updateResolution = resolutionService.updateResolution(resolutionId, userId ,resolutionRequest)
         return ResponseEntity.ok(updateResolution)
     }
@@ -68,7 +67,7 @@ class ResolutionController (
         @PathVariable resolutionId: Long,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<Unit>{
-        val userId = userPrincipal.id
+        val userId = userPrincipal.subject
         resolutionService.deleteResolution(resolutionId, userId)
         return ResponseEntity.noContent().build()
     }

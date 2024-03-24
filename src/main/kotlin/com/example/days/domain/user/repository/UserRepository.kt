@@ -1,5 +1,6 @@
 package com.example.days.domain.user.repository
 
+import com.example.days.domain.oauth2.model.OAuth2Provider
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
 import jakarta.transaction.Transactional
@@ -15,8 +16,10 @@ interface UserRepository: JpaRepository<User, Long> {
     fun existsByNickname(nickname: String): Boolean
     fun findUserByEmail(email: String): User?
     fun findByNickname(nickname: String): User?
+//    fun findByEmail(email: String): User
 
-    fun findUserById(id: Long): User?
+    fun existsByProviderAndProviderId(provider: OAuth2Provider, toString: String): Boolean
+    fun findByProviderAndProviderId(provider: OAuth2Provider, toString: String): User
 
     @Modifying
     @Transactional

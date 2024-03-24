@@ -6,7 +6,7 @@ import com.example.days.global.infra.queryDSL.QueryDslSupport
 import org.springframework.stereotype.Repository
 
 @Repository
-class QueryDslUserRepository: QueryDslSupport() {
+class QueryDslUserRepository : QueryDslSupport() {
 
     private val user = QUser.user
 
