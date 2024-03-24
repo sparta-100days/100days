@@ -2,7 +2,7 @@ package com.example.days.domain.user.service
 
 import com.example.days.domain.mail.dto.request.EmailRequest
 import com.example.days.domain.mail.dto.response.EmailResponse
-import com.example.days.domain.oauth2.client.kakao.dto.KakaoUserInfoResponse
+import com.example.days.domain.oauth2.client.OAurh2UserInfo
 import com.example.days.domain.oauth2.model.OAuth2Provider
 import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
@@ -162,9 +162,8 @@ class UserServiceImpl(
         }
     }
 
-    // 소셜 로그인 쪽 코드
-    override fun registerIfAbsent(provider: OAuth2Provider, userInfo: KakaoUserInfoResponse): User {
-        // 순서대로 위에서부터 이메일과 소셜 아이디가 같은게 존재하는지 확인하며 내려가게 하기
+    // 소셜 로그인
+    override fun registerIfAbsent(provider: OAuth2Provider, userInfo: OAurh2UserInfo): User {
         return if (!userRepository.existsByProviderAndProviderId(provider, userInfo.id)) {
             val socialUser = User.of(userInfo.id, provider)
             userRepository.save(socialUser)

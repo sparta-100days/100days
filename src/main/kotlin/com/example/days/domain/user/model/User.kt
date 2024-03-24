@@ -39,7 +39,7 @@ class User(
 
     @Column(name = "count_report") var countReport: Int = 0,
 
-    // @ID 형태로 쓰이는 계정 아이디
+    // 계정 id
     @Column(name = "account_id")
     val accountId: String,
 

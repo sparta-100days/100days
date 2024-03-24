@@ -1,7 +1,7 @@
 package com.example.days.domain.oauth2.service
 
+import com.example.days.domain.oauth2.client.OAurh2UserInfo
 import com.example.days.domain.oauth2.client.OAuth2Client
-import com.example.days.domain.oauth2.client.kakao.dto.KakaoUserInfoResponse
 import com.example.days.domain.oauth2.model.OAuth2Provider
 import org.springframework.stereotype.Component
 
@@ -10,7 +10,7 @@ class OAuth2ClientService(
     private val clients: List<OAuth2Client>
 ) {
 
-    fun login(provider: OAuth2Provider, authorizationCode: String): KakaoUserInfoResponse {
+    fun login(provider: OAuth2Provider, authorizationCode: String): OAurh2UserInfo {
         val client: OAuth2Client = this.selectClient(provider)
         return client.getAccessToken(authorizationCode)
             .let { client.retrieveUserInfo(it) }
