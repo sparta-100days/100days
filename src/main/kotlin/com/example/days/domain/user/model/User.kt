@@ -118,22 +118,6 @@ class User(
                 }
             }
         }
-
-        // 코드 길이를 줄이기 위해 따로 뺌
-        private fun userBase(user: User): User {
-            return User(
-                email = user.email,
-                nickname = user.nickname,
-                password = user.password,
-                birth = user.birth,
-                accountId = user.accountId,
-                isDelete = false,
-                status = Status.ACTIVE,
-                role = UserRole.USER,
-                provider = user.provider,
-                providerId = user.providerId
-            )
-        }
     }
 }
 
