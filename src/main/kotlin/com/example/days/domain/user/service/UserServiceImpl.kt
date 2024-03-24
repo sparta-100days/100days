@@ -8,6 +8,7 @@ import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
 import com.example.days.domain.user.dto.request.UserPasswordRequest
+import com.example.days.domain.user.dto.response.AccountSearchResponse
 import com.example.days.domain.user.dto.response.LoginResponse
 import com.example.days.domain.user.dto.response.ModifyInfoResponse
 import com.example.days.domain.user.dto.response.SignUpResponse
@@ -170,6 +171,11 @@ class UserServiceImpl(
         } else {
             userRepository.findByProviderAndProviderId(provider, userInfo.id)
         }
+    }
+
+    // 고유아이디 or 닉네임 검색기능 > 닉네임의 경우 동일아이디 전부 출력
+    override fun searchUserAccountId(accountId: String): List<AccountSearchResponse> {
+        return queryDslUserRepository.seacrhUserByAccountIdAndNickname(accountId).map { AccountSearchResponse.from(it) }
     }
 
     @Scheduled(cron = "0 0 12 * * ?")

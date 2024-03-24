@@ -15,4 +15,10 @@ class QueryDslUserRepository : QueryDslSupport() {
             .where(user.nickname.containsIgnoreCase(nickname))
             .fetch()
     }
+
+    fun seacrhUserByAccountIdAndNickname(accountId: String): List<User> {
+        return queryFactory.selectFrom(user)
+            .where(user.accountId.containsIgnoreCase(accountId))
+            .fetch()
+    }
 }

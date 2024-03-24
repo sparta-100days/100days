@@ -8,6 +8,7 @@ import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
 import com.example.days.domain.user.dto.request.UserPasswordRequest
+import com.example.days.domain.user.dto.response.AccountSearchResponse
 import com.example.days.domain.user.dto.response.LoginResponse
 import com.example.days.domain.user.dto.response.ModifyInfoResponse
 import com.example.days.domain.user.dto.response.SignUpResponse
@@ -34,4 +35,7 @@ interface UserService {
 
     // 소셜 로그인 관련 처리, 있으면 조회 없으면 가입
     fun registerIfAbsent(provider: OAuth2Provider, userInfo: OAurh2UserInfo): User
+
+    // 고유아이디 or 닉네임으로 유저 검색
+    fun searchUserAccountId(accountId: String): List<AccountSearchResponse>
 }

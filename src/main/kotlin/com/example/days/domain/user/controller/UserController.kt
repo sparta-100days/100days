@@ -79,4 +79,10 @@ class UserController(
     ): ResponseEntity<Unit> {
         return ResponseEntity.status(HttpStatus.OK).body(userService.passwordChange(userPrincipal, request))
     }
+
+    @Operation(summary = "유저 검색(쪽지 등)")
+    @GetMapping("/searchAccountId")
+    fun searchUserAccountId(@RequestParam(value = "accountId") accountId: String): ResponseEntity<List<AccountSearchResponse>> {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.searchUserAccountId(accountId))
+    }
 }
