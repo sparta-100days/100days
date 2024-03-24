@@ -1,7 +1,6 @@
 package com.example.days.global.infra.security.jwt
 
 import com.example.days.domain.user.model.UserRole
-import com.example.days.global.infra.security.UserPrincipal
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jws
 import io.jsonwebtoken.Jwts
