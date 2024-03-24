@@ -16,7 +16,7 @@ if [ ! -z ${TARGET_PID} ]; then
   sudo kill ${TARGET_PID}
 fi
 
-nohup java -jar -Dserver.port=${TARGET_PORT} /home/ubuntu/app/*.jar
+nohup java -jar -Dserver.port=${TARGET_PORT} /home/ubuntu/app/*.jar > /dev/null 2> /dev/null < /dev/null &
 echo "Now new WAS runs at ${TARGET_PORT}."
 
 exit 0
