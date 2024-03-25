@@ -13,6 +13,10 @@ import com.example.days.domain.post.model.PostType
 import com.example.days.domain.post.repository.PostRepository
 import com.example.days.domain.resolution.repository.ResolutionRepository
 import com.example.days.domain.user.repository.UserRepository
+import com.example.days.global.common.exception.common.ModelNotFoundException
+import com.example.days.global.common.exception.common.TypeNotFoundException
+import com.example.days.global.common.exception.common.UserPermissionDenied
+import com.example.days.global.common.exception.user.UserNotFoundException
 import com.example.days.global.infra.security.UserPrincipal
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -46,7 +50,7 @@ class PostServiceImpl(
     // post 개별조회, comment o
     @Transactional
     override fun getPostById(postId: Long): PostWithCommentResponse {
-        val post = postRepository.findByIdOrNull(postId) ?: throw IllegalArgumentException("해당하는 게시글이 없습니다.")
+        val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("게시글", postId)
         val comments: List<Comment> = commentRepository.findByPostId(post)
         post.comments.addAll(comments)
 
@@ -61,9 +65,9 @@ class PostServiceImpl(
                             type: PostType,
                             request: PostRequest
     ): PostResponse {
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw IllegalArgumentException("작성 권한이 없습니다.")
-        val category = categoryRepository.findByIdOrNull(categoryId) ?: throw IllegalArgumentException("게시글의 분류가 없습니다.")
-        val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: throw IllegalArgumentException("게시글이 속한 목표가 없습니다.")
+        val user = userRepository.findByIdOrNull(userId.subject) ?: throw UserNotFoundException()
+        val category = categoryRepository.findByIdOrNull(categoryId) ?: throw ModelNotFoundException("카테고리", categoryId)
+        val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: throw ModelNotFoundException("목표", resolutionId)
         val post = Post(
             title = request.title,
             content = request.content,
@@ -85,8 +89,8 @@ class PostServiceImpl(
     // post 수정
     @Transactional
     override fun updatePost(userId: UserPrincipal, type: PostType, postId: Long, request: PostRequest): PostResponse {
-        userRepository.findByIdOrNull(userId.subject) ?: throw IllegalArgumentException("작성 권한이 없습니다.")
-        val post = postRepository.findByIdOrNull(postId) ?: throw IllegalArgumentException("게시글이 존재하지 않습니다.")
+        userRepository.findByIdOrNull(userId.subject) ?: throw UserNotFoundException()
+        val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("게시글", postId)
 
         // 작성 포스트 타입 확인
         if (type == post.type) {
@@ -107,10 +111,10 @@ class PostServiceImpl(
                 }
 
             } else {
-                throw IllegalArgumentException("회원님이 작성하신 게시글이 아닙니다.")
+                throw UserPermissionDenied("게시글", userId.subject)
             }
         } else {
-            throw IllegalArgumentException("작성 포스트의 타입이 일치하지 않습니다.")
+            throw TypeNotFoundException()
         }
 
         return postRepository.save(post).let { PostResponse.from(post) }
@@ -119,14 +123,14 @@ class PostServiceImpl(
     // post 삭제
     @Transactional
     override fun deletePost(userId: UserPrincipal, postId: Long): DeleteResponse {
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw IllegalArgumentException("작성 권한이 없습니다.")
-        val post = postRepository.findByIdOrNull(postId) ?: throw IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
+        val user = userRepository.findByIdOrNull(userId.subject) ?: throw UserNotFoundException()
+        val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("게시글", postId)
 
         // 작성자 확인
         if (post.userId?.id == userId.subject) {
             postRepository.delete(post)
         } else {
-            throw IllegalArgumentException("회원님이 작성하신 게시글이 아닙니다.")
+            throw UserPermissionDenied("게시글", userId.subject)
         }
 
         return DeleteResponse("${user.nickname} 님 게시글이 삭제 처리되었습니다.")

@@ -90,11 +90,13 @@ class GlobalExceptionHandler {
             .body(ErrorResponse(errorCode.name, message))
     }
     @ExceptionHandler(
+        TypeNotFoundException::class,
         LikeAlreadyProcessedException::class,
         CheckAlreadyCompletedException::class,
         ResolutionAlreadyCompletedException::class)
     fun handleCustomCommonExceptions(e: RuntimeException): ResponseEntity<ErrorResponse>{
         val errorCode =  when (e) {
+            is TypeNotFoundException -> e.errorCode
             is LikeAlreadyProcessedException -> e.errorCode
             is CheckAlreadyCompletedException -> e.errorCode
             is ResolutionAlreadyCompletedException -> e.errorCode
@@ -189,4 +191,12 @@ class GlobalExceptionHandler {
             .body(ErrorResponse(e.message))
     }
 
+    @ExceptionHandler(UserPermissionDenied::class)
+    fun handleUserPermissionDenied(e: UserPermissionDenied): ResponseEntity<ErrorResponse> {
+        val errorCode = e.errorCode
+        val message = String.format(errorCode.message, e.modelName, e.modelId)
+        return ResponseEntity
+            .status(errorCode.httpStatus)
+            .body(ErrorResponse(errorCode.name, message))
+    }
 }
