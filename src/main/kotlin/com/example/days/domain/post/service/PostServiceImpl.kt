@@ -5,6 +5,7 @@ import com.example.days.domain.comment.model.Comment
 import com.example.days.domain.comment.repository.CommentRepository
 import com.example.days.domain.post.dto.request.PostRequest
 import com.example.days.domain.post.dto.response.DeleteResponse
+import com.example.days.domain.post.dto.response.PostListResponse
 import com.example.days.domain.post.dto.response.PostResponse
 import com.example.days.domain.post.dto.response.PostWithCommentResponse
 import com.example.days.domain.post.model.Post
@@ -16,6 +17,7 @@ import com.example.days.global.infra.security.UserPrincipal
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.format.DateTimeFormatter
 
 @Service
 class PostServiceImpl(
@@ -27,8 +29,18 @@ class PostServiceImpl(
 ) : PostService {
 
     // post 전체조회 (내림차순), comment x
-    override fun getAllPostList(): List<PostResponse> {
-        return postRepository.findAll().sortedByDescending { it.createdAt }.map { PostResponse.from(it) }
+    override fun getAllPostList(): List<PostListResponse> {
+        // 게시글 작성시간 특정 부분까지만 표시
+        val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        return postRepository.findAll()
+            .sortedByDescending { it.createdAt }
+            .map {
+                PostListResponse(
+                    id = it.id!!,
+                    title = it.title,
+                    createdAt = it.createdAt.format(formatter)
+                )
+            }
     }
 
     // post 개별조회, comment o

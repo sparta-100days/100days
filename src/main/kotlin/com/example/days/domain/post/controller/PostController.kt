@@ -2,11 +2,13 @@ package com.example.days.domain.post.controller
 
 import com.example.days.domain.post.dto.request.PostRequest
 import com.example.days.domain.post.dto.response.DeleteResponse
+import com.example.days.domain.post.dto.response.PostListResponse
 import com.example.days.domain.post.dto.response.PostResponse
 import com.example.days.domain.post.dto.response.PostWithCommentResponse
 import com.example.days.domain.post.model.PostType
 import com.example.days.domain.post.service.PostService
 import com.example.days.global.infra.security.UserPrincipal
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -18,8 +20,10 @@ import org.springframework.web.bind.annotation.*
 class PostController(
     private val postService: PostService
 ) {
+
+    @Operation(summary = "포스트 목록조회")
     @GetMapping
-    fun getAllPostList(): ResponseEntity<List<PostResponse>> {
+    fun getAllPostList(): ResponseEntity<List<PostListResponse>> {
         return ResponseEntity.status(HttpStatus.OK).body(postService.getAllPostList())
     }
 

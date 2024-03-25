@@ -2,6 +2,7 @@ package com.example.days.domain.post.service
 
 import com.example.days.domain.post.dto.request.PostRequest
 import com.example.days.domain.post.dto.response.DeleteResponse
+import com.example.days.domain.post.dto.response.PostListResponse
 import com.example.days.domain.post.dto.response.PostResponse
 import com.example.days.domain.post.dto.response.PostWithCommentResponse
 import com.example.days.domain.post.model.PostType
@@ -10,7 +11,7 @@ import com.example.days.global.infra.security.UserPrincipal
 interface PostService {
 
     // post 전체조회 (목록)
-    fun getAllPostList(): List<PostResponse>
+    fun getAllPostList(): List<PostListResponse>
 
     // post 단건조회
     fun getPostById(postId: Long): PostWithCommentResponse
