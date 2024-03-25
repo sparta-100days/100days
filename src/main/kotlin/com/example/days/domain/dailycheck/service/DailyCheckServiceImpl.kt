@@ -3,8 +3,6 @@ package com.example.days.domain.dailycheck.service
 import com.example.days.domain.dailycheck.dto.request.DailyCheckRequest
 import com.example.days.domain.dailycheck.dto.response.DailyCheckResponse
 import com.example.days.domain.dailycheck.repository.DailyCheckRepository
-import com.example.days.domain.post.dto.request.PostRequest
-import com.example.days.domain.post.model.PostType
 import com.example.days.domain.post.service.PostService
 import com.example.days.domain.resolution.repository.ResolutionRepository
 import com.example.days.global.common.exception.auth.PermissionDeniedException
@@ -35,7 +33,7 @@ class DailyCheckServiceImpl(
                         // ~ @ ~
                         // 여기 부분에 포스트 작성을 넣어주면 작동할것같습니다!
                         // PostType.CHECK 는 제목만 받고 PostType.POST는 전체 포스트 작성하게 해두었습니다.
-                     dailyCheckRepository.save(DailyCheckRequest.of(request, it))
+                        dailyCheckRepository.save(DailyCheckRequest.of(request, it))
                     }
                     ?.let { DailyCheckResponse.from(it) }
                     ?: throw ModelNotFoundException("Resolution", resolutionId)

@@ -73,7 +73,7 @@ class PostServiceImpl(
     // post 수정
     @Transactional
     override fun updatePost(userId: UserPrincipal, type: PostType, postId: Long, request: PostRequest): PostResponse {
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw IllegalArgumentException("작성 권한이 없습니다.")
+        userRepository.findByIdOrNull(userId.subject) ?: throw IllegalArgumentException("작성 권한이 없습니다.")
         val post = postRepository.findByIdOrNull(postId) ?: throw IllegalArgumentException("게시글이 존재하지 않습니다.")
 
         // 작성 포스트 타입 확인

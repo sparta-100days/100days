@@ -6,7 +6,6 @@ import com.example.days.domain.comment.model.Comment
 import com.example.days.domain.comment.repository.CommentRepository
 import com.example.days.domain.post.dto.response.DeleteResponse
 import com.example.days.domain.post.repository.PostRepository
-import com.example.days.domain.user.model.User
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.infra.security.UserPrincipal
 import org.springframework.data.repository.findByIdOrNull
@@ -38,7 +37,7 @@ class CommentServiceImpl(
 
     @Transactional
     override fun updateComment(userId: UserPrincipal, commentId: Long, request: CommentRequest): CommentResponse {
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw IllegalArgumentException("작성 권한이 없습니다.")
+        userRepository.findByIdOrNull(userId.subject) ?: throw IllegalArgumentException("작성 권한이 없습니다.")
         val comment = commentRepository.findByIdOrNull(commentId) ?: throw IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
 
         if (comment.userId.id == userId.subject) {
