@@ -190,13 +190,4 @@ class GlobalExceptionHandler {
             .status(HttpStatus.BAD_REQUEST)
             .body(ErrorResponse(e.message))
     }
-
-    @ExceptionHandler(UserPermissionDenied::class)
-    fun handleUserPermissionDenied(e: UserPermissionDenied): ResponseEntity<ErrorResponse> {
-        val errorCode = e.errorCode
-        val message = String.format(errorCode.message, e.modelName, e.modelId)
-        return ResponseEntity
-            .status(errorCode.httpStatus)
-            .body(ErrorResponse(errorCode.name, message))
-    }
 }

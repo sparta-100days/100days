@@ -13,9 +13,9 @@ import com.example.days.domain.post.model.PostType
 import com.example.days.domain.post.repository.PostRepository
 import com.example.days.domain.resolution.repository.ResolutionRepository
 import com.example.days.domain.user.repository.UserRepository
+import com.example.days.global.common.exception.auth.PermissionDeniedException
 import com.example.days.global.common.exception.common.ModelNotFoundException
 import com.example.days.global.common.exception.common.TypeNotFoundException
-import com.example.days.global.common.exception.common.UserPermissionDenied
 import com.example.days.global.common.exception.user.UserNotFoundException
 import com.example.days.global.infra.security.UserPrincipal
 import org.springframework.data.repository.findByIdOrNull
@@ -111,7 +111,7 @@ class PostServiceImpl(
                 }
 
             } else {
-                throw UserPermissionDenied("게시글", userId.subject)
+                throw PermissionDeniedException()
             }
         } else {
             throw TypeNotFoundException()
@@ -130,7 +130,7 @@ class PostServiceImpl(
         if (post.userId?.id == userId.subject) {
             postRepository.delete(post)
         } else {
-            throw UserPermissionDenied("게시글", userId.subject)
+            throw PermissionDeniedException()
         }
 
         return DeleteResponse("${user.nickname} 님 게시글이 삭제 처리되었습니다.")
