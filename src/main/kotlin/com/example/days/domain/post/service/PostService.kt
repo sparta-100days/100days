@@ -1,16 +1,23 @@
 package com.example.days.domain.post.service
 
 import com.example.days.domain.post.dto.request.PostRequest
+import com.example.days.domain.post.dto.response.DeleteResponse
 import com.example.days.domain.post.dto.response.PostResponse
+import com.example.days.domain.post.dto.response.PostWithCommentResponse
+import com.example.days.domain.post.model.PostType
+import com.example.days.global.infra.security.UserPrincipal
 
 interface PostService {
-    fun getPostList() : List<PostResponse>
 
-    fun getPost(postId : Long) : PostResponse
+    // post 전체조회 (목록)
+    fun getAllPostList(): List<PostResponse>
 
-    fun creatPost(request: PostRequest) : PostResponse
+    // post 단건조회
+    fun getPostById(postId: Long): PostWithCommentResponse
 
-    fun updatePost(postId: Long, request: PostRequest) : PostResponse
+    // post 작성, 수정, 삭제
+    fun createPost(userId: UserPrincipal, categoryId: Long, resolutionId: Long, type: PostType, request: PostRequest): PostResponse
+    fun updatePost(userId: UserPrincipal, type: PostType, postId: Long, request: PostRequest): PostResponse
+    fun deletePost(userId: UserPrincipal, postId: Long): DeleteResponse
 
-    fun deletePost(postId: Long)
 }

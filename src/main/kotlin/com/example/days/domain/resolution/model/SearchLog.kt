@@ -7,7 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "searchLog")
+@Table(name = "search_Log")
 class SearchLog(
     @Column(name = "title", nullable = false)
     var title: String,
