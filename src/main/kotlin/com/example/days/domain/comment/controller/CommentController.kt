@@ -4,6 +4,7 @@ import com.example.days.domain.comment.dto.request.CommentRequest
 import com.example.days.domain.comment.dto.response.CommentResponse
 import com.example.days.domain.comment.service.CommentService
 import com.example.days.global.infra.security.UserPrincipal
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -16,6 +17,7 @@ class CommentController(
     private val commentService: CommentService
 ) {
 
+    @Operation(summary = "코멘트 단건조회")
     @GetMapping("/{commentId}")
     fun getCommentById(
         @PathVariable postId: Long,
@@ -24,6 +26,7 @@ class CommentController(
         return ResponseEntity.status(HttpStatus.OK).body(commentService.getCommentById(commentId))
     }
 
+    @Operation(summary = "코멘트 작성")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     fun creatComment(
@@ -34,6 +37,7 @@ class CommentController(
         return ResponseEntity.status(HttpStatus.OK).body(commentService.createComment(userId, postId, request))
     }
 
+    @Operation(summary = "코멘트 수정")
     @PutMapping("/{commentId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     fun updateComment(
@@ -45,6 +49,7 @@ class CommentController(
         return ResponseEntity.status(HttpStatus.OK).body(commentService.updateComment(userId, commentId, request))
     }
 
+    @Operation(summary = "코멘트 삭제")
     @DeleteMapping("/{commentId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     fun deleteComment(

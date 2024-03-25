@@ -27,11 +27,13 @@ class PostController(
         return ResponseEntity.status(HttpStatus.OK).body(postService.getAllPostList())
     }
 
+    @Operation(summary = "포스트 단건조회")
     @GetMapping("/{postId}")
     fun getPost(@PathVariable postId: Long): ResponseEntity<PostWithCommentResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostById(postId))
     }
 
+    @Operation(summary = "포스트 작성")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     fun creatPost(
@@ -44,6 +46,7 @@ class PostController(
         return ResponseEntity.status(HttpStatus.OK).body(postService.createPost(userId, categoryId, resolutionId, type, request))
     }
 
+    @Operation(summary = "포스트 수정")
     @PutMapping("/{postId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     fun updatePost(
@@ -55,6 +58,7 @@ class PostController(
         return ResponseEntity.status(HttpStatus.OK).body(postService.updatePost(userId, type, postId, request))
     }
 
+    @Operation(summary = "포스트 삭제")
     @DeleteMapping("/{postId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     fun deletePost(
