@@ -42,10 +42,8 @@ class UserServiceImpl(
     override fun login(request: LoginRequest): LoginResponse {
         val user = userRepository.findUserByEmail(regexFunc.regexUserEmail(request.email))
             ?: throw NoSearchUserByEmailException(request.email)
-        if (!encoder.matches(
-                regexFunc.regexPassword(request.password),
-                user.password
-            )
+
+        if (!encoder.matches(regexFunc.regexPassword(request.password), user.password)
         ) throw MismatchPasswordException()
 
         if (user.status == Status.BAN) throw UserSuspendedException()
