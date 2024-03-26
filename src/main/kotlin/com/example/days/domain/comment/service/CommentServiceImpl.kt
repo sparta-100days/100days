@@ -22,6 +22,7 @@ class CommentServiceImpl(
     private val postRepository: PostRepository
 ) : CommentService {
 
+    // 현재 사용되는 곳 없음, 이후 기능 추가 예정
     override fun getCommentById(commentId: Long): CommentResponse {
         val comemnt = commentRepository.findByIdOrNull(commentId) ?: throw ModelNotFoundException("댓글", commentId)
         return CommentResponse.from(comemnt)
@@ -32,7 +33,11 @@ class CommentServiceImpl(
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("게시글", postId)
         val user = userRepository.findByIdOrNull(userId.subject) ?: throw UserNotFoundException()
 
-        val comment = Comment(comment = request.comment, userId = user, postId = post)
+        val comment = Comment(
+            comment = request.comment,
+            userId = user,
+            postId = post
+        )
         commentRepository.save(comment)
 
         return CommentResponse.from(comment)
