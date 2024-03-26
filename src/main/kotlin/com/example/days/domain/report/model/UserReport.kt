@@ -8,7 +8,7 @@ import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 
 @Entity
-@Table(name = "report")
+@Table(name = "UserReport")
 class UserReport(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporter_id")
@@ -25,7 +25,7 @@ class UserReport(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "reportStatus")
-    val reportStatus: UserReportStatus,
+    val reportStatus: ReportStatus,
 
 
     ) : BaseEntity() {
