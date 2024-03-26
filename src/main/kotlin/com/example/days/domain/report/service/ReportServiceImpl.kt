@@ -43,8 +43,7 @@ class ReportServiceImpl(
                 reportedUserId = reportedUserNickname,
                 content = req.content,
                 reportStatus = req.reportStatus
-
-                )
+            )
         )
         report.reportUser()
         report.reportedUserId.countReport++
