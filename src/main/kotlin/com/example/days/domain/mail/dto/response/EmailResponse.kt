@@ -1,4 +1,4 @@
-package com.example.days.domain.user.dto.response
+package com.example.days.domain.mail.dto.response
 
 import com.example.days.domain.user.model.User
 import java.time.format.DateTimeFormatter

@@ -17,7 +17,8 @@ import java.util.*
 class JwtPlugin(
     @Value("\${auth.jwt.issuer}") private val issuer: String,
     @Value("\${auth.jwt.secret}") private val secret: String,
-    @Value("\${auth.jwt.accessTokenExpirationHour}") private val accessTokenExpirationHour: Long
+    @Value("\${auth.jwt.accessTokenExpirationHour}") private val accessTokenExpirationHour: Long,
+    @Value("\${auth.jwt.deleteTokenExpirationSecond}") private val deleteTokenExpirationSecond: Long
 ) {
 
     fun validateToken(jwt: String): Result<Jws<Claims>> {
@@ -27,11 +28,11 @@ class JwtPlugin(
         }
     }
 
-    fun accessToken(id: Long, email: String, role: UserRole): String {
-        return generateToken(id, email, role, Duration.ofHours(accessTokenExpirationHour))
+    fun accessToken(subject: Long, email: String, role: UserRole): String {
+        return generateToken(subject, email, role, Duration.ofHours(accessTokenExpirationHour))
     }
 
-    fun generateToken(id: Long, email: String, role: UserRole, expirationPeriod: Duration): String {
+    fun generateToken(subject: Long, email: String, role: UserRole, expirationPeriod: Duration): String {
         val key = Keys.hmacShaKeyFor(secret.toByteArray(StandardCharsets.UTF_8))
         val now = Instant.now()
 
@@ -41,7 +42,7 @@ class JwtPlugin(
 
         return Jwts.builder()
             .header().add("typ", "JWT").and()
-            .subject(id.toString())
+            .subject(subject.toString())
             .issuer(issuer)
             .issuedAt(Date.from(now))
             .expiration(Date.from(now.plus(expirationPeriod)))
@@ -50,4 +51,27 @@ class JwtPlugin(
             .compact()
     }
 
+    fun logoutToken(subject: Long, email: String, role: UserRole): String {
+        return deleteToken(subject, email, role, Duration.ofSeconds(deleteTokenExpirationSecond))
+    }
+
+    // refresh token을 적용하지 않은 상태에서 현재 토큰을 바로 폐기하기 위해 유효시간을 1초로 하는 토큰 발급
+    fun deleteToken(subject: Long, email: String, role: UserRole, expirationPeriod: Duration): String {
+        val key = Keys.hmacShaKeyFor(secret.toByteArray(StandardCharsets.UTF_8))
+        val now = Instant.now()
+
+        val claims: Claims = Jwts.claims()
+            .add(mapOf("email" to email, "role" to role))
+            .build()
+
+        return Jwts.builder()
+            .header().add("typ", "JWT").and()
+            .subject(subject.toString())
+            .issuer(issuer)
+            .issuedAt(Date.from(now))
+            .expiration(Date.from(now.plus(expirationPeriod)))
+            .claims(claims)
+            .signWith(key)
+            .compact()
+    }
 }

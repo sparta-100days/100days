@@ -6,13 +6,19 @@ import com.example.days.global.infra.queryDSL.QueryDslSupport
 import org.springframework.stereotype.Repository
 
 @Repository
-class QueryDslUserRepository: QueryDslSupport() {
+class QueryDslUserRepository : QueryDslSupport() {
 
     private val user = QUser.user
 
     fun searchUserByNickname(nickname: String): List<User> {
         return queryFactory.selectFrom(user)
             .where(user.nickname.containsIgnoreCase(nickname))
+            .fetch()
+    }
+
+    fun seacrhUserByAccountIdAndNickname(accountId: String): List<User> {
+        return queryFactory.selectFrom(user)
+            .where(user.accountId.containsIgnoreCase(accountId))
             .fetch()
     }
 }

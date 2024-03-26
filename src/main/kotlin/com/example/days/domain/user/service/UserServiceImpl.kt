@@ -1,10 +1,14 @@
 package com.example.days.domain.user.service
 
-import com.example.days.domain.user.dto.request.*
-import com.example.days.domain.user.dto.response.EmailResponse
-import com.example.days.domain.user.dto.response.LoginResponse
-import com.example.days.domain.user.dto.response.ModifyInfoResponse
-import com.example.days.domain.user.dto.response.SignUpResponse
+import com.example.days.domain.mail.dto.request.EmailRequest
+import com.example.days.domain.mail.dto.response.EmailResponse
+import com.example.days.domain.oauth2.client.OAurh2UserInfo
+import com.example.days.domain.oauth2.model.OAuth2Provider
+import com.example.days.domain.user.dto.request.LoginRequest
+import com.example.days.domain.user.dto.request.ModifyInfoRequest
+import com.example.days.domain.user.dto.request.SignUpRequest
+import com.example.days.domain.user.dto.request.UserPasswordRequest
+import com.example.days.domain.user.dto.response.*
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserRole
@@ -23,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.util.*
 
 @Service
 class UserServiceImpl(
@@ -37,7 +42,9 @@ class UserServiceImpl(
     override fun login(request: LoginRequest): LoginResponse {
         val user = userRepository.findUserByEmail(regexFunc.regexUserEmail(request.email))
             ?: throw NoSearchUserByEmailException(request.email)
-        if(!encoder.matches(regexFunc.regexPassword(request.password), user.password)) throw MismatchPasswordException()
+
+        if (!encoder.matches(regexFunc.regexPassword(request.password), user.password)
+        ) throw MismatchPasswordException()
 
         if (user.status == Status.BAN) throw UserSuspendedException()
         if (user.status == Status.WITHDRAW) {
@@ -48,7 +55,7 @@ class UserServiceImpl(
 
         // accessToken
         val accessToken = jwtPlugin.accessToken(
-            id = user.id!!,
+            subject = user.id!!,
             email = user.email,
             role = user.role
         )
@@ -71,14 +78,19 @@ class UserServiceImpl(
             if (request.password == request.newPassword) encoder.encode(regexFunc.regexPassword(request.password))
             else throw MismatchPasswordException()
 
+        val generateId = UUID.randomUUID().toString().substring(0, 12)
+
         return User(
             email = regexFunc.regexUserEmail(request.email),
             nickname = request.nickname,
-            password = pass,
+            pass,
             birth = request.birth,
             isDelete = false,
             status = Status.ACTIVE,
-            role = UserRole.USER
+            role = UserRole.USER,
+            accountId = generateId,
+            provider = null,
+            providerId = null.toString()
         ).let {
             userRepository.save(it)
         }.let { SignUpResponse.from(it) }
@@ -103,19 +115,16 @@ class UserServiceImpl(
     }
 
     override fun getInfo(userId: UserPrincipal): ModifyInfoResponse {
-        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("User", userId.id)
+        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("User", userId.subject)
         return user.let { ModifyInfoResponse.from(it) }
     }
 
     @Transactional
     override fun modifyInfo(userId: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse {
-        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
+        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("user", userId.subject)
 
         if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
-
-            user.nickname = request.nickname
-            user.birth = request.birth
-
+            user.updateUser(request)
             userRepository.save(user)
         } else {
             throw MismatchPasswordException()
@@ -125,7 +134,7 @@ class UserServiceImpl(
     }
 
     override fun withdraw(userId: UserPrincipal, request: UserPasswordRequest) {
-        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
+        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("user", userId.subject)
         if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
             user.isDelete = true
             user.status = Status.WITHDRAW
@@ -135,8 +144,20 @@ class UserServiceImpl(
         }
     }
 
+    // 유저 정보가 있는지 확인 후, 있다면 유효시간 1초의 토큰을 재발급하며 로그아웃
+    // 나중에 다른 방법도 찾아서 시도해 볼 예정
+    override fun logout(userId: UserPrincipal): LogoutResponse {
+        userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("User", userId.subject)
+        val deleteToken = jwtPlugin.logoutToken(
+            subject = userId.subject,
+            email = userId.email,
+            role = UserRole.USER
+        )
+        return LogoutResponse(deleteToken, message = "logout")
+    }
+
     override fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest) {
-        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
+        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("user", userId.subject)
 
         if (encoder.matches(request.password, user.password))
             throw InvalidPasswordError()
@@ -147,6 +168,21 @@ class UserServiceImpl(
         } else {
             throw MismatchPasswordException()
         }
+    }
+
+    // 소셜 로그인
+    override fun registerIfAbsent(provider: OAuth2Provider, userInfo: OAurh2UserInfo): User {
+        return if (!userRepository.existsByProviderAndProviderId(provider, userInfo.id)) {
+            val socialUser = User.of(userInfo.id, provider)
+            userRepository.save(socialUser)
+        } else {
+            userRepository.findByProviderAndProviderId(provider, userInfo.id)
+        }
+    }
+
+    // 고유아이디 or 닉네임 검색기능 > 닉네임의 경우 동일아이디 전부 출력
+    override fun searchUserAccountId(accountId: String): List<AccountSearchResponse> {
+        return queryDslUserRepository.seacrhUserByAccountIdAndNickname(accountId).map { AccountSearchResponse.from(it) }
     }
 
     @Scheduled(cron = "0 0 12 * * ?")

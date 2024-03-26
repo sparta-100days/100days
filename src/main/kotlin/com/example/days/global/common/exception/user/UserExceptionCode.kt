@@ -15,6 +15,4 @@ enum class UserExceptionCode(
     INVALID_PASSWORD_ERROR(HttpStatus.CONFLICT, "이전에 사용한 적이 있는 비밀번호 입니다."),
     USER_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.")
 
-
-
 }

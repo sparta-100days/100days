@@ -43,6 +43,12 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
+    // OAuth2
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    implementation("com.nimbusds:nimbus-jose-jwt")
+    runtimeOnly("com.nimbusds:oauth2-oidc-sdk")
+
     //validation
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
