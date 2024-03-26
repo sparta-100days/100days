@@ -1,6 +1,10 @@
 package com.example.days.domain.report.service
 
+import com.example.days.domain.report.dto.request.CommentReportRequest
+import com.example.days.domain.report.dto.request.PostReportRequest
 import com.example.days.domain.report.dto.request.UserReportRequest
+import com.example.days.domain.report.dto.response.CommentReportResponse
+import com.example.days.domain.report.dto.response.PostReportResponse
 import com.example.days.domain.report.dto.response.UserReportResponse
 import com.example.days.domain.report.model.UserReport
 import com.example.days.domain.report.repository.ReportRepository
@@ -48,5 +52,13 @@ class ReportServiceImpl(
         report.reportedUserId.countReport++
         userRepository.save(user)
         return UserReportResponse.from(report)
+    }
+
+    override fun reportPost(req: PostReportRequest, userId: Long): PostReportResponse {
+        TODO("Not yet implemented")
+    }
+
+    override fun reportComment(req: CommentReportRequest, userId: Long): CommentReportResponse {
+        TODO("Not yet implemented")
     }
 }
