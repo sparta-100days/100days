@@ -16,6 +16,7 @@ class WebConfig : WebMvcConfigurer {
         registry.addMapping("/**") // 모든 경로에 대해서
             .allowedOrigins("http://localhost:8080","https://100days.life","http://localhost:8090") // 이 출처로부터의 요청만 허용
             .allowedMethods("GET","POST","PUT","DELETE","PATCH","HEAD","OPTIONS")
+            .allowedHeaders("*")
             .allowCredentials(true) // 쿠키를 포함한 요청 허용
             .maxAge(3000)
     }
