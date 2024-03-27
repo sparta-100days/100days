@@ -38,7 +38,7 @@ class KakaoOAuth2Client(
             "code" to authorizationCode
         )
         return restClient.post()
-            .uri("$KAKAO_AUTH_BASE_URL/oauth/token")
+            .uri("$KAKAO_AUTH_BASE_URL/token")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .body(LinkedMultiValueMap<String, String>().apply { this.setAll(requestData) })
             .retrieve()
@@ -61,7 +61,7 @@ class KakaoOAuth2Client(
     }
 
     companion object {
-        const val KAKAO_AUTH_BASE_URL = "https://kauth.kakao.com"
+        const val KAKAO_AUTH_BASE_URL = "https://kauth.kakao.com/oauth"
         const val KAKAO_API_BASE_URL = "https://kapi.kakao.com"
     }
 }

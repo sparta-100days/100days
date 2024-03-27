@@ -24,8 +24,8 @@ class GoogleOAuth2Client(
             .append("?client_id=").append(clientId)
             .append("&redirect_uri=").append(redirectUrl)
             .append("&response_type=").append("code")
-            .append("&scope=").append(scope)
-//            .append(USER_INFO_PROFILE).append(USER_INFO_EMAIL)
+            .append("&scope=")
+            .append("https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email")
             .toString()
     }
 
@@ -38,7 +38,7 @@ class GoogleOAuth2Client(
             "code" to authorizationCode
         )
         return restClient.post()
-            .uri(GOOGLE_TOKEN_BASE_URL)
+            .uri("$GOOGLE_TOKEN_BASE_URL/token")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .body(LinkedMultiValueMap<String, String>().apply { this.setAll(requestData) })
             .retrieve()
@@ -49,7 +49,7 @@ class GoogleOAuth2Client(
 
     override fun retrieveUserInfo(accessToken: String): GoogleLoginUserInfoResponse {
         return restClient.get()
-            .uri(GOOGLE_API_BASE_URL)
+            .uri("$GOOGLE_API_BASE_URL/userinfo")
             .header("Authorization", "Bearer $accessToken")
             .retrieve()
             .body<GoogleLoginUserInfoResponse>()
@@ -62,9 +62,7 @@ class GoogleOAuth2Client(
 
     companion object {
         const val GOOGLE_AUTH_BASE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
-        const val GOOGLE_API_BASE_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
-        const val GOOGLE_TOKEN_BASE_URL = "https://oauth2.googleapis.com/token"
-        const val USER_INFO_PROFILE = "https://www.googleapis.com/auth/userinfo.profile"
-        const val USER_INFO_EMAIL = "https://www.googleapis.com/auth/userinfo.email"
+        const val GOOGLE_API_BASE_URL = "https://www.googleapis.com/oauth2/v2"
+        const val GOOGLE_TOKEN_BASE_URL = "https://oauth2.googleapis.com"
     }
 }

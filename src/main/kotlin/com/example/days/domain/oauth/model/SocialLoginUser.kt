@@ -7,23 +7,11 @@ import jakarta.persistence.*
 @Table(name = "social_login_users")
 class SocialLoginUser (
 
-    @Column(name = "kakao_id")
-    val kakaoId: String,
+    @JoinColumn(name = "provider_id")
+    val providerId: String,
 
-    @Column(name = "kakao_email")
-    val kakaoEmail: String,
-
-    @Column(name = "kakao_nickname")
-    val kakaoNickname: String,
-
-    @Column(name = "google_id")
-    val googleId: String,
-
-    @Column(name = "google_email")
-    val googleEmail: String,
-
-    @Column(name = "google_nickname")
-    val googleNickname: String,
+    @Column(name = "provider")
+    val provider: String,
 
     @ManyToOne
     @JoinColumn(name = "user_id")

@@ -38,5 +38,4 @@ class SocialUserService (
 
         return userRepository.findByProviderAndProviderId(userInfo.provider, userInfo.id)
     }
-
 }

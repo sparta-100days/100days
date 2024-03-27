@@ -1,8 +1,12 @@
 package com.example.days.global.infra.security
 
+import com.example.days.domain.oauth.service.OAuth2LoginService
+import com.example.days.domain.oauth.service.SocialUserService
 import com.example.days.global.infra.security.jwt.JwtAuthenticationFilter
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -17,7 +21,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 @EnableMethodSecurity
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val clientRegistrationRepository: ClientRegistrationRepository
+    private val clientRegistrationRepository: ClientRegistrationRepository,
+    private val oauth2LoginService: OAuth2LoginService
 ) {
 
     @Bean
@@ -49,13 +54,21 @@ class SecurityConfig(
 
                 // 로그인 임시처리
                 it.requestMatchers(AntPathRequestMatcher("/oauth2/**")).permitAll()
-//                it.requestMatchers(AntPathRequestMatcher("/error")).permitAll()
+                it.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+      //          it.requestMatchers(AntPathRequestMatcher("/login/oauth2")).permitAll()
+      //          it.requestMatchers(AntPathRequestMatcher("/login/oauth2/callback/")).permitAll()
+      //          it.requestMatchers(AntPathRequestMatcher("/error")).permitAll()
 
 //                it.requestMatchers(PathRequest.toH2Console()).permitAll()
                     .anyRequest()
                     .authenticated()
-            }
-            .addFilterBefore(
+
+ //           }.oauth2Login {
+ //               it.authorizationEndpoint{ it.baseUri("/login/oauth2/callback/*") }
+ //               it.redirectionEndpoint { it.baseUri("/login/oauth2/code/*") }
+ //               it.userInfoEndpoint { oauth2LoginService }
+
+            }.addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter::class.java
             ).oauth2Login { clientRegistrationRepository }
