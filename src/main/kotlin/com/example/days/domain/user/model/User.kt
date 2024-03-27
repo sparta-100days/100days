@@ -111,11 +111,6 @@ class User(
                     OAuth2Provider.GOOGLE.name
                     user
                 }
-
-                OAuth2Provider.NAVER -> {
-                    OAuth2Provider.NAVER.name
-                    user
-                }
             }
         }
     }
