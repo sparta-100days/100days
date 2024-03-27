@@ -16,9 +16,9 @@ class SwaggerConfig {
     fun openAPI(): OpenAPI {
         return OpenAPI()
             .addServersItem(Server().apply { url("/") })
-            .addSecurityItem(
-                SecurityRequirement().addList("Bearer Authentication")
-            )
+//            .addSecurityItem(
+//                SecurityRequirement().addList("Bearer Authentication")
+//            )
             .components(
                 Components().addSecuritySchemes(
                     "Bearer Authentication",
