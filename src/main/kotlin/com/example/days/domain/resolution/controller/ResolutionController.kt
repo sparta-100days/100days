@@ -16,7 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("api/v1/resolution")
+@RequestMapping("/api/v1/resolution")
 class ResolutionController (
     private val resolutionService: ResolutionService
 ){
@@ -41,6 +41,7 @@ class ResolutionController (
         return ResponseEntity.ok(resolution)
     }
     @Operation(summary = "목표 전체 조회(페이징)")
+    @CrossOrigin
     @GetMapping
     fun getResolutionListPaginated(
         @RequestParam(defaultValue = "0") page: Int,
