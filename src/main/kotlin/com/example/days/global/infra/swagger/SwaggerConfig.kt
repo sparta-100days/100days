@@ -15,10 +15,9 @@ class SwaggerConfig {
     @Bean
     fun openAPI(): OpenAPI {
         return OpenAPI()
-            .addServersItem(Server().apply { url("/") })
-//            .addSecurityItem(
-//                SecurityRequirement().addList("Bearer Authentication")
-//            )
+            .addSecurityItem(
+                SecurityRequirement().addList("Bearer Authentication")
+            )
             .components(
                 Components().addSecuritySchemes(
                     "Bearer Authentication",
@@ -30,6 +29,7 @@ class SwaggerConfig {
                         .name("Authorization")
                 )
             )
+            .addServersItem(Server().url("/"))
             .info(
                 Info()
                     .title("100Days API")
