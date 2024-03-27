@@ -29,7 +29,7 @@ class SwaggerConfig {
                         .name("Authorization")
                 )
             )
-            .addServersItem(Server().url("https://100days.life"))
+            .addServersItem(Server().url("/"))
             .info(
                 Info()
                     .title("100Days API")
