@@ -9,7 +9,7 @@ import java.util.UUID
 class RandomCode(
     private val regexFunc: RegexFunc
 ) {
-    // 특수문자를 리스트로 생성 후 String으로 변환
+    // 특수문자를 리스트로 생성 후 String으로 변환함
     private fun codePattern(): String {
         val pattern = listOf('!', '@', '#', '%', '^', '&', '*')
         return pattern.toString()
