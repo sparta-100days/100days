@@ -26,13 +26,13 @@ class UserController(
 ) {
 
     @Operation(summary = "이메일 찾기")
-    @GetMapping("/searchEmail")
+    @GetMapping("/search/email")
     fun searchUserEmail(@RequestParam(value = "nickname") nickname: String): ResponseEntity<List<EmailResponse>> {
         return ResponseEntity.status(HttpStatus.OK).body(userService.searchUserEmail(nickname))
     }
 
     @Operation(summary = "비밀번호 분실시 재발급(메일보내기)")
-    @PatchMapping("/searchPass")
+    @PatchMapping("/search/pass")
     fun changeUserPassword(@RequestBody request: EmailRequest): ResponseEntity<Unit> {
         userService.changeUserPassword(request)
         return ResponseEntity.status(HttpStatus.OK).build()
