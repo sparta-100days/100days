@@ -144,18 +144,6 @@ class UserServiceImpl(
         }
     }
 
-    // 유저 정보가 있는지 확인 후, 있다면 유효시간 1초의 토큰을 재발급하며 로그아웃
-    // 나중에 다른 방법도 찾아서 시도해 볼 예정
-    override fun logout(userId: UserPrincipal): LogoutResponse {
-        userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("User", userId.subject)
-        val deleteToken = jwtPlugin.logoutToken(
-            subject = userId.subject,
-            email = userId.email,
-            role = UserRole.USER
-        )
-        return LogoutResponse(deleteToken, message = "logout")
-    }
-
     override fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest) {
         val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("user", userId.subject)
 

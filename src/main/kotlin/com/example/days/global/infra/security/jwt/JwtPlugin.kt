@@ -50,28 +50,4 @@ class JwtPlugin(
             .signWith(key)
             .compact()
     }
-
-    fun logoutToken(subject: Long, email: String, role: UserRole): String {
-        return deleteToken(subject, email, role, Duration.ofSeconds(deleteTokenExpirationSecond))
-    }
-
-    // refresh token을 적용하지 않은 상태에서 현재 토큰을 바로 폐기하기 위해 유효시간을 1초로 하는 토큰 발급
-    fun deleteToken(subject: Long, email: String, role: UserRole, expirationPeriod: Duration): String {
-        val key = Keys.hmacShaKeyFor(secret.toByteArray(StandardCharsets.UTF_8))
-        val now = Instant.now()
-
-        val claims: Claims = Jwts.claims()
-            .add(mapOf("email" to email, "role" to role))
-            .build()
-
-        return Jwts.builder()
-            .header().add("typ", "JWT").and()
-            .subject(subject.toString())
-            .issuer(issuer)
-            .issuedAt(Date.from(now))
-            .expiration(Date.from(now.plus(expirationPeriod)))
-            .claims(claims)
-            .signWith(key)
-            .compact()
-    }
 }

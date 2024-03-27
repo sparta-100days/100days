@@ -81,19 +81,13 @@ class User(
     companion object {
         // User.of(id, provider) 형식으로 사용 가능하게 고침
         fun of(id: String, provider: OAuth2Provider): User {
-            // 랜덤문자 생성 > 유효성 검사 > 10자리로 자름
-            val random = RandomCode(RegexFunc()).generateRandomCode(10)
-            // 비밀번호에 사용하기 위해 encoding
-            val encodePass = PasswordEncoderConfig().passwordEncoder().encode(random)
-            // 랜덤아이디 12자리 생성
-            val generateId = UUID.randomUUID().toString().substring(0, 12)
 
             val user = User(
                 email = id,
                 nickname = "익명",
-                password = encodePass,
+                password =  RandomCode(RegexFunc()).generateRandomCode(10),
                 birth = LocalDate.now(),
-                accountId = generateId,
+                accountId = RandomCode(RegexFunc()).generateRandomCode(12),
                 isDelete = false,
                 status = Status.ACTIVE,
                 role = UserRole.USER,
@@ -109,11 +103,6 @@ class User(
 
                 OAuth2Provider.GOOGLE -> {
                     OAuth2Provider.GOOGLE.name
-                    user
-                }
-
-                OAuth2Provider.NAVER -> {
-                    OAuth2Provider.NAVER.name
                     user
                 }
             }
