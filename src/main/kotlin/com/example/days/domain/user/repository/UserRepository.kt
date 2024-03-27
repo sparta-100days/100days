@@ -1,6 +1,6 @@
 package com.example.days.domain.user.repository
 
-import com.example.days.domain.oauth2.model.OAuth2Provider
+import com.example.days.domain.oauth.model.OAuth2Provider
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
 import jakarta.transaction.Transactional

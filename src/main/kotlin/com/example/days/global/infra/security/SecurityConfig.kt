@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
@@ -15,7 +17,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 @EnableWebSecurity
 @EnableMethodSecurity
 class SecurityConfig(
-    private val jwtAuthenticationFilter: JwtAuthenticationFilter
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter,
+    private val clientRegistrationRepository: ClientRegistrationRepository
 ) {
 
     @Bean
@@ -24,9 +27,9 @@ class SecurityConfig(
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .csrf { it.disable() }
-//            .cors { it.disable() }
-//            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-//            .headers { it.frameOptions { option -> option.disable() } }
+            .cors { it.disable() }
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .headers { it.frameOptions { option -> option.disable() } }
             .authorizeHttpRequests {
                 // common
                 it.requestMatchers(AntPathRequestMatcher("/api/mail/**")).permitAll() // mail
@@ -47,31 +50,20 @@ class SecurityConfig(
 
                 // 로그인 임시처리
                 it.requestMatchers(AntPathRequestMatcher("/oauth2/**")).permitAll()
-                it.requestMatchers(AntPathRequestMatcher("**")).permitAll()
+//                it.requestMatchers(AntPathRequestMatcher("/error")).permitAll()
 
-                it.requestMatchers(PathRequest.toH2Console())
-                    .permitAll()
+//                it.requestMatchers(PathRequest.toH2Console()).permitAll()
                     .anyRequest()
                     .authenticated()
             }
             .addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter::class.java
-            )
-//            .oauth2Login { oauthConfig ->
-//                oauthConfig.authorizationEndpoint {
-//                    it.baseUri("/api/v1/oauth2/login")
-//                }.redirectionEndpoint {
-//                    it.baseUri("/api/v1/oauth2/callback/*")
-//                }.userInfoEndpoint {
-//                    it.userService(oAuth2UserService)
-//                }.successHandler(oAuth2LoginSuccessHandler)
-//            }
+            ).oauth2Login { clientRegistrationRepository }
             .exceptionHandling {
 //                it.authenticationEntryPoint(authenticationEntryPoint)
 //                it.accessDeniedHandler(accessDeniedHandler)
             }
-            .headers { it.frameOptions { it1 -> it1.disable() } }
             .build()
     }
 }

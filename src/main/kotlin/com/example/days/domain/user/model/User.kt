@@ -1,6 +1,6 @@
 package com.example.days.domain.user.model
 
-import com.example.days.domain.oauth2.model.OAuth2Provider
+import com.example.days.domain.oauth.model.OAuth2Provider
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
 import com.example.days.global.entity.BaseEntity
 import com.example.days.global.infra.regex.RegexFunc
@@ -76,43 +76,6 @@ class User(
     fun updateUser(request: ModifyInfoRequest) {
         nickname = request.nickname
         birth = request.birth
-    }
-
-    companion object {
-        // User.of(id, provider) 형식으로 사용 가능하게 고침
-        fun of(id: String, provider: OAuth2Provider): User {
-            // 랜덤문자 생성 > 유효성 검사 > 10자리로 자름
-            val random = RandomCode(RegexFunc()).generateRandomCode(10)
-            // 비밀번호에 사용하기 위해 encoding
-            val encodePass = PasswordEncoderConfig().passwordEncoder().encode(random)
-            // 랜덤아이디 12자리 생성
-            val generateId = UUID.randomUUID().toString().substring(0, 12)
-
-            val user = User(
-                email = id,
-                nickname = "익명",
-                password = encodePass,
-                birth = LocalDate.now(),
-                accountId = generateId,
-                isDelete = false,
-                status = Status.ACTIVE,
-                role = UserRole.USER,
-                provider = provider,
-                providerId = id
-            )
-
-            return when (provider) {
-                OAuth2Provider.KAKAO -> {
-                    OAuth2Provider.KAKAO.name
-                    user
-                }
-
-                OAuth2Provider.GOOGLE -> {
-                    OAuth2Provider.GOOGLE.name
-                    user
-                }
-            }
-        }
     }
 }
 

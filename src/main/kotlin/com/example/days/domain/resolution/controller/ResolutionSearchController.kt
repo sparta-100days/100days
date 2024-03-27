@@ -39,7 +39,7 @@ class ResolutionSearchController(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @RequestParam title: String
     ): ResponseEntity<Unit> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.CREATED).body(resolutionSearchService.saveRecentSearchLog(title, userId))
     }
 
@@ -49,7 +49,7 @@ class ResolutionSearchController(
     fun findRecentSearchLog(
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<List<SearchLogSearchResponse>>{
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.OK).body(resolutionSearchService.findRecentSearchLog(userId))
     }
 
@@ -61,7 +61,7 @@ class ResolutionSearchController(
         @RequestParam title: String,
         @RequestParam createdAt: LocalDateTime,
     ): ResponseEntity<List<SearchLogSearchResponse>?> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         resolutionSearchService.deleteRecentSearchLog(userId,title,createdAt)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }

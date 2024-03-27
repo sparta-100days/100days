@@ -1,4 +1,4 @@
-package com.example.days.domain.oauth2.model
+package com.example.days.domain.oauth.model
 
 enum class OAuth2Provider {
     KAKAO,

@@ -74,7 +74,7 @@ class AdminServiceImpl(
 
         return LoginAdminResponse(
             accessToken = jwtPlugin.accessToken(
-                subject = admin.id!!,
+                id = admin.id!!,
                 email = admin.email,
                 role = admin.role
             ), nickname = admin.nickname, message = "로그인이 완료되었습니다."

@@ -1,8 +1,8 @@
-package com.example.days.domain.oauth2.service
+package com.example.days.domain.oauth.service
 
-import com.example.days.domain.oauth2.client.OAurh2UserInfo
-import com.example.days.domain.oauth2.client.OAuth2Client
-import com.example.days.domain.oauth2.model.OAuth2Provider
+import com.example.days.domain.oauth.client.OAuth2Client
+import com.example.days.domain.oauth.common.OAuth2LoginUserInfo
+import com.example.days.domain.oauth.model.OAuth2Provider
 import org.springframework.stereotype.Component
 
 @Component
@@ -10,7 +10,7 @@ class OAuth2ClientService(
     private val clients: List<OAuth2Client>
 ) {
 
-    fun login(provider: OAuth2Provider, authorizationCode: String): OAurh2UserInfo {
+    fun login(provider: OAuth2Provider, authorizationCode: String): OAuth2LoginUserInfo {
         val client: OAuth2Client = this.selectClient(provider)
         return client.getAccessToken(authorizationCode)
             .let { client.retrieveUserInfo(it) }

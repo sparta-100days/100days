@@ -2,8 +2,10 @@ package com.example.days.domain.user.service
 
 import com.example.days.domain.mail.dto.request.EmailRequest
 import com.example.days.domain.mail.dto.response.EmailResponse
-import com.example.days.domain.oauth2.client.OAurh2UserInfo
-import com.example.days.domain.oauth2.model.OAuth2Provider
+import com.example.days.domain.oauth.common.OAuth2LoginUserInfo
+import com.example.days.domain.oauth.model.OAuth2Provider
+import com.example.days.domain.oauth.model.SocialLoginUser
+import com.example.days.domain.oauth.repository.SocialUserLoginRepository
 import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
@@ -32,6 +34,7 @@ import java.util.*
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
+    private val socialRepository: SocialUserLoginRepository,
     private val queryDslUserRepository: QueryDslUserRepository,
     private val mailUtility: MailUtility,
     private val encoder: PasswordEncoder,
@@ -55,7 +58,7 @@ class UserServiceImpl(
 
         // accessToken
         val accessToken = jwtPlugin.accessToken(
-            subject = user.id!!,
+            id = user.id!!,
             email = user.email,
             role = user.role
         )
@@ -115,13 +118,13 @@ class UserServiceImpl(
     }
 
     override fun getInfo(userId: UserPrincipal): ModifyInfoResponse {
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("User", userId.subject)
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("User", userId.id)
         return user.let { ModifyInfoResponse.from(it) }
     }
 
     @Transactional
     override fun modifyInfo(userId: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse {
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("user", userId.subject)
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
 
         if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
             user.updateUser(request)
@@ -134,7 +137,7 @@ class UserServiceImpl(
     }
 
     override fun withdraw(userId: UserPrincipal, request: UserPasswordRequest) {
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("user", userId.subject)
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
         if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
             user.isDelete = true
             user.status = Status.WITHDRAW
@@ -145,7 +148,7 @@ class UserServiceImpl(
     }
 
     override fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest) {
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("user", userId.subject)
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
 
         if (encoder.matches(request.password, user.password))
             throw InvalidPasswordError()
@@ -155,16 +158,6 @@ class UserServiceImpl(
             userRepository.save(user)
         } else {
             throw MismatchPasswordException()
-        }
-    }
-
-    // 소셜 로그인
-    override fun registerIfAbsent(provider: OAuth2Provider, userInfo: OAurh2UserInfo): User {
-        return if (!userRepository.existsByProviderAndProviderId(provider, userInfo.id)) {
-            val socialUser = User.of(userInfo.id, provider)
-            userRepository.save(socialUser)
-        } else {
-            userRepository.findByProviderAndProviderId(provider, userInfo.id)
         }
     }
 

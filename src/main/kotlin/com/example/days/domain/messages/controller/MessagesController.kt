@@ -30,7 +30,7 @@ class MessagesController(
     fun createMessages(
         @Valid @RequestBody req: CreateMessageRequest, @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<MessageSendResponse> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.CREATED).body(messagesService.createMessages(req, userId))
     }
 
@@ -41,7 +41,7 @@ class MessagesController(
         @PathVariable id: Long,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<MessageSendResponse> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.OK).body(messagesService.sendMessages(id, userId))
     }
 
@@ -52,7 +52,7 @@ class MessagesController(
         @PageableDefault(size = 10, sort = ["sentAt"]) pageable: Pageable,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<Page<MessageSendResponse>> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.OK).body(messagesService.sendMessagesAll(pageable, userId))
     }
 
@@ -63,7 +63,7 @@ class MessagesController(
         @PathVariable id: Long,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<MessagesReceiveResponse> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.OK).body(messagesService.receiverMessages(id, userId))
     }
 
@@ -74,7 +74,7 @@ class MessagesController(
         @PageableDefault(size = 10, sort = ["sentAt"]) pageable: Pageable,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<Page<MessagesReceiveResponse>> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.OK).body(messagesService.receiverMessagesAll(pageable, userId))
     }
 
@@ -85,7 +85,7 @@ class MessagesController(
         @PathVariable id: Long,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<Unit> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         messagesService.deleteSenderMessages(id, userId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
@@ -97,7 +97,7 @@ class MessagesController(
         @PathVariable id: Long,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<Unit> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         messagesService.deleteReceiverMessages(id, userId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
@@ -110,7 +110,7 @@ class MessagesController(
         @PathVariable id: Long,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<AdminMessagesSendResponse> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.OK).body(messagesService.readMessagesByAdmin(id, userId))
     }
 
@@ -121,7 +121,7 @@ class MessagesController(
         @PageableDefault(size = 10, sort = ["sentAt"]) pageable: Pageable,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<Page<AdminMessagesSendResponse>> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.OK).body(messagesService.readAllMessagesByAdmin(pageable, userId))
     }
 
@@ -132,7 +132,7 @@ class MessagesController(
         @PathVariable id: Long,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<AdminMessagesSendResponse> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         messagesService.deleteUserByAdminMessages(id, userId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }

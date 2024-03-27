@@ -1,4 +1,4 @@
-package com.example.days.domain.oauth2.client.config
+package com.example.days.domain.oauth.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

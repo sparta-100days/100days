@@ -27,7 +27,7 @@ class ReportController(
         @RequestBody req: UserReportRequest,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<UserReportResponse> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.CREATED).body(reportService.reportUser(req, userId))
     }
 }
