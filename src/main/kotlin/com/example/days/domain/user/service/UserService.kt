@@ -28,9 +28,6 @@ interface UserService {
 
     fun withdraw(userId: UserPrincipal, request: UserPasswordRequest)
 
-    // 로그아웃
-    fun logout(userId: UserPrincipal): LogoutResponse
-
     fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest)
 
     // 소셜 로그인 관련 처리, 있으면 조회 없으면 가입
