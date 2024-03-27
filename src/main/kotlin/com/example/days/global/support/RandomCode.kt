@@ -1,9 +1,8 @@
 package com.example.days.global.support
 
 import com.example.days.global.infra.regex.RegexFunc
-import com.example.days.global.infra.security.PasswordEncoderConfig
 import org.springframework.stereotype.Component
-import java.util.UUID
+import java.util.*
 
 @Component
 class RandomCode(
