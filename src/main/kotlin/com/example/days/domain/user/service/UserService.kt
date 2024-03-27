@@ -2,14 +2,14 @@ package com.example.days.domain.user.service
 
 import com.example.days.domain.mail.dto.request.EmailRequest
 import com.example.days.domain.mail.dto.response.EmailResponse
-import com.example.days.domain.oauth.common.OAuth2LoginUserInfo
-import com.example.days.domain.oauth.model.OAuth2Provider
 import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
 import com.example.days.domain.user.dto.request.UserPasswordRequest
-import com.example.days.domain.user.dto.response.*
-import com.example.days.domain.user.model.User
+import com.example.days.domain.user.dto.response.AccountSearchResponse
+import com.example.days.domain.user.dto.response.LoginResponse
+import com.example.days.domain.user.dto.response.ModifyInfoResponse
+import com.example.days.domain.user.dto.response.SignUpResponse
 import com.example.days.global.infra.security.UserPrincipal
 
 interface UserService {

@@ -8,10 +8,12 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
 class GoogleLoginUserInfoResponse(
     id: String,
-    myinfo: GoogleUserPropertiestResponse,
+    nickname: String,
+    email: String
+//    myinfo: GoogleUserPropertiestResponse,
 ) : OAuth2LoginUserInfo(
     provider = OAuth2Provider.GOOGLE,
     id = id,
-    nickname = myinfo.nickname,
-    email = myinfo.email
+    nickname = nickname,
+    email = email
 )

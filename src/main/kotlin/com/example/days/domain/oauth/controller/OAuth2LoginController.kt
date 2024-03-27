@@ -5,12 +5,7 @@ import com.example.days.domain.oauth.service.OAuth2ClientService
 import com.example.days.domain.oauth.service.OAuth2LoginService
 import com.example.days.domain.user.dto.response.LoginResponse
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/login/oauth2")

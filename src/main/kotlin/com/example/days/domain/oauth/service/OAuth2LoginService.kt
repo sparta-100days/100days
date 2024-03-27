@@ -2,7 +2,6 @@ package com.example.days.domain.oauth.service
 
 import com.example.days.domain.oauth.model.OAuth2Provider
 import com.example.days.domain.user.dto.response.LoginResponse
-import com.example.days.domain.user.service.UserService
 import com.example.days.global.infra.security.jwt.JwtPlugin
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.stereotype.Service
