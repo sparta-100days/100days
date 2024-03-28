@@ -1,7 +1,6 @@
 package com.example.days.global.infra.security
 
 import com.example.days.global.infra.security.jwt.JwtAuthenticationFilter
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -10,7 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @Configuration
@@ -46,7 +44,6 @@ class SecurityConfig(
                 it.requestMatchers(AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/")).permitAll()
-//                it.requestMatchers(PathRequest.toH2Console()).permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
