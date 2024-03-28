@@ -8,6 +8,7 @@ data class MessagesReceiveResponse(
     val title: String,
     val content: String,
     val senderNickname: String,
+    val receiverNickname: String,
     val sentAt: LocalDateTime,
     val readStatus: Boolean
 ){
@@ -17,6 +18,7 @@ data class MessagesReceiveResponse(
                 id = messages.id!!,
                 title = messages.title,
                 content = messages.content,
+                receiverNickname = messages.receiver.nickname,
                 senderNickname = messages.sender.nickname,
                 sentAt = messages.sentAt,
                 readStatus = messages.readStatus
