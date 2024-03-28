@@ -41,7 +41,7 @@ class UserServiceImpl(
     private val jwtPlugin: JwtPlugin,
     private val regexFunc: RegexFunc
 ) : UserService {
-
+    // 로그인
     override fun login(request: LoginRequest): LoginResponse {
         val user = userRepository.findUserByEmail(regexFunc.regexUserEmail(request.email))
             ?: throw NoSearchUserByEmailException(request.email)
