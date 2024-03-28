@@ -6,12 +6,12 @@
 
 👥 팀소개
 -------------
-| 팀장                                                                                               | 부팀장                                                                                                 | 팀원                                                                                                  |
-|--------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| 팀장                                                                                                  | 부팀장                                                                                                 | 팀원                                                                                                  |
+|-----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
 | <img src = "https://avatars.githubusercontent.com/u/150547656?v=4" width="180" height="180" alt=""> | <img src = "https://avatars.githubusercontent.com/u/132591560?v=4" width="180" height="180" alt=""> | <img src = "https://avatars.githubusercontent.com/u/151909236?v=4" width="180" height="180" alt=""> |
-| 박유진                                                                                              | 최혜림                                                                                                 | 방준희                                                                                                 |
-| [YJ9352](https://github.com/YJ9352)                                                              | [rim109](https://github.com/rim109)                                                                 | [bangjunhee](https://github.com/bangjunhee)                                                         |
-| 회원, 인증& 인가, 소셜로그인, 메일인증, 프론트                                                                     | 카테고리, 쪽지, 신고, 관리자, 목표 검색, 최신검색어 기능, 배포                                                              | 목표, 좋아요, 좋아요 순 랭킹, 예외처리                                                                             |
+| 박유진                                                                                                 | 최혜림                                                                                                 | 방준희                                                                                                 |
+| [YJ9352](https://github.com/YJ9352)                                                                 | [rim109](https://github.com/rim109)                                                                 | [bangjunhee](https://github.com/bangjunhee)                                                         |
+| 회원, 인증& 인가, 소셜로그인, 메일인증, 포스트, 댓글, 프론트                                                               | 카테고리, 쪽지, 신고, 관리자, 목표 검색, 최신검색어 기능, 배포, 프론트                                                         | 목표, 좋아요, 좋아요 순 랭킹, 예외처리, 프론트                                                                        |
 -------------
 ### 프로젝트 계기
 
@@ -61,6 +61,7 @@
 ![Amazon EC2](https://img.shields.io/static/v1?style=for-the-badge&message=Amazon+EC2&color=222222&logo=Amazon+EC2&logoColor=FF9900&label=)
 ![Amazon S3](https://img.shields.io/static/v1?style=for-the-badge&message=Amazon+S3&color=569A31&logo=Amazon+S3&logoColor=FFFFFF&label=)
 ![Amazon CodeDeploy](https://img.shields.io/static/v1?style=for-the-badge&message=Amazon+CodeDeploy&color=527FFF&logo=Amazon+CodeDeploy&logoColor=FFFFFF&label=)
+![GitHub Actions](https://img.shields.io/static/v1?style=for-the-badge&message=GitHub+Actions&color=2088FF&logo=GitHub+Actions&logoColor=FFFFFF&label=)
 -------------
 ### ✔️와이어프레임
 ![wire-frame](/img/wire-frame.png)
