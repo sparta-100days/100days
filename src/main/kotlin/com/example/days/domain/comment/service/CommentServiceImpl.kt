@@ -30,7 +30,7 @@ class CommentServiceImpl(
     @Transactional
     override fun createComment(userId: UserPrincipal, postId: Long, request: CommentRequest): CommentResponse {
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("게시글", postId)
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw UserNotFoundException()
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw UserNotFoundException()
 
         val comment = Comment(comment = request.comment, userId = user, postId = post)
         commentRepository.save(comment)
@@ -40,10 +40,10 @@ class CommentServiceImpl(
 
     @Transactional
     override fun updateComment(userId: UserPrincipal, commentId: Long, request: CommentRequest): CommentResponse {
-        userRepository.findByIdOrNull(userId.subject) ?: throw UserNotFoundException()
+        userRepository.findByIdOrNull(userId.id) ?: throw UserNotFoundException()
         val comment = commentRepository.findByIdOrNull(commentId) ?: throw ModelNotFoundException("댓글", commentId)
 
-        if (comment.userId.id == userId.subject) {
+        if (comment.userId.id == userId.id) {
             comment.comment = request.comment
         } else {
             throw PermissionDeniedException()
@@ -54,10 +54,10 @@ class CommentServiceImpl(
 
     @Transactional
     override fun deleteComment(userId: UserPrincipal, commentId: Long): DeleteResponse {
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw UserNotFoundException()
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw UserNotFoundException()
         val comment = commentRepository.findByIdOrNull(commentId) ?: throw ModelNotFoundException("댓글", commentId)
 
-        if (comment.userId.id == userId.subject) commentRepository.delete(comment)
+        if (comment.userId.id == userId.id) commentRepository.delete(comment)
         else throw PermissionDeniedException()
 
         return DeleteResponse("${user.nickname}님 댓글이 삭제 처리되었습니다.")

@@ -1,9 +1,8 @@
-package com.example.days.domain.oauth2.client.google.client
+package com.example.days.domain.oauth.client
 
-import com.example.days.domain.oauth2.client.OAurh2UserInfo
-import com.example.days.domain.oauth2.client.OAuth2Client
-import com.example.days.domain.oauth2.client.OAuth2TokenResponse
-import com.example.days.domain.oauth2.model.OAuth2Provider
+import com.example.days.domain.oauth.dto.google.GoogleLoginUserInfoResponse
+import com.example.days.domain.oauth.dto.google.GoogleTokenResponse
+import com.example.days.domain.oauth.model.OAuth2Provider
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
@@ -13,9 +12,10 @@ import org.springframework.web.client.body
 
 @Component
 class GoogleOAuth2Client(
-    @Value("\${oauth2.google.client-id}") val clientId: String,
-    @Value("\${oauth2.google.client-secret}") val clientSecret: String,
-    @Value("\${oauth2.google.redirect-uri}") val redirectUrl: String,
+    @Value("\${spring.security.oauth2.client.registration.google.client-id}") val clientId: String,
+    @Value("\${spring.security.oauth2.client.registration.google.client-secret}") val clientSecret: String,
+    @Value("\${spring.security.oauth2.client.registration.google.redirect-uri}") val redirectUrl: String,
+    @Value("\${spring.security.oauth2.client.registration.google.scope}") val scope: Set<String>,
     private val restClient: RestClient
 ) : OAuth2Client {
 
@@ -24,7 +24,8 @@ class GoogleOAuth2Client(
             .append("?client_id=").append(clientId)
             .append("&redirect_uri=").append(redirectUrl)
             .append("&response_type=").append("code")
-            .append("&scope=").append("https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email")
+            .append("&scope=")
+            .append("https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email")
             .toString()
     }
 
@@ -41,17 +42,17 @@ class GoogleOAuth2Client(
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .body(LinkedMultiValueMap<String, String>().apply { this.setAll(requestData) })
             .retrieve()
-            .body<OAuth2TokenResponse>()
+            .body<GoogleTokenResponse>()
             ?.accessToken
             ?: throw RuntimeException("Google AccessToken 조회 실패")
     }
 
-    override fun retrieveUserInfo(accessToken: String): OAurh2UserInfo {
+    override fun retrieveUserInfo(accessToken: String): GoogleLoginUserInfoResponse {
         return restClient.get()
             .uri("$GOOGLE_API_BASE_URL/userinfo")
             .header("Authorization", "Bearer $accessToken")
             .retrieve()
-            .body<OAurh2UserInfo>()
+            .body<GoogleLoginUserInfoResponse>()
             ?: throw RuntimeException("Google UserInfo 조회 실패")
     }
 

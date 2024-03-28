@@ -29,7 +29,7 @@ class DailyCheckController(
         @RequestBody dailyCheckRequest: DailyCheckRequest,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<DailyCheckResponse>{
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         val createdDailyCheck = dailyCheckService.createDailyCheck(resolutionId, userId, dailyCheckRequest)
         return ResponseEntity.status(HttpStatus.CREATED).body(createdDailyCheck)
     }
@@ -40,7 +40,7 @@ class DailyCheckController(
         @PathVariable resolutionId: Long,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<List<DailyCheckResponse>>{
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         val dailyCheck = dailyCheckService.getDailyCheckByList(resolutionId, userId)
         return ResponseEntity.ok(dailyCheck)
     }
@@ -53,7 +53,7 @@ class DailyCheckController(
         @RequestBody dailyCheckRequest: DailyCheckRequest,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<DailyCheckResponse>{
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         val updatedDailyCheck = dailyCheckService.updateDailyCheck(resolutionId, userId, dailyCheckId, dailyCheckRequest)
         return ResponseEntity.ok(updatedDailyCheck)
     }
@@ -65,7 +65,7 @@ class DailyCheckController(
         @PathVariable dailyCheckId: Long,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<Unit>{
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         dailyCheckService.deleteDailyCheck(resolutionId, dailyCheckId, userId)
         return ResponseEntity.noContent().build()
     }

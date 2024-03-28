@@ -101,7 +101,7 @@ class AdminController(
         @RequestBody req: CreateMessageRequest,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<AdminMessagesSendResponse> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.CREATED).body(adminService.toUserCreateMessage(req, userId))
     }
 
@@ -112,7 +112,7 @@ class AdminController(
         @PageableDefault(size = 10, sort = ["sentAt"]) pageable: Pageable,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<Page<AdminMessagesSendResponse>> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.OK).body(adminService.readAllMessagesOnlyAdmin(pageable, userId))
     }
 

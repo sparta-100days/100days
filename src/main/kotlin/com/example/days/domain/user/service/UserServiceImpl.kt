@@ -2,13 +2,15 @@ package com.example.days.domain.user.service
 
 import com.example.days.domain.mail.dto.request.EmailRequest
 import com.example.days.domain.mail.dto.response.EmailResponse
-import com.example.days.domain.oauth2.client.OAurh2UserInfo
-import com.example.days.domain.oauth2.model.OAuth2Provider
+import com.example.days.domain.oauth.repository.SocialUserLoginRepository
 import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
 import com.example.days.domain.user.dto.request.UserPasswordRequest
-import com.example.days.domain.user.dto.response.*
+import com.example.days.domain.user.dto.response.AccountSearchResponse
+import com.example.days.domain.user.dto.response.LoginResponse
+import com.example.days.domain.user.dto.response.ModifyInfoResponse
+import com.example.days.domain.user.dto.response.SignUpResponse
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserRole
@@ -32,13 +34,14 @@ import java.util.*
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
+    private val socialRepository: SocialUserLoginRepository,
     private val queryDslUserRepository: QueryDslUserRepository,
     private val mailUtility: MailUtility,
     private val encoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin,
     private val regexFunc: RegexFunc
 ) : UserService {
-
+    // 로그인
     override fun login(request: LoginRequest): LoginResponse {
         val user = userRepository.findUserByEmail(regexFunc.regexUserEmail(request.email))
             ?: throw NoSearchUserByEmailException(request.email)
@@ -55,7 +58,7 @@ class UserServiceImpl(
 
         // accessToken
         val accessToken = jwtPlugin.accessToken(
-            subject = user.id!!,
+            id = user.id!!,
             email = user.email,
             role = user.role
         )
@@ -115,13 +118,13 @@ class UserServiceImpl(
     }
 
     override fun getInfo(userId: UserPrincipal): ModifyInfoResponse {
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("User", userId.subject)
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("User", userId.id)
         return user.let { ModifyInfoResponse.from(it) }
     }
 
     @Transactional
     override fun modifyInfo(userId: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse {
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("user", userId.subject)
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
 
         if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
             user.updateUser(request)
@@ -134,7 +137,7 @@ class UserServiceImpl(
     }
 
     override fun withdraw(userId: UserPrincipal, request: UserPasswordRequest) {
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("user", userId.subject)
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
         if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
             user.isDelete = true
             user.status = Status.WITHDRAW
@@ -144,20 +147,8 @@ class UserServiceImpl(
         }
     }
 
-    // 유저 정보가 있는지 확인 후, 있다면 유효시간 1초의 토큰을 재발급하며 로그아웃
-    // 나중에 다른 방법도 찾아서 시도해 볼 예정
-    override fun logout(userId: UserPrincipal): LogoutResponse {
-        userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("User", userId.subject)
-        val deleteToken = jwtPlugin.logoutToken(
-            subject = userId.subject,
-            email = userId.email,
-            role = UserRole.USER
-        )
-        return LogoutResponse(deleteToken, message = "logout")
-    }
-
     override fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest) {
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw ModelNotFoundException("user", userId.subject)
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
 
         if (encoder.matches(request.password, user.password))
             throw InvalidPasswordError()
@@ -167,16 +158,6 @@ class UserServiceImpl(
             userRepository.save(user)
         } else {
             throw MismatchPasswordException()
-        }
-    }
-
-    // 소셜 로그인
-    override fun registerIfAbsent(provider: OAuth2Provider, userInfo: OAurh2UserInfo): User {
-        return if (!userRepository.existsByProviderAndProviderId(provider, userInfo.id)) {
-            val socialUser = User.of(userInfo.id, provider)
-            userRepository.save(socialUser)
-        } else {
-            userRepository.findByProviderAndProviderId(provider, userInfo.id)
         }
     }
 

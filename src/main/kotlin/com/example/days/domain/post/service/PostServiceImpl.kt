@@ -65,7 +65,7 @@ class PostServiceImpl(
                             type: PostType,
                             request: PostRequest
     ): PostResponse {
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw UserNotFoundException()
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw UserNotFoundException()
         val category = categoryRepository.findByIdOrNull(categoryId) ?: throw ModelNotFoundException("카테고리", categoryId)
         val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: throw ModelNotFoundException("목표", resolutionId)
         val post = Post(
@@ -89,13 +89,13 @@ class PostServiceImpl(
     // post 수정
     @Transactional
     override fun updatePost(userId: UserPrincipal, type: PostType, postId: Long, request: PostRequest): PostResponse {
-        userRepository.findByIdOrNull(userId.subject) ?: throw UserNotFoundException()
+        userRepository.findByIdOrNull(userId.id) ?: throw UserNotFoundException()
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("게시글", postId)
 
         // 작성 포스트 타입 확인
         if (type == post.type) {
             // 작성자 확인
-            if (post.userId?.id == userId.subject) {
+            if (post.userId?.id == userId.id) {
                 // 작성 타입별 입력 폼 구분
                 if (post.type == PostType.CHECK) {
                     val (title) = request
@@ -123,11 +123,11 @@ class PostServiceImpl(
     // post 삭제
     @Transactional
     override fun deletePost(userId: UserPrincipal, postId: Long): DeleteResponse {
-        val user = userRepository.findByIdOrNull(userId.subject) ?: throw UserNotFoundException()
+        val user = userRepository.findByIdOrNull(userId.id) ?: throw UserNotFoundException()
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("게시글", postId)
 
         // 작성자 확인
-        if (post.userId?.id == userId.subject) {
+        if (post.userId?.id == userId.id) {
             postRepository.delete(post)
         } else {
             throw PermissionDeniedException()
